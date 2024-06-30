@@ -16,10 +16,8 @@ public static class Voxeldata
         new Vector3(0.0f, 1.0f,1.0f),
     };
 
-    public static readonly int[,] VoxelTris = new int[1, 6]
-    {
-        {3,7,2,2,7,6 }
-    };
+    public static readonly int NumberOfChunks=3;
+    public static readonly int SizeOfWorld=200;
     public class Voxel
     {
         public Vector3 position;

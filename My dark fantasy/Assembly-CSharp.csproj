@@ -10,7 +10,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{32C3BDE6-E125-3128-82C1-25D0441455A3}</ProjectGuid>
+    <ProjectGuid>{AE50981B-3DEF-5BDD-1E71-5450C1617F4A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -61,8 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Voxeldata.cs" />
+    <Compile Include="Assets\Scripts\WorldManager.cs" />
+    <Compile Include="Assets\Scripts\WorldLoader.cs" />
     <Compile Include="Assets\Scripts\ControllerImput.cs" />
-    <Compile Include="Assets\Scripts\BlockGenerator.cs" />
+    <Compile Include="Assets\Scripts\PerlinGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public BlockGenerator voxelTerrain;
+    public Chunk voxelTerrain;
     public float reach = 5f;
     public float movementSpeed = 5f;
     public float lookSpeed = 400f;
     public float smoothSpeed = 100.0f;
     public float jumpForce = 5f;
-    public float gravity = 9.8f;
+    public float gravity = 98f;
     private Rigidbody rb;
     public Transform orientation;
 
@@ -22,24 +22,23 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-     //   Cursor.lockState = CursorLockMode.Locked;
-      //  Cursor.visible = false;
+        Application.targetFrameRate = 50;
+        //   Cursor.lockState = CursorLockMode.Locked;
+        //  Cursor.visible = false;
         characterController = gameObject.AddComponent<CharacterController>();
-        characterController.transform.position = new Vector3(3.0f,4.0f,4.0f);
-      //  rotationX = transform.eulerAngles.y;
-      //  rotationY = transform.eulerAngles.x;
+        characterController.transform.position = new Vector3(12.0f,60.0f,4.0f);
     }
 
     void Update()
     {
         HandleMouseLook();
         HandleMovement();
-        HandleBlockPlacement();
+        CheckViewDistance();
     }
   
     void HandleMovement()
     {
-        if (characterController.isGrounded)
+        
         {
             float moveX = Input.GetAxis("Horizontal");
             float moveZ = Input.GetAxis("Vertical");
@@ -74,6 +73,12 @@ public class CameraController : MonoBehaviour
         moveDirection.y -= gravity * Time.deltaTime;
         characterController.Move(moveDirection * Time.deltaTime);
     }
+
+    public ChunkCoord GetPosition()
+    {
+        Vector3 position = transform.position;
+        return new ChunkCoord(Mathf.FloorToInt(position.x) , Mathf.FloorToInt(position.z));
+    }
     
     // Daca schimbi ceva se vor prabusi turnurile gemene
     void HandleMouseLook()
@@ -99,26 +104,30 @@ public class CameraController : MonoBehaviour
             {
                 Vector3 hitPosition = hit.point - hit.normal * 0.5f;
                 Debug.Log(hitPosition.x + ", " + hitPosition.y + ", " + hitPosition.z);
-                voxelTerrain.RemoveBlock(hitPosition);
             }
         }
 
-        if (Input.GetMouseButtonDown(1)) // Right mouse button
+        if (Input.GetMouseButtonDown(1)) 
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, reach))
             {
                 Vector3 hitPosition = hit.point + hit.normal * 0.5f;
-                voxelTerrain.PlaceBlock(hitPosition);
+               // voxelTerrain.PlaceBlock(hitPosition);
             }
         }
 
-        // Simple camera rotation control
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
         transform.Rotate(Vector3.up * mouseX * 5f);
         transform.Rotate(Vector3.right * -mouseY * 5f);
     }
+
+    public void CheckViewDistance()
+    {
+
+    }
+
 }
 
