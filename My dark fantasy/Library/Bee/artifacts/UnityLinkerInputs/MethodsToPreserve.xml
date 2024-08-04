@@ -1,5 +1,9 @@
 <linker>
 	<assembly fullname="Assembly-CSharp" ignoreIfMissing="1">
+		<type fullname="Toolbar">
+			<method name="Again"/>
+			<method name="CloseScene"/>
+		</type>
 		<type fullname="UiManager">
 			<method name="LoadScene"/>
 		</type>

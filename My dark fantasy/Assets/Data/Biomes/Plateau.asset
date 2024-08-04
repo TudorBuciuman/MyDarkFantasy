@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a87b7caf3245794a84788013024d302, type: 3}
+  m_Name: Plateau
+  m_EditorClassIdentifier: 
+  BiomeName: default
+  topblock: 2
+  middleblock: 1
+  solidterrainheight: 64
+  weight: 4
+  scale: 15
+  offset: 2
+  valley: 0
+  multiplier: 37
+  treezone: 14.9
+  treethreshold: 0.85
+  treesize: 2.02
+  lodes:
+  - name: dirt
+    Idblock: 1
+    minheight: 10
+    maxheight: 70
+    scale: 0.3
+    threshold: 0.54
+    noiseOffSet: 0.7
+  - name: iron
+    Idblock: 10
+    minheight: 2
+    maxheight: 70
+    scale: 0.2
+    threshold: 0.58
+    noiseOffSet: 0.3
+  - name: coal
+    Idblock: 9
+    minheight: 2
+    maxheight: 70
+    scale: 0.4
+    threshold: 0.58
+    noiseOffSet: 0.5
+  - name: cobblestone
+    Idblock: 8
+    minheight: 2
+    maxheight: 70
+    scale: 0.04
+    threshold: 0.54
+    noiseOffSet: 0.1

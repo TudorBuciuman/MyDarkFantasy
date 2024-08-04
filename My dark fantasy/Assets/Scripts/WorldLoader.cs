@@ -2,15 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 public class ChunkSerializer
 {
-    /*
-     * Chunkurile sunt in total de la -2^28 la 2^28 in cele 4 directii
-     * valoarea maxima pe care o poate atinge este 268.435.456 
-     * alegerea a fost pentru eficienta
-     * 
-     * 
-     */
+    public static string savePath;
+
+    public static string[] loadpath;
+
+    public void Sync(string sv, string[] lp)
+    {
+        savePath = sv;
+        loadpath = lp;
+    }
+    public static void SaveWorld()
+    {
+        if (!Directory.Exists(savePath))
+            Directory.CreateDirectory(savePath);
+
+        //Debug.Log("Saving " + world.worldName);
+
+        BinaryFormatter formatter = new BinaryFormatter();
+        FileStream stream = new FileStream(savePath + "world.world", FileMode.Create);
+
+      //  formatter.Serialize(stream, world);
+       // stream.Close();
+
+      //  Thread thread = new Thread(() => SaveChunks(world));
+       // thread.Start();
+
+    }
     public static void SerializeChunk(string filePath, BidimensionalArray chunkData)
     {
         using (FileStream stream = new FileStream(filePath, FileMode.Create))
@@ -30,6 +51,7 @@ public class ChunkSerializer
 }
 public class ChunkDeserializer
 {
+
     public static BidimensionalArray DeserializeChunk(string filePath)
     {
         BidimensionalArray chunkData = new BidimensionalArray();
@@ -49,5 +71,6 @@ public class ChunkDeserializer
 
         return chunkData;
     }
+    
 }
 
