@@ -3585,7 +3585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9245283, g: 0.8852795, b: 0.8852795, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
@@ -4214,16 +4214,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wmanager: {fileID: 1391335052}
+  craft: {fileID: 1470890187}
   toolbar: {fileID: 1922894755}
   cam: {fileID: 963194228}
   movementSpeed: 5
   sprintspeed: 8
   lookSpeed: 400
   smoothSpeed: 100
-  gravity: -9.8
+  gravity: -8
   orientation: {fileID: 920030577}
   speed: 50
-  jump: 6
+  jump: 5
   controller: {fileID: 920030578}
   box: {fileID: 657591101}
   Pos: {fileID: 782628376}
@@ -6311,7 +6312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4811321, g: 0.46524566, b: 0.46524566, a: 1}
+  m_Color: {r: 0.8867924, g: 0.8867924, b: 0.8867924, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6580,21 +6581,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CImp: {fileID: 920030576}
+  currenttime: 0
   Biome:
   - {fileID: 11400000, guid: 8560de94956d93c4886d218dd7152876, type: 2}
   - {fileID: 11400000, guid: 2f23e0863dc312342ac5a257c6c57fc9, type: 2}
   - {fileID: 11400000, guid: e1339baed70974541bf9f15efe0bd221, type: 2}
   - {fileID: 11400000, guid: 03962fcc75e6ce146bcfa7698b48bd75, type: 2}
   - {fileID: 11400000, guid: 3a90515e292cc6e44a9f9ea354ed402a, type: 2}
-  - {fileID: 11400000, guid: 568e066d0ff28454295366a05d48fd2c, type: 2}
   - {fileID: 11400000, guid: ae4371542b6d7514b8513d5291d83706, type: 2}
+  - {fileID: 11400000, guid: 568e066d0ff28454295366a05d48fd2c, type: 2}
   - {fileID: 11400000, guid: b0106fc9a674ddf43bb687aaaed0857f, type: 2}
+  GlobalLight: 0
   Toolbar: {fileID: 1922894755}
   material: {fileID: 2100000, guid: a061024bd9d254b4fbbb327201960bb1, type: 2}
   blockTypes:
   - Name: air
     place: 12
     utility: 1
+    isblock: 0
     brktme: 0
     icon: {fileID: 21300000, guid: ed6feac70b924bb499113a15bb8d6572, type: 3}
     backfacetexture: 38
@@ -6606,6 +6610,7 @@ MonoBehaviour:
   - Name: dirt
     place: 1
     utility: 0
+    isblock: 1
     brktme: 0.7
     icon: {fileID: 31147323, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 1
@@ -6617,6 +6622,7 @@ MonoBehaviour:
   - Name: dirt_grass1
     place: 2
     utility: 0
+    isblock: 1
     brktme: 0.7
     icon: {fileID: -1236886711, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 2
@@ -6628,6 +6634,7 @@ MonoBehaviour:
   - Name: dirt_grass2
     place: 3
     utility: 0
+    isblock: 1
     brktme: 0.7
     icon: {fileID: 1364180730, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 9
@@ -6639,6 +6646,7 @@ MonoBehaviour:
   - Name: stone
     place: 4
     utility: 0
+    isblock: 1
     brktme: 1
     icon: {fileID: -1556817285, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 6
@@ -6650,6 +6658,7 @@ MonoBehaviour:
   - Name: endstone
     place: 5
     utility: 0
+    isblock: 1
     brktme: 22222222
     icon: {fileID: -1889959347, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 8
@@ -6661,6 +6670,7 @@ MonoBehaviour:
   - Name: sand
     place: 6
     utility: 0
+    isblock: 1
     brktme: 0.6
     icon: {fileID: -208597668, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 7
@@ -6672,6 +6682,7 @@ MonoBehaviour:
   - Name: wood
     place: 7
     utility: 0
+    isblock: 1
     brktme: 0.9
     icon: {fileID: 1752326253, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 5
@@ -6683,6 +6694,7 @@ MonoBehaviour:
   - Name: cobblestone
     place: 8
     utility: 0
+    isblock: 1
     brktme: 1.1
     icon: {fileID: -1295313727, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 33
@@ -6694,6 +6706,7 @@ MonoBehaviour:
   - Name: coal
     place: 9
     utility: 0
+    isblock: 1
     brktme: 1.2
     icon: {fileID: 0}
     backfacetexture: 21
@@ -6705,6 +6718,7 @@ MonoBehaviour:
   - Name: iron
     place: 10
     utility: 0
+    isblock: 1
     brktme: 1.3
     icon: {fileID: 0}
     backfacetexture: 19
@@ -6716,6 +6730,7 @@ MonoBehaviour:
   - Name: leaves
     place: 11
     utility: 0
+    isblock: 1
     brktme: 0.1
     icon: {fileID: 0}
     backfacetexture: 37
@@ -6725,19 +6740,21 @@ MonoBehaviour:
     leftfacetexture: 37
     rightfacetexture: 37
   - Name: cactus
-    place: 13
+    place: 12
     utility: 0
+    isblock: 1
     brktme: 0.2
     icon: {fileID: 21300000, guid: ed6feac70b924bb499113a15bb8d6572, type: 3}
     backfacetexture: 39
     frontfacetexture: 39
-    topfacetexture: 39
-    bottomfacetexture: 39
+    topfacetexture: 40
+    bottomfacetexture: 40
     leftfacetexture: 39
     rightfacetexture: 39
   - Name: pickaxe
-    place: 14
+    place: 13
     utility: 1
+    isblock: 0
     brktme: 0
     icon: {fileID: -2019780746, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 39
@@ -6747,8 +6764,9 @@ MonoBehaviour:
     leftfacetexture: 39
     rightfacetexture: 39
   - Name: wood
-    place: 15
+    place: 14
     utility: 0
+    isblock: 1
     brktme: 0.6
     icon: {fileID: -102498714, guid: 58b973c0f921f9e4c93389a9477c40c8, type: 3}
     backfacetexture: 34
@@ -6757,6 +6775,54 @@ MonoBehaviour:
     bottomfacetexture: 34
     leftfacetexture: 34
     rightfacetexture: 34
+  - Name: table
+    place: 15
+    utility: 2
+    isblock: 1
+    brktme: 0.82
+    icon: {fileID: 21300000, guid: 5ccc56f1ad4503342bfe3bfb23c0bea1, type: 3}
+    backfacetexture: 11
+    frontfacetexture: 11
+    topfacetexture: 43
+    bottomfacetexture: 10
+    leftfacetexture: 27
+    rightfacetexture: 27
+  - Name: furnace
+    place: 16
+    utility: 3
+    isblock: 1
+    brktme: 0.86
+    icon: {fileID: 21300000, guid: 5ccc56f1ad4503342bfe3bfb23c0bea1, type: 3}
+    backfacetexture: 56
+    frontfacetexture: 71
+    topfacetexture: 72
+    bottomfacetexture: 72
+    leftfacetexture: 56
+    rightfacetexture: 56
+  - Name: tulip
+    place: 17
+    utility: 4
+    isblock: 0
+    brktme: 0.23
+    icon: {fileID: 21300000, guid: 5ccc56f1ad4503342bfe3bfb23c0bea1, type: 3}
+    backfacetexture: 54
+    frontfacetexture: 54
+    topfacetexture: 54
+    bottomfacetexture: 54
+    leftfacetexture: 54
+    rightfacetexture: 54
+  - Name: grass
+    place: 18
+    utility: 4
+    isblock: 0
+    brktme: 0.2
+    icon: {fileID: 21300000, guid: 5ccc56f1ad4503342bfe3bfb23c0bea1, type: 3}
+    backfacetexture: 73
+    frontfacetexture: 73
+    topfacetexture: 73
+    bottomfacetexture: 73
+    leftfacetexture: 73
+    rightfacetexture: 73
   selectedSlot: 0
   lastX: 0
   lastY: 0
@@ -6927,6 +6993,100 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1418245182}
   m_CullTransparentMesh: 1
+--- !u!1 &1433545883
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1433545885}
+  - component: {fileID: 1433545884}
+  m_Layer: 0
+  m_Name: Directional Light (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &1433545884
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433545883}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 0
+  m_Shape: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &1433545885
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433545883}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.8452261, y: -0.12528037, z: 0.22647761, w: 0.46755278}
+  m_LocalPosition: {x: -956.3, y: -267.4344, z: 0}
+  m_LocalScale: {x: 1.6257409, y: 1.6257409, z: 1.6257408}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2032523344}
+  m_LocalEulerAnglesHint: {x: 122.1, y: -30, z: 0}
 --- !u!1 &1439969171
 GameObject:
   m_ObjectHideFlags: 0
@@ -7287,9 +7447,24 @@ MonoBehaviour:
     size: 3
     Recipe:
     - id: 8
-      size: 1
+      size: 2
+  - Name: table
+    id: 15
+    type: 0
+    size: 1
+    Recipe:
+    - id: 14
+      size: 25
+  - Name: furnace
+    id: 16
+    type: 1
+    size: 1
+    Recipe:
+    - id: 4
+      size: 25
   ind: 00000000000000000000
   sz: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  e: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
   options: 0
   itemcreated: 0
   itemcraft: 0
@@ -9227,7 +9402,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_Color: {r: 0.066037714, g: 0.066037714, b: 0.066037714, a: 0.392}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9920,6 +10095,7 @@ RectTransform:
   - {fileID: 1922894752}
   - {fileID: 2079963043}
   - {fileID: 1251438693}
+  - {fileID: 1433545885}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

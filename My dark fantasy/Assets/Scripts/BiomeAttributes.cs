@@ -13,6 +13,9 @@ public class BiomeAttributes : ScriptableObject
     public float weight;
     public float scale;
     public float offset;
+    public float lac;
+    public float per;
+    public float m;
     public float valley;
     public float multiplier;
     [Header("Fauna")]

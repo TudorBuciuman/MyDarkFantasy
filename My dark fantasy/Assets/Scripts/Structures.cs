@@ -6,16 +6,16 @@ public static class Structures
 {
     public static void MakeStructures(byte biome,Vector3 pos, Vector2 offset)
     {
-        /*
+        
         if (biome == 0)
             MakeCacti(pos, offset);
         else if (biome == 1)
             Water(pos);
         else if (biome > 1)
         {
-        */
+        
             MakeTrees(pos, offset);
-       // }
+        }
     }
     public static void MakeTrees(Vector3 pos, Vector2 offset)
     {

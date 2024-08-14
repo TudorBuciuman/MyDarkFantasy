@@ -5,12 +5,12 @@ using UnityEngine;
 public class MouseController : MonoBehaviour
 {
 
-    private float sensivity = 300;
+    private float sensivity = 400;
     public Transform orientation;
     public Toolbar toolbar;
     public float xrot = 0;
     public float yrot = 0;
-    void Update()
+    void FixedUpdate()
     {
         if(!toolbar.openedInv)
         Manage();   

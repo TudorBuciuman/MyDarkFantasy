@@ -8,14 +8,14 @@ using UnityEngine.EventSystems;
 public class CameraController : MonoBehaviour
 {
     public WorldManager wmanager;
-  
+    public Crafting craft;
     public Toolbar toolbar;
     public Transform cam;
     public float movementSpeed = 5f;
     public float sprintspeed = 8f;
     public float lookSpeed = 400f;
     public float smoothSpeed = 100.0f;
-    public float gravity = -9.8f;
+    public float gravity = -8f;
     public Transform orientation;
     public float speed = 50f;
     public float jump = 6f;
@@ -35,13 +35,14 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
+        // QualitySettings.vSyncCount = 1;
         Application.targetFrameRate = 60;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        controller.transform.position = new Vector3(12.0f,80f,4.0f);
+        controller.transform.position = new Vector3(12.0f,120f,4.0f);
     }
 
-    void Update()
+    private void FixedUpdate()
     {
         PlayerControll();
     }
@@ -49,7 +50,8 @@ public class CameraController : MonoBehaviour
     {
         if (!toolbar.escape)
         {
-            moveDirection.y -= gravity * Time.deltaTime;
+           // if(moveDirection.y>gravity)
+         //   moveDirection.y -= gravity * Time.deltaTime;
             if (!toolbar.openedInv)
             {
                 HandleMovement();
@@ -63,7 +65,7 @@ public class CameraController : MonoBehaviour
             CalculateVelocity();
             if (jumpQm)
                 Jump();
-            controller.Move(new Vector3(0,moveDirection.y,0)*Time.deltaTime * speed);
+            controller.Move(new Vector3(0,moveDirection.y,0)*Time.smoothDeltaTime * speed);
             Pos.text = ((int)transform.position.x + "  " + (int)transform.position.y + "  " + (int)transform.position.z);
         }
     }
@@ -81,18 +83,21 @@ public class CameraController : MonoBehaviour
             moveDirection.x = 0;
         if (sprint)
         {
-            controller.Move(moveDirection * Time.fixedDeltaTime * sprintspeed);
+            controller.Move(moveDirection * Time.deltaTime * sprintspeed);
         }
         else
-            controller.Move(moveDirection * Time.fixedDeltaTime * movementSpeed);
+            controller.Move(moveDirection * Time.deltaTime * movementSpeed);
+
             verticalMomentum += Time.fixedDeltaTime * gravity;
-        moveDirection += Vector3.up * verticalMomentum * Time.fixedDeltaTime;
+        moveDirection += Vector3.up * verticalMomentum * Time.deltaTime;
         if (moveDirection.y < 0)
         {
             moveDirection.y = checkDownSpeed(moveDirection.y);
         }
         else if (moveDirection.y > 0)
             moveDirection.y = checkUpSpeed(moveDirection.y);
+        if(moveDirection.y==0)
+            verticalMomentum = 0;
     }
     void Jump()
     {
@@ -134,8 +139,8 @@ public class CameraController : MonoBehaviour
         get
         {
             if (
-                wmanager.IsBlock(transform.position.x, transform.position.y, transform.position.z + 0.5f) ||
-                wmanager.IsBlock(transform.position.x, transform.position.y - 1, transform.position.z + 0.5f)
+                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y, transform.position.z + 0.5f)].isblock ||
+                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y - 1, transform.position.z + 0.5f)].isblock
                 )
                 return true;
             return false;
@@ -148,8 +153,8 @@ public class CameraController : MonoBehaviour
         get
         {
             if (
-                wmanager.IsBlock(transform.position.x, transform.position.y, transform.position.z-0.5f ) ||
-                wmanager.IsBlock(transform.position.x, transform.position.y - 1, transform.position.z -0.5f)
+                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y, transform.position.z - 0.5f)].isblock ||
+                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y - 1, transform.position.z - 0.5f)].isblock
                 )
                 return true;
                 return false;
@@ -162,8 +167,8 @@ public class CameraController : MonoBehaviour
         get
         {
             if (
-                wmanager.IsBlock(transform.position.x -0.5f, transform.position.y, transform.position.z) ||
-                wmanager.IsBlock(transform.position.x -0.5f, transform.position.y - 1f, transform.position.z)
+                wmanager.blockTypes[wmanager.Block(transform.position.x - 0.5f, transform.position.y, transform.position.z)].isblock ||
+                wmanager.blockTypes[wmanager.Block(transform.position.x - 0.5f, transform.position.y - 1f, transform.position.z)].isblock
                 )
                 return true;
             return false;
@@ -176,8 +181,8 @@ public class CameraController : MonoBehaviour
         get
         {
             if (
-                wmanager.IsBlock(transform.position.x + 0.5f, transform.position.y, transform.position.z) ||
-                wmanager.IsBlock(transform.position.x + 0.5f, transform.position.y - 1, transform.position.z)
+                wmanager.blockTypes[wmanager.Block(transform.position.x + 0.5f, transform.position.y, transform.position.z)].isblock ||
+                wmanager.blockTypes[wmanager.Block(transform.position.x + 0.5f, transform.position.y - 1, transform.position.z)].isblock
                 )
                 return true;
             return false;
@@ -188,10 +193,10 @@ public class CameraController : MonoBehaviour
     {
 
         if (
-            wmanager.IsBlock(transform.position.x - 0.3f, transform.position.y + downSpeed-1, transform.position.z - 0.3f) ||
-            wmanager.IsBlock(transform.position.x + 0.3f, transform.position.y + downSpeed-1, transform.position.z - 0.3f) ||
-            wmanager.IsBlock(transform.position.x + 0.3f, transform.position.y + downSpeed-1, transform.position.z + 0.3f) ||
-            wmanager.IsBlock(transform.position.x - 0.3f, transform.position.y + downSpeed-1, transform.position.z + 0.3f)
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + downSpeed-1, transform.position.z - 0.3f)].isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + downSpeed - 1, transform.position.z - 0.3f)].isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + downSpeed - 1, transform.position.z + 0.3f)].isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + downSpeed - 1, transform.position.z + 0.3f)].isblock 
            )
         {
             grounded = true;
@@ -210,10 +215,10 @@ public class CameraController : MonoBehaviour
     {
 
         if (
-            wmanager.IsBlock(transform.position.x - 0.3f, transform.position.y + 1f+upSpeed, transform.position.z - 0.3f) ||
-            wmanager.IsBlock(transform.position.x + 0.3f, transform.position.y + 1f+upSpeed, transform.position.z - 0.3f) ||
-            wmanager.IsBlock(transform.position.x + 0.3f, transform.position.y + 1f+upSpeed, transform.position.z + 0.3f) ||
-            wmanager.IsBlock(transform.position.x - 0.3f, transform.position.y + 1f+upSpeed, transform.position.z + 0.3f)
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 1f + upSpeed, transform.position.z - 0.3f)].isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 1f + upSpeed, transform.position.z - 0.3f)].isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 1f + upSpeed, transform.position.z + 0.3f)].isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 1f + upSpeed, transform.position.z + 0.3f)].isblock
            )
         {
 
@@ -301,9 +306,9 @@ public class CameraController : MonoBehaviour
             box.gameObject.SetActive(false);
         }
         //right click
-        if (Input.GetMouseButtonDown(1) && time <= 0)
+        if (Input.GetMouseButton(1) && time<=0)
         {
-            if (toolbar.item[0, toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility == 0)
+            if (toolbar.item[0, toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility !=1)
             {
                 float step = 0.1f;
                 Vector3 lastPos = new Vector3();
@@ -318,6 +323,34 @@ public class CameraController : MonoBehaviour
                             wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), toolbar.item[0, toolbar.slothIndex]);
                             toolbar.UpdateAnItem(toolbar.slothIndex);
                         }
+                        break;
+                    }
+                    lastPos = pos;
+                    step += 0.2f;
+                }
+            }
+            else
+            {
+                float step = 0.1f;
+                Vector3 lastPos = new Vector3();
+                while (step <= 5)
+                {
+                    Vector3 pos = cam.position + (cam.forward * step);
+                    if (wmanager.IsBlock(pos.x, pos.y, pos.z))
+                    {
+                        if (wmanager.blockTypes[wmanager.Block(pos.x,pos.y,pos.z)].utility>=2)
+                        {
+                            switch(wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility)
+                            {
+                                case 2: craft.CraftingTable();
+                                    break;
+                                case 3: craft.Furnace();
+                                    break;
+                                case 4: craft.BlastFurnace();
+                                    break;
+                            }
+                       }
+                        time = 0.2f;
                         break;
                     }
                     lastPos = pos;

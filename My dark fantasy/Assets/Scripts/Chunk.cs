@@ -4,51 +4,70 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 public class Chunk
 {
-    public byte[,,] Voxels = new byte[16, 96, 16];
-    private ChunkCoord Coord;
+    public byte[,,] Voxels = new byte[16, 160, 16];
+    private readonly ChunkCoord Coord;
     public BiomeAttributes[,] biome;
     public byte[,] biom;
     public Lode lode;
+    public byte maxheight = 4;
     public bool mademesh = false;
     public bool ready = false;
     public WorldManager world;
     public GameObject chunkObject;
-    public GameObject obj;
+    public GameObject child1,child2,child3,child4,child5=null,child6=null;
     public System.Random random;
     public Mesh mesh;
     public bool start=false;
     public int seed = 3345;
     Vector2 Offset;
     Vector3 offset;
-    byte[,] height = new byte[16, 16];
+    readonly byte[,] height = new byte[16, 16];
     public bool strmade=false;
-    List<Vector3> vertices = new List<Vector3>(20000);
-    List<int> triangles = new List<int>(30000);
-    List<Vector2> uv = new List<Vector2>(20000);
-    Dictionary<Vector3, int> vertexDict = new Dictionary<Vector3, int>();
+    readonly List<Vector3> vertices = new(20000);
+    readonly List<int> triangles = new(30000);
+    readonly List<Vector2> uv = new(20000);
+    readonly Dictionary<Vector3, int> vertexDict = new();
 
 
-    public Dictionary<Vector3Int, Chunk> chunks = new Dictionary<Vector3Int, Chunk>();
     public Chunk(ChunkCoord coord, WorldManager wmanager)
     {
         Coord = coord;
         Coord.x -= 100;
         Coord.y -= 100;
+        chunkObject = new GameObject("Chunk " + (Coord.x).ToString() + " " + (Coord.y).ToString());
+        chunkObject.transform.position = new Vector3(Coord.x * 16, 0f, Coord.y * 16);
+        child1 = new GameObject("1", typeof(MeshFilter), typeof(MeshRenderer));
+        child1.transform.position = new Vector3(Coord.x * 16, 0f, Coord.y * 16);
+        child2 = new GameObject("2", typeof(MeshFilter), typeof(MeshRenderer));
+        child2.transform.position = new Vector3(Coord.x * 16, 0f, Coord.y * 16);
+        child3 = new GameObject("3", typeof(MeshFilter), typeof(MeshRenderer));
+        child3.transform.position = new Vector3(Coord.x * 16, 0f, Coord.y * 16);
+        child4 = new GameObject("4", typeof(MeshFilter), typeof(MeshRenderer));
+        child4.transform.position = new Vector3(Coord.x * 16, 0f, Coord.y * 16);
+        child1.transform.SetParent(chunkObject.transform);
+        child2.transform.SetParent(chunkObject.transform);
+        child3.transform.SetParent(chunkObject.transform);
+        child4.transform.SetParent(chunkObject.transform);
+
+        Material material = wmanager.material;
+        child1.GetComponent<MeshRenderer>().material = material;
+        child2.GetComponent<MeshRenderer>().material = material;
+        child3.GetComponent<MeshRenderer>().material = material;
+        child4.GetComponent<MeshRenderer>().material = material;
+        seed =ChunkSerializer.seed;
+        
         random = new System.Random(seed);
         Offset = new Vector2(random.Next(-100000, 100000), random.Next(-100000, 100000));
         offset = new Vector3(random.Next(-100000, 100000), random.Next(-100000, 100000), random.Next(-100000, 100000));
         world = wmanager;
         biome = new BiomeAttributes[16, 16];
         biom = new byte[16, 16];
-        chunkObject = new GameObject("Chunk " + (Coord.x).ToString() + " " + (Coord.y).ToString(), typeof(MeshFilter), typeof(MeshRenderer));
-        chunkObject.transform.position = new Vector3(Coord.x * 16, 0f, Coord.y * 16);
-        Material material = wmanager.material;
-        chunkObject.GetComponent<MeshRenderer>().material = material;
-        
     }
     public void MakeTerrain()
     {
@@ -67,58 +86,185 @@ public class Chunk
                     SetBlock(x, i, z, biome[x, z].middleblock);
 
                 SetBlock(x, y, z, biome[x, z].topblock);
-
+                for (int i = y + 1; i < 62; i++)
+                    SetBlock(x, i, z, 11);
             }
         }
+        SetBlock(0, (byte)heightm[0,2]+1, 2, 17);
+        SetBlock(5, (byte)heightm[5,3]+1, 3, 18);
+    }
+    public float noise(int x,int y)
+    {
+        return OpenSimplex2S.Noise2_ImproveX(seed, x, y);
+    }
+    public float CombinedNoise(float x, float z, int octaves, float persistence, float lacunarity)
+    {
+        float total = 0;
+        float frequency = 1f;
+        float amplitude = 1;
+        float maxValue = 0;  
+        for (int i = 0; i < octaves; i++)
+        {
+            float noiseValue = Mathf.PerlinNoise(0.01f*(x + Offset.x) * frequency,0.01f*(z + Offset.y) * frequency);
+            total += noiseValue * amplitude;
+
+            maxValue += amplitude;
+
+            amplitude *= persistence; 
+            frequency *= lacunarity;
+        }
+        
+        return total / maxValue; 
     }
     public float[,] generateHeightMap()
     {
         float[,] heightMap = new float[16, 16];
-        float[,] valleyMap = new float[16, 16];
-        float[,] humidityMap = new float[16, 16];
-
-
         for (int i = 0; i < 16; i++)
         {
-            for (int j = 0; j < 16; j++)
-            {
-                float heightValue = PerlinNoise(i, j, 2, 0.5f, 2.0f);
-                float valley = PerlinNoise((Coord.x + 100) * 16 + 1000+i, (Coord.y + 100) *16 + 1000+j, 10, 1f, 2.0f)-0.1f;
+            for(int j=0; j<16; j++) { 
+            int index = 0, l = 0;
+                float worldX = Coord.x * 16 + i;
+                float worldZ = Coord.y * 16 + j;
+                float erosion = CombinedNoise(worldX, worldZ,4,0.01f,2f)-0.5f;
+                float valley=CombinedNoise(worldX,worldZ,4,0.1f,2.6f)-0.5f;
+                float continentalness = CombinedNoise(worldX , worldZ , 4, 0.1f, 2f);
+                float height=60;
 
-                heightMap[i, j] = heightValue*5;
-                valleyMap[i, j] = valley*10;
-                float strong=0, medheight = 0;
-                int index=0,l=0;
-                for (byte p = 0; p < world.Biome.Length; p++)
-                {
-                    
-                    float weight = Noise.Get2DNoise(i + (Coord.x + 100)*16, j + (Coord.y + 100) * 16, new Vector2(world.Biome[p].offset, Offset.y), world.Biome[p].scale);
-                    if (weight > strong)
-                    {
-                        strong = weight;
-                        index = p;
-                    }
-                    if (weight > 0)
-                    {
-                        medheight += weight*world.Biome[p].multiplier;
-                        l++;
-                    }
-                }
+                if (continentalness < 0.3f)
+                    height += 20 * continentalness;
+                else if (continentalness < 0.6)
+                    height += 25 * continentalness;
+                else if (continentalness < 0.62)
+                    height += 27 * continentalness;
+                else if (continentalness < 0.65)
+                    height += 29 * continentalness;
+                else if (continentalness < 0.68)
+                    height += 32 * continentalness;
+                else if (continentalness < 0.7)
+                    height += 35 * continentalness;
+                else if (continentalness < 0.72)
+                    height += 37 * continentalness;
+                else if (continentalness < 0.75)
+                    height += 39 * continentalness;
+                else if (continentalness < 0.78)
+                    height += 41 * continentalness;
+                else if (continentalness < 0.8)
+                    height += 44 * continentalness;
+                else if (continentalness < 0.83)
+                    height += 46 * continentalness;
+                else if (continentalness < 0.85)
+                    height += 48 * continentalness;
+                else if (continentalness < 0.87)
+                    height += 50 * continentalness;
+                else if (continentalness < 0.90)
+                    height += 52 * continentalness;
+                else if (continentalness < 0.93)
+                    height += 55 * continentalness;
+                else if (continentalness < 0.95)
+                    height += 57 * continentalness;
+                else if (continentalness < 0.98)
+                    height += 60 * continentalness;
+                else
+                    height += 64 * continentalness;
+                
+                if (valley == 0)
+                    ;
+                else if (valley < (-0.4f))
+                    height =60- valley * 45;
+                else if (valley < -0.3)
+                    height += valley * 30;
+                else if (valley < -0.2)
+                    height += valley * 20;
+                else if (valley < -0.1f)
+                    height += valley * 12;
+                else if (valley < 0.1f)
+                    height += 3 * valley;
+                else if (valley < 0.2)
+                    height += 14 * valley;
+                else if (valley < 0.25)
+                    height += 17 * valley;
+                else if (valley < 0.3)
+                    height += 20 * valley;
+                else if (valley < 0.35)
+                    height += 25 * valley;
+                else if (valley < 0.4)
+                    height += 30 * valley;
+                else if (valley < 0.45)
+                    height += 35 * valley;
+                else if (valley < 0.5)
+                    height += 40 * valley;
+                /*
+                if(erosion<-0.4)
+                    height -=60*erosion;
+                else if(erosion<-0.35)
+                    height -=50*erosion;
+                else if(erosion<-0.3)
+                    height -=40*erosion;
+                else if(erosion<-0.25)
+                    height -=30*erosion;
+                else if(erosion<-0.2)
+                    height -=25*erosion;
+                else if(erosion<-0.1)
+                    height-=30*erosion;
+                else if (erosion < 0.1)
+                    height += 10 * erosion;
+                else if (erosion < 0.3f)
+                    height += 10 * erosion;
+                else if (erosion < 0.5)
+                    height += 5*erosion;
+                else if (erosion < 0.6)
+                    height += erosion*3;
+                else if (erosion < 0.8)
+                    height += erosion * 2;
+                else
+                    height += 1;
+                */
+                heightMap[i, j] =height;
+                if (continentalness < 0.3 && valley < 0.3)
+                    index = 1;
+                else if (continentalness < 0.4 && erosion > 0.5)
+                    index = 0;
+                else if (continentalness < 0.5 && valley < 0.3)
+                    index = 2;
+                else if (continentalness < 0.5 && valley < 0.5)
+                    index = 3;
+                else if (continentalness < 0.6 && erosion > 0.5)
+                    index = 4;
+                else if(continentalness<0.6 && valley<0.3 && erosion>0.6)
+                    index = 5;
+                else if(continentalness<0.7 && erosion>0.7)
+                    index= 6;
+                else
+                    index = 7;
+            //    Debug.Log(continentalness + " " + erosion + " " + valley);
 
                 biome[i, j] = world.Biome[index];
-                medheight = (medheight / l)*2;
-                heightMap[i, j] += valley*20;
-                heightMap[i,j]*=(medheight);
-                heightMap[i, j] -= 130;
-                if (heightMap[i, j] < 0)
-                    heightMap[i, j] += 20;
-                if (heightMap[i, j] > 90)
-                    heightMap[i, j] = 80;
+
+
+                if (heightMap[i, j] <= 0)
+                heightMap[i, j] += 20;
+            if (heightMap[i, j] > 127)
+            {
+                if (heightMap[i, j] > 160)
+                {
+                    maxheight = 6;
+
+                }
+
+                else
+                {
+                    maxheight = 5;
+                }
             }
         }
-
-
+        }
         return heightMap;
+    }
+    private float BilinearInterpolate(float topLeft, float topRight, float bottomLeft, float bottomRight, float tx, float ty)
+    {
+        float top = Mathf.Lerp(topLeft, topRight, tx);
+        float bottom = Mathf.Lerp(bottomLeft, bottomRight, tx);
+        return Mathf.Lerp(top, bottom, ty);
     }
 
     public int[] permutation;
@@ -190,7 +336,9 @@ public class Chunk
     }
     public void Make3d()
     {
+
         strmade = true;
+        
         PerlinNoise3D();
         
         for (int x = 0; x < 16; x++)
@@ -225,7 +373,9 @@ public class Chunk
                 }
             }
         }
-        
+            ChunkSerializer.loadedChunks[(Coord.x, Coord.y)] = Voxels;
+       
+        /*
         for (int x = 0; x < 16; x++)
         {
             for (int z = 0; z < 16; z++)
@@ -238,29 +388,35 @@ public class Chunk
                 }
             }
         }
-
+        */
     }
-    public void FinishMesh()
-    {
-        
-        mademesh = true;
-        mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.uv = uv.ToArray();
-        mesh.RecalculateNormals();
-        chunkObject.GetComponent<MeshFilter>().mesh = mesh;
-        ready = true;
-
-    }
-    
     public void CreateMesh()
     {
-            mesh=new Mesh();
+        mademesh = true;
+
+        if (maxheight==6 && child6== null)
+        {
+            child6 = new GameObject("6", typeof(MeshFilter), typeof(MeshRenderer));
+            child6.transform.SetParent(chunkObject.transform);
+            child6.GetComponent<MeshRenderer>().material = world.material;
+            child6.transform.position = new Vector3(Coord.x * 16, 0f, Coord.y * 16);
+        }
+        if (maxheight>=5 && child5== null)
+        {
+            Debug.Log("da");
+            child5 = new GameObject("5", typeof(MeshFilter), typeof(MeshRenderer));
+            child5.transform.SetParent(chunkObject.transform);
+            child5.GetComponent<MeshRenderer>().material = world.material;
+            child5.transform.position = new Vector3(Coord.x * 16, 0f, Coord.y * 16);
+        }
+        for (int i = 0; i < maxheight; i++)
+        {
+            mesh = new Mesh();
             triangles.Clear();
             vertices.Clear(); uv.Clear();
             for (int x = 0; x < 16; x++)
             {
-                for (int y = 0; y < 96; y++)
+                for (int y = i*32; y <(i+1)*32; y++)
                 {
                     for (int z = 0; z < 16; z++)
                     {
@@ -271,18 +427,105 @@ public class Chunk
                         {
                             continue;
                         }
-                        if (IsVoxelAir(x, y, z + 1)) AddFace(vertices, 0, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.forward);
-                        if (IsVoxelAir(x, y, z - 1)) AddFace(vertices, 1, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.back);
-                        if (IsVoxelAir(x + 1, y, z)) AddFace(vertices, 2, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.right);
-                        if (IsVoxelAir(x - 1, y, z)) AddFace(vertices, 3, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.left);
-                        if (IsVoxelAir(x, y + 1, z)) AddFace(vertices, 4, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.up);
-                        if (IsVoxelAir(x, y - 1, z)) AddFace(vertices, 5, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.down);
-
+                        if (world.blockTypes[voxel].isblock)
+                        {
+                            if (IsVoxelAir(x, y, z + 1)) AddFace(vertices, 0, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.forward);
+                            if (IsVoxelAir(x, y, z - 1)) AddFace(vertices, 1, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.back);
+                            if (IsVoxelAir(x + 1, y, z)) AddFace(vertices, 2, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.right);
+                            if (IsVoxelAir(x - 1, y, z)) AddFace(vertices, 3, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.left);
+                            if (IsVoxelAir(x, y + 1, z)) AddFace(vertices, 4, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.up);
+                            if (IsVoxelAir(x, y - 1, z)) AddFace(vertices, 5, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.down);
+                        }
+                        else
+                        {
+                            MakeFlowers(vertices, triangles, uv, vertexDict, voxel, new Vector3(x, y, z));
+                        }
                     }
                 }
             }
-        world.unmeshedchk.Enqueue(Coord);
+            mesh.vertices = vertices.ToArray();
+            mesh.triangles = triangles.ToArray();
+            mesh.uv = uv.ToArray();
+            mesh.RecalculateNormals();
+            if(i==0)
+                child1.GetComponent<MeshFilter>().mesh = mesh;
+            else if(i==1)
+                child2.GetComponent<MeshFilter>().mesh = mesh;
+            else if(i==2)
+                child3.GetComponent<MeshFilter>().mesh = mesh;
+            else if(i==3)
+                child4.GetComponent<MeshFilter>().mesh = mesh;
+            else if(i==4)
+                child5.GetComponent<MeshFilter>().mesh = mesh;
+            else if(i==5)
+                child6.GetComponent<MeshFilter>().mesh = mesh;
+        }
+        if (!WorldManager.chunkstosave.Contains(Coord))
+            WorldManager.chunkstosave.Add(Coord);
+    }
+    void MakeFlowers(List<Vector3> vertices, List<int> triangles, List<Vector2> uv, Dictionary<Vector3, int> vertexDict, byte voxel, Vector3 position)
+    {
+        if (IsVoxelAir((int)position.x, (int)position.y - 1, (int)position.z))
+        {
+            SetBlock((int)position.x, (int)position.y, (int)position.z, 0);
+        }
+        else
+        {
+            Vector3 g = new ();
+            for (int i = 0; i < 4; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        {
+                            g = Vector3.forward;
+                            break;
+                        }
+                    case 1:
+                        {
+                            g = Vector3.back;
+                            break;
+                        }
+                    case 2:
+                        {
+                            g = Vector3.right;
+                            break;
+                        }
+                    case 3:
+                        {
+                            g = Vector3.left;
+                            break;
+                        }
+                }
 
+                Quaternion rotation = Quaternion.AngleAxis(45f, Vector3.up);
+                Vector3 right = g;
+                Vector3 up = Vector3.up;
+                right = rotation * right;
+                int vertexIndex = vertices.Count;
+
+                vertices.Add(position - right * 0.5f - up * 0.5f);
+                vertices.Add(position + right * 0.5f - up * 0.5f);
+                vertices.Add(position + right * 0.5f + up * 0.5f);
+                vertices.Add(position - right * 0.5f + up * 0.5f);
+
+                triangles.Add(vertexIndex);
+                triangles.Add(vertexIndex + 1);
+                triangles.Add(vertexIndex + 2);
+                triangles.Add(vertexIndex);
+                triangles.Add(vertexIndex + 2);
+                triangles.Add(vertexIndex + 3);
+
+                float uvSize = 0.0625f;
+                byte bid = (byte)world.blockTypes[voxel].GetTextureID(0);
+
+                Vector2 uvBase = GetUVForVoxelType(bid);
+                uv.Add(uvBase + new Vector2(0, 0) * uvSize);
+                uv.Add(uvBase + new Vector2(1, 0) * uvSize);
+                uv.Add(uvBase + new Vector2(1, 1) * uvSize);
+                uv.Add(uvBase + new Vector2(0, 1) * uvSize);
+            }
+        }
     }
     void AddFace(List<Vector3> vertices, byte face, List<int> triangles, List<Vector2> uv, Dictionary<Vector3, int> vertexDict, byte voxel, Vector3 position, Vector3 direction)
     {
@@ -324,37 +567,40 @@ public class Chunk
     }
     bool IsVoxelAir(int x, int y, int z)
     {
-        if (y < 0 ||y >=96 )
-            return true;
-        if((x>=0 && x<16) && z==16)
+        if (y < 0 ||y >=159 )
+            return false;
+        //performanta
+        if (x == 16 && z >= 0 && z < 16)
+            return !world.blockTypes[WorldManager.chunks[Coord.x + 101, Coord.y + 100].Voxels[0, y, z]].isblock;
+        if (x == 16 && z == 16)
+            return !world.blockTypes[WorldManager.chunks[Coord.x + 101, Coord.y + 101].Voxels[0, y, 0]].isblock;
+        if ((x>=0 && x<16) && z==16)
         {
-            return WorldManager.chunks[Coord.x+100,Coord.y+101].Voxels[15,y,15]==0;
+            return !world.blockTypes[WorldManager.chunks[Coord.x+100,Coord.y+101].Voxels[x,y,0]].isblock;
         }
         if(x==16 && z < 0)
         {
-            return WorldManager.chunks[Coord.x+101, Coord.y +99].Voxels[0, y, 15] == 0;
+            return !world.blockTypes[WorldManager.chunks[Coord.x+101, Coord.y +99].Voxels[0, y, 15]].isblock;
         }
         if (x<0 && z < 0)
         {
-            return WorldManager.chunks[Coord.x + 99, Coord.y +99].Voxels[15, y, 15] == 0;
+            return !world.blockTypes[WorldManager.chunks[Coord.x + 99, Coord.y + 99].Voxels[15, y, 15]].isblock;
         }
         if ((x >= 0 && x<16) && z < 0)
         {
-            return WorldManager.chunks[Coord.x +100, Coord.y+99].Voxels[x, y, 15] == 0;
+            
+            return !world.blockTypes[WorldManager.chunks[Coord.x +100, Coord.y+99].Voxels[x, y, 15]].isblock;
         }
         if (x < 0 && (z >= 0 && z<16))
         {
-            return WorldManager.chunks[Coord.x +99, Coord.y+100].Voxels[15, y, z] == 0;
+            return !world.blockTypes[WorldManager.chunks[Coord.x +99, Coord.y+100].Voxels[15, y, z]].isblock;
         }
         if (x < 0 && z==16)
         {
-            return WorldManager.chunks[Coord.x + 99, Coord.y+101].Voxels[15, y, 0] == 0;
+            return !world.blockTypes[WorldManager.chunks[Coord.x + 99, Coord.y + 101].Voxels[15, y, 0]].isblock;
         }
-        if(x==16 && z>=0 && z<16)
-            return WorldManager.chunks[Coord.x + 101, Coord.y + 100].Voxels[0, y, z] == 0;
-        if (x==16 && z==16)
-            return WorldManager.chunks[Coord.x + 101, Coord.y + 101].Voxels[0, y, 0] == 0;
-        return (Voxels[x, y, z]==0);
+        
+        return (!world.blockTypes[Voxels[x, y, z]].isblock);
     }
 
 
@@ -405,10 +651,12 @@ public class ChunkCoord
 }
 public static class Noise
 {
+    
     public static float Get2DNoise(float x, float z, Vector2 offset, float scale)
     {
-        return Mathf.PerlinNoise((x+0.1f)/(16*scale+0),(z+0.1f)/(16*scale+0));    
+        return Mathf.PerlinNoise((x + 0.2f+offset.x) / (16 * (scale)), (z +0.3f+offset.x) / ((16 * scale )-offset.x- offset.y));
     }
+    
     public static float GetPerlin3D(Vector3 position, float X, float Y, float Z, float scale, float treshold)
     {
         float x = (position.x + X + 0.1f) * scale;
@@ -432,5 +680,209 @@ public static class Noise
 
         return Mathf.PerlinNoise(position.x / 16 * scale, position.y / 16 * scale) > threshold;
 
+    }
+    
+}
+public static class OpenSimplex2S
+{
+    /*Codul sursa este inspirat dupa codul de la https://github.com/KdotJPG/OpenSimplex2/tree/master/csharp
+     * The calculation of the biome at position (x,y) is independent of calculations at any other position. 
+     * This local calculation results in two nice properties: it can be calculated in parallel, and it can be used for infinite terrain.
+     * We can generate any part of the map without generating (or having to store) the whole thing.
+     */
+    private static readonly float[] GRADIENTS_2D;
+    private const long PRIME_X = 0x5205402B9270C86FL;
+    private const long PRIME_Y = 0x598CD327003817B5L;
+    private const long HASH_MULTIPLIER = 0x53A3F72DEEC546F5L;
+
+    private const double ROOT2OVER2 = 0.7071067811865476;
+    private const double SKEW_2D = 0.366025403784439;
+    private const double UNSKEW_2D = -0.21132486540518713;
+
+    private const int N_GRADS_2D_EXPONENT = 7;
+    private const int N_GRADS_2D = 1 << N_GRADS_2D_EXPONENT;
+
+    private const double NORMALIZER_2D = 0.05481866495625118;
+
+    private const float RSQUARED_2D = 2.0f / 3.0f;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static float Grad(long seed, long xsvp, long ysvp, float dx, float dy)
+    {
+        long hash = seed ^ xsvp ^ ysvp;
+        hash *= HASH_MULTIPLIER;
+        hash ^= hash >> (64 - N_GRADS_2D_EXPONENT + 1);
+        int gi = (int)hash & ((N_GRADS_2D - 1) << 1);
+        return GRADIENTS_2D[gi | 0] * dx + GRADIENTS_2D[gi | 1] * dy;
+    }
+    static OpenSimplex2S()
+    {
+
+        GRADIENTS_2D = new float[N_GRADS_2D * 2];
+        float[] grad2 = {
+                 0.38268343236509f,   0.923879532511287f,
+                 0.923879532511287f,  0.38268343236509f,
+                 0.923879532511287f, -0.38268343236509f,
+                 0.38268343236509f,  -0.923879532511287f,
+                -0.38268343236509f,  -0.923879532511287f,
+                -0.923879532511287f, -0.38268343236509f,
+                -0.923879532511287f,  0.38268343236509f,
+                -0.38268343236509f,   0.923879532511287f,
+                //-------------------------------------//
+                 0.130526192220052f,  0.99144486137381f,
+                 0.608761429008721f,  0.793353340291235f,
+                 0.793353340291235f,  0.608761429008721f,
+                 0.99144486137381f,   0.130526192220051f,
+                 0.99144486137381f,  -0.130526192220051f,
+                 0.793353340291235f, -0.60876142900872f,
+                 0.608761429008721f, -0.793353340291235f,
+                 0.130526192220052f, -0.99144486137381f,
+                -0.130526192220052f, -0.99144486137381f,
+                -0.608761429008721f, -0.793353340291235f,
+                -0.793353340291235f, -0.608761429008721f,
+                -0.99144486137381f,  -0.130526192220052f,
+                -0.99144486137381f,   0.130526192220051f,
+                -0.793353340291235f,  0.608761429008721f,
+                -0.608761429008721f,  0.793353340291235f,
+                -0.130526192220052f,  0.99144486137381f,
+        };
+        for (int i = 0; i < grad2.Length; i++)
+        {
+            grad2[i] = (float)(grad2[i] / NORMALIZER_2D);
+        }
+        for (int i = 0, j = 0; i < GRADIENTS_2D.Length; i++, j++)
+        {
+            if (j == grad2.Length) j = 0;
+            GRADIENTS_2D[i] = grad2[j];
+        }
+    }
+
+    public static float Noise2_ImproveX(long seed, double x, double y)
+    {
+        double xx = x * ROOT2OVER2;
+        double yy = y * (ROOT2OVER2 * (1 + 2 * SKEW_2D));
+
+        return Noise2_UnskewedBase(seed, yy + xx, yy - xx);
+    }
+    private static int FastFloor(double x)
+    {
+        int xi = (int)x;
+        return x < xi ? xi - 1 : xi;
+    }
+    private static float Noise2_UnskewedBase(long seed, double xs, double ys)
+    {
+        // Get base points and offsets.
+        int xsb = FastFloor(xs), ysb = FastFloor(ys);
+        float xi = (float)(xs - xsb), yi = (float)(ys - ysb);
+
+        // Prime pre-multiplication for hash.
+        long xsbp = xsb * PRIME_X, ysbp = ysb * PRIME_Y;
+
+        // Unskew.
+        float t = (xi + yi) * (float)UNSKEW_2D;
+        float dx0 = xi + t, dy0 = yi + t;
+
+        // First vertex.
+        float a0 = RSQUARED_2D - dx0 * dx0 - dy0 * dy0;
+        float value = (a0 * a0) * (a0 * a0) * Grad(seed, xsbp, ysbp, dx0, dy0);
+
+        // Second vertex.
+        float a1 = (float)(2 * (1 + 2 * UNSKEW_2D) * (1 / UNSKEW_2D + 2)) * t + ((float)(-2 * (1 + 2 * UNSKEW_2D) * (1 + 2 * UNSKEW_2D)) + a0);
+        float dx1 = dx0 - (float)(1 + 2 * UNSKEW_2D);
+        float dy1 = dy0 - (float)(1 + 2 * UNSKEW_2D);
+        value += (a1 * a1) * (a1 * a1) * Grad(seed, xsbp + PRIME_X, ysbp + PRIME_Y, dx1, dy1);
+
+        // Third and fourth vertices.
+        // Nested conditionals were faster than compact bit logic/arithmetic.
+        float xmyi = xi - yi;
+        if (t < UNSKEW_2D)
+        {
+            if (xi + xmyi > 1)
+            {
+                float dx2 = dx0 - (float)(3 * UNSKEW_2D + 2);
+                float dy2 = dy0 - (float)(3 * UNSKEW_2D + 1);
+                float a2 = RSQUARED_2D - dx2 * dx2 - dy2 * dy2;
+                if (a2 > 0)
+                {
+                    value += (a2 * a2) * (a2 * a2) * Grad(seed, xsbp + (PRIME_X << 1), ysbp + PRIME_Y, dx2, dy2);
+                }
+            }
+            else
+            {
+                float dx2 = dx0 - (float)UNSKEW_2D;
+                float dy2 = dy0 - (float)(UNSKEW_2D + 1);
+                float a2 = RSQUARED_2D - dx2 * dx2 - dy2 * dy2;
+                if (a2 > 0)
+                {
+                    value += (a2 * a2) * (a2 * a2) * Grad(seed, xsbp, ysbp + PRIME_Y, dx2, dy2);
+                }
+            }
+
+            if (yi - xmyi > 1)
+            {
+                float dx3 = dx0 - (float)(3 * UNSKEW_2D + 1);
+                float dy3 = dy0 - (float)(3 * UNSKEW_2D + 2);
+                float a3 = RSQUARED_2D - dx3 * dx3 - dy3 * dy3;
+                if (a3 > 0)
+                {
+                    value += (a3 * a3) * (a3 * a3) * Grad(seed, xsbp + PRIME_X, ysbp + (PRIME_Y << 1), dx3, dy3);
+                }
+            }
+            else
+            {
+                float dx3 = dx0 - (float)(UNSKEW_2D + 1);
+                float dy3 = dy0 - (float)UNSKEW_2D;
+                float a3 = RSQUARED_2D - dx3 * dx3 - dy3 * dy3;
+                if (a3 > 0)
+                {
+                    value += (a3 * a3) * (a3 * a3) * Grad(seed, xsbp + PRIME_X, ysbp, dx3, dy3);
+                }
+            }
+        }
+        else
+        {
+            if (xi + xmyi < 0)
+            {
+                float dx2 = dx0 + (float)(1 + UNSKEW_2D);
+                float dy2 = dy0 + (float)UNSKEW_2D;
+                float a2 = RSQUARED_2D - dx2 * dx2 - dy2 * dy2;
+                if (a2 > 0)
+                {
+                    value += (a2 * a2) * (a2 * a2) * Grad(seed, xsbp - PRIME_X, ysbp, dx2, dy2);
+                }
+            }
+            else
+            {
+                float dx2 = dx0 - (float)(UNSKEW_2D + 1);
+                float dy2 = dy0 - (float)UNSKEW_2D;
+                float a2 = RSQUARED_2D - dx2 * dx2 - dy2 * dy2;
+                if (a2 > 0)
+                {
+                    value += (a2 * a2) * (a2 * a2) * Grad(seed, xsbp + PRIME_X, ysbp, dx2, dy2);
+                }
+            }
+
+            if (yi < xmyi)
+            {
+                float dx2 = dx0 + (float)UNSKEW_2D;
+                float dy2 = dy0 + (float)(UNSKEW_2D + 1);
+                float a2 = RSQUARED_2D - dx2 * dx2 - dy2 * dy2;
+                if (a2 > 0)
+                {
+                    value += (a2 * a2) * (a2 * a2) * Grad(seed, xsbp, ysbp - PRIME_Y, dx2, dy2);
+                }
+            }
+            else
+            {
+                float dx2 = dx0 - (float)UNSKEW_2D;
+                float dy2 = dy0 - (float)(UNSKEW_2D + 1);
+                float a2 = RSQUARED_2D - dx2 * dx2 - dy2 * dy2;
+                if (a2 > 0)
+                {
+                    value += (a2 * a2) * (a2 * a2) * Grad(seed, xsbp, ysbp + PRIME_Y, dx2, dy2);
+                }
+            }
+        }
+
+        return value;
     }
 }

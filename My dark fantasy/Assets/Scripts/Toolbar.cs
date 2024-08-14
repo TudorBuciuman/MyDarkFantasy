@@ -8,6 +8,7 @@ using System;
 using System.Threading;
 using UnityEngine.EventSystems;
 using UnityEditor.UIElements;
+using System.Linq;
 public class Toolbar : MonoBehaviour
 {
     public WorldManager World;
@@ -102,8 +103,6 @@ public class Toolbar : MonoBehaviour
                 }
                 else
                 {
-                    Cursor.lockState = CursorLockMode.None;
-                    Cursor.visible = true;
                     OpenInventory();
 
                 }
@@ -350,6 +349,8 @@ public class Toolbar : MonoBehaviour
     }
     public void OpenInventory()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         invimg[36].image.sprite= World.blockTypes[0].icon;
         invimg[37].image.gameObject.SetActive(true);
         invimg[36].image.gameObject.SetActive(true);
@@ -450,7 +451,7 @@ public class Toolbar : MonoBehaviour
             if (item[0, i] > 0)
             {
                 itemSlots[i].image.sprite = World.blockTypes[item[0, i]].icon;
-                if (World.blockTypes[item[0, i]].utility == 0)
+                if (World.blockTypes[item[0, i]].utility !=1)
                     itemSlots[i].num.text = itemsize[0, i].ToString();
                 else
                     itemSlots[i].num.text = null;
@@ -458,7 +459,7 @@ public class Toolbar : MonoBehaviour
             else 
             {
                 itemSlots[i].image.sprite = World.blockTypes[0].icon;
-                
+                itemSlots[i].num.text = null;
             }
         }
         lastitem = 255;
@@ -467,6 +468,12 @@ public class Toolbar : MonoBehaviour
     }
     public void CloseScene()
     {
+        Debug.Log(WorldManager.chunkstosave.Count);
+        for (int i = 0; i<WorldManager.chunkstosave.Count; i++)
+        {
+            ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
+        }
+        ChunkSerializer.loadedChunks.Clear();
         SceneManager.LoadScene(1);
     }
     public void UpdateInventory()
