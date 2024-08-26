@@ -1,15 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-
-public class CameraController : MonoBehaviour
+public class ControllerImput : MonoBehaviour
 {
     public WorldManager wmanager;
     public Crafting craft;
+    public itemsManager itemsManager;
+    public SoundsManager soundTrack;
     public Toolbar toolbar;
+
+    public GameObject Hud1;
+    public GameObject Hud2;
+    public GameObject Hud3;
     public Transform cam;
     public float movementSpeed = 5f;
     public float sprintspeed = 8f;
@@ -23,8 +29,10 @@ public class CameraController : MonoBehaviour
     public GameObject box;
 
     private bool grounded=true;
-    private Vector3 Position;
     private Vector3 moveDirection = Vector3.zero;
+
+    public  Quaternion Rotation;
+    public  Vector3 Posi=Vector3.zero;
     private float pozX = 0f;
     private float pozZ = 0f;
     private float verticalMomentum=0;
@@ -32,14 +40,45 @@ public class CameraController : MonoBehaviour
     private bool cansprint=false;
     private bool jumpQm = false;
     public Text Pos;
+    public float wtime=0,brktime=0;
 
     void Start()
     {
         // QualitySettings.vSyncCount = 1;
+        UiManager ui = new();
+        ui.ReadSet();
         Application.targetFrameRate = 60;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        controller.transform.position = new Vector3(12.0f,120f,4.0f);
+        if (ChunkSerializer.seed == null)
+        {
+            SceneManager.LoadScene(1);
+            return;
+        }
+        while (!ChunkSerializer.pret)
+            ;
+        if (ChunkSerializer.pos != Vector3.zero)
+        {
+            controller.enabled = false;
+            transform.position = ChunkSerializer.pos;
+            transform.rotation = ChunkSerializer.rot;
+        }
+        else
+        {
+            transform.position = new Vector3(0,80,0);
+        }
+        controller.enabled = true;
+        if (!UiManager.hud)
+        {
+            Debug.Log("why");
+            Hud1.SetActive(false);
+            Hud2.SetActive(false);
+            Hud3.GetComponent<Image>().color=Color.clear;
+        }
+        if (Toolbar.escape)
+        {
+            toolbar.Escape();
+        }
     }
 
     private void FixedUpdate()
@@ -48,7 +87,7 @@ public class CameraController : MonoBehaviour
     }
     public void PlayerControll()
     {
-        if (!toolbar.escape)
+        if (!Toolbar.escape)
         {
            // if(moveDirection.y>gravity)
          //   moveDirection.y -= gravity * Time.deltaTime;
@@ -68,6 +107,19 @@ public class CameraController : MonoBehaviour
             controller.Move(new Vector3(0,moveDirection.y,0)*Time.smoothDeltaTime * speed);
             Pos.text = ((int)transform.position.x + "  " + (int)transform.position.y + "  " + (int)transform.position.z);
         }
+        else if (Posi == Vector3.zero)
+        {
+            Rotation=transform.rotation;
+            Posi = transform.position;
+        }
+    }
+    public Vector3 playerPos()
+    {
+        return Posi;
+    }
+    public Quaternion playerRot()
+    {
+        return Rotation;
     }
     public ChunkCoord GetPosition()
     {
@@ -87,7 +139,7 @@ public class CameraController : MonoBehaviour
         }
         else
             controller.Move(moveDirection * Time.deltaTime * movementSpeed);
-
+        
             verticalMomentum += Time.fixedDeltaTime * gravity;
         moveDirection += Vector3.up * verticalMomentum * Time.deltaTime;
         if (moveDirection.y < 0)
@@ -98,6 +150,31 @@ public class CameraController : MonoBehaviour
             moveDirection.y = checkUpSpeed(moveDirection.y);
         if(moveDirection.y==0)
             verticalMomentum = 0;
+        if ((moveDirection.x != 0 || moveDirection.y != 0))
+        {
+            if (wtime <= 0 && grounded)
+            {
+                wtime = 1.2f;
+                soundTrack.Play(0);
+            }
+            else if (!grounded)
+            {
+                wtime = 0;
+                soundTrack.stop();
+            }
+        }
+        else
+        {
+            if (wtime>0)
+            {
+                wtime = 0;
+                soundTrack.stop();
+            }
+        }
+        if (wtime > 0)
+        {
+            wtime-=Time.fixedDeltaTime;
+        }
     }
     void Jump()
     {
@@ -111,10 +188,13 @@ public class CameraController : MonoBehaviour
     {
         pozX = Input.GetAxis("Horizontal");
         pozZ = Input.GetAxis("Vertical");
-        if(Input.GetKey(KeyCode.W))
-        cansprint = true;
+        
+        if (Input.GetKey(KeyCode.W))
+        {
+            cansprint = true;
+        }
         else
-        cansprint= false;
+            cansprint = false;
        
         if (cansprint && Input.GetKey(KeyCode.R))
         {
@@ -257,6 +337,12 @@ public class CameraController : MonoBehaviour
                     Vector3 pos = cam.position + (cam.forward * step);
                     if (wmanager.IsBlock(pos.x, pos.y, pos.z))
                     {
+                        if (brktime <= 0)
+                        {
+                            soundTrack.Play(1);
+
+                            brktime = 0.3f;
+                        }
                         int g= Mathf.RoundToInt(pos.x), h= Mathf.RoundToInt(pos.z);
                         int s=g, k=h;
                         if (g < 0 && g % 16 != 0)
@@ -285,9 +371,11 @@ public class CameraController : MonoBehaviour
                         }
                         if (holdtme >= wmanager.blockTypes[WorldManager.chunks[(s / 16+100), (k/16+100)].Voxels[g%16, Mathf.RoundToInt(pos.y), h%16]].brktme)
                         {
-                            wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), 0);
                             box.gameObject.SetActive(false);
-                            breac=false;
+                            itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, pos);
+                            wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), 0);
+
+                            breac = false;
                             holdtme = 0;
                         }
 
@@ -301,9 +389,19 @@ public class CameraController : MonoBehaviour
         else if (breac)
         {
             breac = false;
+            if (brktime > 0)
+            {
+                soundTrack.stop();
+            }
+            brktime = 0;
             holdtme=0;
             a --;
             box.gameObject.SetActive(false);
+            soundTrack.stop();
+        }
+        if(brktime > 0)
+        {
+            brktime-=Time.deltaTime;
         }
         //right click
         if (Input.GetMouseButton(1) && time<=0)
@@ -342,11 +440,11 @@ public class CameraController : MonoBehaviour
                         {
                             switch(wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility)
                             {
-                                case 2: craft.CraftingTable();
+                                case 2: toolbar.OpenInventory(1);
                                     break;
-                                case 3: craft.Furnace();
+                                case 3: toolbar.OpenInventory(2);
                                     break;
-                                case 4: craft.BlastFurnace();
+                                case 4: toolbar.OpenInventory(3);
                                     break;
                             }
                        }

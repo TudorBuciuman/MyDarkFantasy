@@ -4,6 +4,6 @@ using UnityEngine;
 
 public static class Voxeldata
 {
-    public static readonly int NumberOfChunks=2;
-    public static readonly int SizeOfWorld=200;
+    public static int NumberOfChunks=3;
+    public static int SizeOfWorld=200;
 }

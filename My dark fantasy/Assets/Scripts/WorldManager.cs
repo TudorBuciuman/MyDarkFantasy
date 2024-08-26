@@ -5,11 +5,12 @@ using System.Drawing;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading;
+using UnityEngine.SceneManagement;
 
 
 public class WorldManager : MonoBehaviour
 {
-    public CameraController CImp;
+    public ControllerImput CImp;
     public Time time;
     public static float dayLength = 600f;
     public float currenttime;
@@ -28,8 +29,17 @@ public class WorldManager : MonoBehaviour
     public static Chunk[,] chunks = new Chunk[Voxeldata.SizeOfWorld, Voxeldata.SizeOfWorld];
     private void Start()
     {
-        GenerateWorld();
-        currenttime = 300;
+        if (ChunkSerializer.seed != null)
+        {
+            GenerateWorld();
+            currenttime = 300;
+
+        }
+        else
+        {
+            SceneManager.LoadScene(1);
+            Debug.Log("esti prost");
+        }
     }
     private void FixedUpdate()
     {
@@ -84,8 +94,9 @@ public class WorldManager : MonoBehaviour
         }
         else
         {
-            chunks[x, y].Voxels=ChunkSerializer.LoadChunk(x-100, y-100);
-            ChunkSerializer.SaveChunk(x-100, y-100);
+            Thread thread = new(() => ChunkSerializer.LoadChunk(x - 100, y - 100));
+            thread.Start();
+            //ChunkSerializer.SaveChunk(x-100, y-100);
         }
 
     }
@@ -371,7 +382,7 @@ public class WorldManager : MonoBehaviour
             }
         }
         
-        for (int i = 0; i < notactivechunks.Count; i++)
+        for (int i = 0; i < notactivechunks.Count && i<2; i++)
         {            
             SaveChunk(notactivechunks[i].x-100, notactivechunks[i].y-100);
             Destroy(chunks[notactivechunks[i].x, notactivechunks[i].y].chunkObject);

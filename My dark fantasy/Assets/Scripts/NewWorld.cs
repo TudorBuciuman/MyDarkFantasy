@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -25,6 +22,7 @@ public class NewWorld : MonoBehaviour
     public GameObject worldParent;
     public void Start()
     {
+        Application.targetFrameRate = 20;
         if (worldParent != null)
         {
             string directoryPath = Path.Combine(Application.dataPath, "MyDarkFantasy/worlds");

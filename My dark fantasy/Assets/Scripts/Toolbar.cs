@@ -1,40 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System;
 using System.Threading;
 using UnityEngine.EventSystems;
-using UnityEditor.UIElements;
-using System.Linq;
+using Unity.VisualScripting;
 public class Toolbar : MonoBehaviour
 {
+    
     public WorldManager World;
+    public ControllerImput control;
     public Crafting craft;
     public RectTransform highlight;
-    public AllSlots[] itemSlots=new AllSlots[9];
+    public AllSlots[] itemSlots = new AllSlots[9];
     public ItemSlot[] invimg = new ItemSlot[38];
     public Image crosshair;
     public Image inventory;
     public Image UIEscape;
     public Image select;
-    
+
     public byte[,] item = new byte[4, 9];
     public byte[,] itemsize = new byte[4, 9];
     public byte selectedsloth;
     public byte slothIndex = 0;
     float time = 0f;
     public bool openedInv = false;
-    public bool escape=false;
+    public static bool escape = false;
 
     public PointerEventData faranume;
     public GraphicRaycaster raycaster;
     public EventSystem eventSystem;
-
-    private Material white;
-    private Material gray;
     private void Start()
     {
         for (int i = 0; i < 4; i++)
@@ -103,7 +99,7 @@ public class Toolbar : MonoBehaviour
                 }
                 else
                 {
-                    OpenInventory();
+                    OpenInventory(0);
 
                 }
             }
@@ -286,7 +282,7 @@ public class Toolbar : MonoBehaviour
                 Image img = slot.gameObject.GetComponent<Image>();
                 for (byte i=0; i<craft.options; i++)
                 {
-                    if (World.blockTypes[craft.ind[i]].icon == img.sprite)
+                    if (World.blockTypes[craft.recipes[craft.ind[i]].id].icon.name == img.sprite.name)
                     {
                         if (i != lastitem)
                         {
@@ -298,11 +294,13 @@ public class Toolbar : MonoBehaviour
                                     Destroy(go2);
                                 }
                                 lastitem = i;
+                                i=craft.ind[i];
                                 craft.itemcreated = i; craft.sizeofitem = 0;
-                                craft.itemcraft = craft.ind[i];
+                                craft.itemcraft = craft.recipes[i].id;
                                 select.transform.position = img.transform.position;
                                 select.gameObject.SetActive(true);
                                 TryCrafting(i);
+                                break;
                             }
                         }
                         else
@@ -340,47 +338,108 @@ public class Toolbar : MonoBehaviour
     public void Again()
     {
         Application.targetFrameRate = 60;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        
+        control.Posi=Vector3.zero;
         UIEscape.gameObject.SetActive(false);
         openedInv = false;
         escape = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         CloseInventory();
     }
-    public void OpenInventory()
+    public void OpenInventory(byte tpe)
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        invimg[36].image.sprite= World.blockTypes[0].icon;
-        invimg[37].image.gameObject.SetActive(true);
-        invimg[36].image.gameObject.SetActive(true);
-        selectedsloth = 50;
+        openedInv = true;
         inventory.gameObject.SetActive(true);
         crosshair.gameObject.SetActive(false);
-        openedInv = true;
+        invimg[37].image.gameObject.SetActive(true);
+        invimg[36].image.gameObject.SetActive(true);
+        invimg[36].image.sprite = World.blockTypes[0].icon;
+        selectedsloth = 50;
+        
         for(int i=0; i<4; i++)
         {
             for(int j=0; j<9; j++)
             {
                 if (itemsize[i,j] != 0)
                 {
+                    invimg[(i * 9) + j].image.gameObject.SetActive(true);
                     invimg[i*9+j].image.sprite = World.blockTypes[item[i,j]].icon;
-                    invimg[i*9+j].image.gameObject.SetActive(true);
                     if (World.blockTypes[item[i, j]].utility == 0)
                     {
-                        invimg[i * 9 + j].num.text = itemsize[i, j].ToString();
                         invimg[i * 9 + j].num.gameObject.SetActive(true);
+                        invimg[i * 9 + j].num.text = itemsize[i, j].ToString();
                     }
                 }
                 else if (itemsize[i,j] == 0 || item[i,j]==0)
                 {
-                    invimg[i * 9 + j].image.sprite = World.blockTypes[0].icon;
                     invimg[i * 9 + j].image.gameObject.SetActive(true);
+                    invimg[i * 9 + j].image.sprite = World.blockTypes[0].icon;
                 }
             }
         }
-        Thread t=new Thread(craft.Inventory);
-        craft.OpenCraft(0);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        //Thread t=new Thread(() => craft.Inventory(tpe));
+        //t.Start();
+        craft.Inventory(tpe);
+    }
+    public void PickUp(byte id, byte size,Item obj)
+    {
+        for(int i = 0; i<4; i++)
+        {
+            for (int j = 0; j<9; j++)
+            {
+                if (item[i, j]==id)
+                {
+                    if (itemsize[i,j]+size<96)
+                    {
+                        itemsize[i, j]+=size;
+                        size = 0;
+                        if (i < 1)
+                        {
+                            itemSlots[j].num.text = itemsize[i,j].ToString();
+                        }
+                        break;
+                    }
+                    else if(itemsize[i, j] < 96)
+                    {
+                        size -= (byte)(96 - itemsize[i, j]);
+                        itemsize[i, j] = 96;
+                    }
+                }
+            }
+        }
+        if (size > 0)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (itemsize[i, j]==0)
+                    {
+                        item[i, j] = id;
+                        itemsize[i, j] += size;
+                        size = 0;
+                        if (i < 1)
+                        {
+                            itemSlots[j].image.sprite = World.blockTypes[id].icon;
+                            itemSlots[j].num.text = itemsize[i,j].ToString();
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (size == 0)
+        {
+            Destroy(obj.obj);
+        }
+        else
+        {
+            obj.size = size;
+        }
     }
     public void CloseInventory()
     {
@@ -469,16 +528,40 @@ public class Toolbar : MonoBehaviour
     public void CloseScene()
     {
         Debug.Log(WorldManager.chunkstosave.Count);
+        Application.runInBackground = true;
+        ChunkSerializer.savePlayerData(control.playerPos(), control.playerRot());
         for (int i = 0; i<WorldManager.chunkstosave.Count; i++)
         {
             ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
         }
         ChunkSerializer.loadedChunks.Clear();
+        WorldManager.chunkstosave.Clear();
+        Application.runInBackground = false;
+        System.GC.Collect();
         SceneManager.LoadScene(1);
+        escape = false;
+        openedInv = false;
     }
     public void UpdateInventory()
     {
         ;
+    }
+    public void EscapeNSetUp()
+    {
+        //sunt obosit si plictisit ;<
+        Application.runInBackground = true;
+        ChunkSerializer.savePlayerData(control.playerPos(), control.playerRot());
+        for (int i = 0; i < WorldManager.chunkstosave.Count; i++)
+        {
+            ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
+        }
+        ChunkSerializer.loadedChunks.Clear();
+        WorldManager.chunkstosave.Clear();
+        Application.runInBackground = false;
+        UiManager e = new();
+        e.OpenSet("World");
+        //escape = false;
+        //openedInv = false;
     }
     public void UpdateAnItem(byte id)
     {

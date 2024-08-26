@@ -6,18 +6,24 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System;
 using System.IO.Compression;
+using Unity.VisualScripting;
+using NUnit.Framework;
 public class ChunkSerializer
 {
     public static string savePath;
     public static int seed;
+    public static bool pret = false;
+    public static Vector3 pos; 
+    public static Quaternion rot;
+    public static float mx=0,my=0;
     public static string[] loadpath;
     public static Dictionary<(int, int), byte[,,]> loadedChunks = new();
-    public static byte[,,] LoadChunk(int cx, int cz)
+    public static void LoadChunk(int cx, int cz)
     {
 
         if (loadedChunks.ContainsKey((cx, cz)))
         {
-            return loadedChunks[(cx, cz)];
+            WorldManager.chunks[cx + 100, cz + 100].Voxels=loadedChunks[(cx, cz)];
         }
         else
         {
@@ -33,7 +39,7 @@ public class ChunkSerializer
             byte[,,] chunkData = ChunkReader(fileName, cx, cz);
             loadedChunks[(cx, cz)] = chunkData;
 
-            return chunkData;
+            WorldManager.chunks[cx+100,cz+100].Voxels=chunkData;
         }
     }
     public static byte[] FindChunkInRegion(string fileName, int cx, int cz)
@@ -123,7 +129,7 @@ public class ChunkSerializer
         string fileName = Path.Combine(savePath, "chunks", $"r.{rx}.{rz}.zlib");
         if (!loadedChunks.TryGetValue((cx, cz), out byte[,,] chunkData))
         {
-            Debug.Log("save uwu:)");
+          //  Debug.Log("save uwu:)");
             // If the chunk is not loaded, initialize an empty chunk
             chunkData = new byte[16, 160, 16];
             loadedChunks[(cx, cz)] = chunkData;
@@ -209,11 +215,56 @@ public class ChunkSerializer
             writer.Write(new byte[4096 - (compressedData.Length % 4096)]);
         }
     }
+    public static void CloseSet()
+    {
+        pret = false;
+        string json = File.ReadAllText(savePath + "/playerprefab.json");
+        PlayerData data = JsonUtility.FromJson<PlayerData>(json);
 
+        pos = data.position;
+        rot = data.rotation;
+        MouseController.xrot = data.mx;
+        MouseController.yrot = data.my;
+        pret = true;
+    }
     public void Sync(string sv,int Seed)
     {
         seed = Seed;
         savePath = sv;
+        if (!File.Exists(savePath+"/playerprefab.json"))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(savePath + "/playerprefab.json"));
+            pos =Vector3.zero;
+            rot =Quaternion.identity;
+        }
+        else
+        {
+            string json = File.ReadAllText(savePath + "/playerprefab.json");
+            PlayerData data = JsonUtility.FromJson<PlayerData>(json);
+
+            pos= data.position;
+            rot = data.rotation;
+            MouseController.xrot = data.mx;
+            MouseController.yrot = data.my;
+        }
+        pret = true;
+    }
+    public static void savePlayerData(Vector3 Pos,Quaternion Rot)
+    {
+        if (!File.Exists(savePath + "/playerprefab.json"))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(savePath + "/playerprefab.json"));
+        }
+        PlayerData data = new PlayerData
+        {
+            position = Pos,
+            rotation = Rot,
+            mx = MouseController.xrot,
+            my = MouseController.yrot,
+        };
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(savePath + "/playerprefab.json", json);
+
     }
     public static void SaveWorld()
     {
@@ -239,7 +290,7 @@ public class ChunkSerializer
         if (chunkData == null)
         {
             // If no data is found, return a new empty chunk
-         //   Debug.Log("david e gay "+cx+" "+cz);
+            //Aici trebuie lucrat
             return new byte[16, 160, 16];
         }
 
@@ -261,5 +312,12 @@ public class ChunkSerializer
         return voxelData;
     }
 
+}
 
+[System.Serializable]
+public class PlayerData
+{
+    public Vector3 position;
+    public Quaternion rotation;
+    public float mx, my;
 }

@@ -1,9 +1,11 @@
 <linker>
 	<assembly fullname="Assembly-CSharp">
 		<type fullname="BiomeAttributes" preserve="nothing"/>
-		<type fullname="CameraController" preserve="nothing"/>
+		<type fullname="ControllerImput" preserve="nothing"/>
+		<type fullname="Crafting" preserve="nothing"/>
+		<type fullname="craftinginv" preserve="nothing"/>
 		<type fullname="MouseController" preserve="nothing"/>
-		<type fullname="PerlinGenerator" preserve="nothing"/>
+		<type fullname="NewWorld" preserve="nothing"/>
 		<type fullname="Toolbar" preserve="nothing"/>
 		<type fullname="UiManager" preserve="nothing"/>
 		<type fullname="WorldManager" preserve="nothing"/>
@@ -17,11 +19,7 @@
 		<type fullname="UnityEngine.AdaptivePerformance.Google.Android.GoogleAndroidProviderSettings" preserve="nothing"/>
 	</assembly>
 	<assembly fullname="Unity.TextMeshPro">
-		<type fullname="TMPro.TextMeshProUGUI" preserve="nothing"/>
 		<type fullname="TMPro.TMP_FontAsset" preserve="nothing"/>
-		<type fullname="TMPro.TMP_Settings" preserve="nothing"/>
-		<type fullname="TMPro.TMP_SpriteAsset" preserve="nothing"/>
-		<type fullname="TMPro.TMP_StyleSheet" preserve="nothing"/>
 	</assembly>
 	<assembly fullname="UnityEngine">
 		<type fullname="UnityEditor.AudioManager" preserve="nothing"/>
@@ -72,9 +70,16 @@
 		<type fullname="UnityEngine.EventSystems.StandaloneInputModule" preserve="nothing"/>
 		<type fullname="UnityEngine.UI.Button" preserve="nothing"/>
 		<type fullname="UnityEngine.UI.CanvasScaler" preserve="nothing"/>
+		<type fullname="UnityEngine.UI.ContentSizeFitter" preserve="nothing"/>
 		<type fullname="UnityEngine.UI.GraphicRaycaster" preserve="nothing"/>
+		<type fullname="UnityEngine.UI.GridLayoutGroup" preserve="nothing"/>
 		<type fullname="UnityEngine.UI.Image" preserve="nothing"/>
+		<type fullname="UnityEngine.UI.InputField" preserve="nothing"/>
+		<type fullname="UnityEngine.UI.Mask" preserve="nothing"/>
 		<type fullname="UnityEngine.UI.RawImage" preserve="nothing"/>
+		<type fullname="UnityEngine.UI.RectMask2D" preserve="nothing"/>
+		<type fullname="UnityEngine.UI.ScrollRect" preserve="nothing"/>
 		<type fullname="UnityEngine.UI.Text" preserve="nothing"/>
+		<type fullname="UnityEngine.UI.VerticalLayoutGroup" preserve="nothing"/>
 	</assembly>
 </linker>

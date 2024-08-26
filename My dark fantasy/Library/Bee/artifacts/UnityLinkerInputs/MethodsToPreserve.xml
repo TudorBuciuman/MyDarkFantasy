@@ -1,11 +1,20 @@
 <linker>
 	<assembly fullname="Assembly-CSharp" ignoreIfMissing="1">
+		<type fullname="NewWorld">
+			<method name="Create"/>
+			<method name="EditWorld"/>
+			<method name="EnterWorld"/>
+			<method name="Later"/>
+			<method name="TryNewWorld"/>
+		</type>
 		<type fullname="Toolbar">
 			<method name="Again"/>
 			<method name="CloseScene"/>
 		</type>
 		<type fullname="UiManager">
 			<method name="LoadScene"/>
+			<method name="LoadScene"/>
+			<method name="Quit"/>
 		</type>
 	</assembly>
 </linker>

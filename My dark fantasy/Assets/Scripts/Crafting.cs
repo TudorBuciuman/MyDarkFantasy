@@ -4,9 +4,6 @@ using UnityEngine;
 using System.Threading;
 using UnityEditor;
 using UnityEngine.UI;
-using Unity.VisualScripting;
-using UnityEditor.UIElements;
-
 
 public class Crafting : MonoBehaviour
 {
@@ -21,32 +18,18 @@ public class Crafting : MonoBehaviour
     public byte options = 0;
     public byte itemcreated=0;
     public byte itemcraft = 0;
+    public byte itempos = 0;
     public byte sizeofitem=0;
     public void OpenCraft(byte id)
     {
-        switch (id)
-        {
-            case 0:
-                Inventory();
-                break;
-            case 1:
-                CraftingTable();
-                break;
-            case 2:
-                Furnace();
-            break;
-            case 3:
-                BlastFurnace();
-                break;
+        Inventory(id);
 
-        }
     }
-    public void Inventory()
+    public void Inventory(byte tpe)
     {
-        int p = 0;
+        byte p = 0;
         options = 0;
-        //p=marimea itemelor posibile -1
-        while (p < 5)
+        while (p < recipes.Length)
         {
             if (recipes[p].type < 1)
             {
@@ -84,8 +67,8 @@ public class Crafting : MonoBehaviour
                 if (k > 0)
                 {
 
-                    ind[options] = recipes[p].id;
-                    e[options] = k;
+                    ind[options] = p;
+                    e[p] = k;
                     GameObject c = Instantiate(Prefa, transform);
                     c.GetComponentInChildren<Image>().sprite = world.blockTypes[recipes[p].id].icon;
                     if (k < 255)
@@ -102,20 +85,16 @@ public class Crafting : MonoBehaviour
             else
                 break;
         }
-    }
-    public void CraftingTable()
-    {
-        tool.OpenInventory();
-        int p = 1;
-        //p=marimea itemelor posibile -1
-        while (p < 5)
+        if (tpe > 0)
         {
-            int r = 0, k = 1000000;
-            sz = new int[10];
-            if (recipes[p].type <2)
+            while (p < recipes.Length && recipes[p].type < tpe)
+                p++;
+            while (p < recipes.Length)
             {
-                if (recipes[p].type == 1)
+                if (recipes[p].type ==tpe)
                 {
+                    int r = 0, k = 1000000;
+                    sz = new int[10];
                     foreach (itemsneeded d in recipes[p].Recipe)
                     {
 
@@ -148,143 +127,8 @@ public class Crafting : MonoBehaviour
                     if (k > 0)
                     {
 
-                        ind[options] = recipes[p].id;
-                        e[options] = k;
-                        GameObject c = Instantiate(Prefa, transform);
-                        c.GetComponentInChildren<Image>().sprite = world.blockTypes[recipes[p].id].icon;
-                        if (k < 255)
-                            c.GetComponentInChildren<Text>().text = k.ToString();
-                        else
-                        {
-                            c.GetComponentInChildren<Text>().text = ("255+").ToString();
-                        }
-                        options++;
-
-                    }
-                    
-                }
-            }
-            else
-                break;
-            p++;
-        }
-        
-
-    }
-    public void Furnace()
-    {
-        tool.OpenInventory();
-        int p = 0;
-        //p=marimea itemelor posibile -1
-        while (p < 5)
-        {
-            int r = 0, k = 1000000;
-            sz = new int[10];
-            if (recipes[p].type < 3)
-            {
-                if (recipes[p].type == 2)
-                {
-                    foreach (itemsneeded d in recipes[p].Recipe)
-                    {
-
-                        for (int i = 0; i < 4; i++)
-                        {
-                            for (int j = 0; j < 9; j++)
-                            {
-                                if (tool.item[i, j] == d.id)
-                                {
-                                    sz[r] += tool.itemsize[i, j];
-                                }
-                            }
-                        }
-                        r++;
-                    }
-                    r = 0;
-                    foreach (itemsneeded d in recipes[p].Recipe)
-                    {
-                        if (sz[r] >= d.size)
-                        {
-                            if (k > sz[r] / d.size)
-                                k = (sz[r] / d.size) * recipes[p].size;
-                        }
-                        else
-                        {
-                            k = 0;
-                            break;
-                        }
-                    }
-                    if (k > 0)
-                    {
-
-                        ind[options] = recipes[p].id;
-                        e[options] = k;
-                        GameObject c = Instantiate(Prefa, transform);
-                        c.GetComponentInChildren<Image>().sprite = world.blockTypes[recipes[p].id].icon;
-                        if (k < 255)
-                            c.GetComponentInChildren<Text>().text = k.ToString();
-                        else
-                        {
-                            c.GetComponentInChildren<Text>().text = ("255+").ToString();
-                        }
-                        options++;
-
-                    }
-                }
-            }
-            else
-                break;
-            p++;
-
-        }
-    }
-    public void BlastFurnace()
-    {
-        tool.OpenInventory();
-        int p = 0;
-        options = 0;
-        //p=marimea itemelor posibile -1
-        while (p < 5)
-        {
-            int r = 0, k = 1000000;
-            sz = new int[10];
-            if (recipes[p].type < 4)
-            {
-                if (recipes[p].type == 3)
-                {
-                    foreach (itemsneeded d in recipes[p].Recipe)
-                    {
-
-                        for (int i = 0; i < 4; i++)
-                        {
-                            for (int j = 0; j < 9; j++)
-                            {
-                                if (tool.item[i, j] == d.id)
-                                {
-                                    sz[r] += tool.itemsize[i, j];
-                                }
-                            }
-                        }
-                        r++;
-                    }
-                    r = 0;
-                    foreach (itemsneeded d in recipes[p].Recipe)
-                    {
-                        if (sz[r] >= d.size)
-                        {
-                            if (k > sz[r] / d.size)
-                                k = (sz[r] / d.size) * recipes[p].size;
-                        }
-                        else
-                        {
-                            k = 0;
-                            break;
-                        }
-                    }
-                    if (k > 0)
-                    {
-
-                        ind[options] = recipes[p].id;
-                        e[options] = k;
+                        ind[options] = p;
+                        e[p] = k;
                         GameObject c = Instantiate(Prefa, transform);
                         c.GetComponentInChildren<Image>().sprite = world.blockTypes[recipes[p].id].icon;
                         if (k < 255)
@@ -298,15 +142,23 @@ public class Crafting : MonoBehaviour
                     }
                     p++;
                 }
+                else
+                    break;
             }
-            else
-                break;
         }
     }
     public void CraftScreen(byte id)
     {
-        byte p = 0;
+        byte p = 0,q=0;
         int k = 20000;
+        foreach(byte f in ind)
+        {
+            q++;
+            if (f == id)
+                break;
+        }
+        q--;
+        itempos = q;
         foreach (itemsneeded d in recipes[id].Recipe)
         {
             for (int i = 0; i < 4; i++)
@@ -343,6 +195,8 @@ public class Crafting : MonoBehaviour
     public void Craft()
     {
         byte id = itemcreated;
+        byte w =itempos ;
+        
         if (sizeofitem<255 &&  id != 255 && e[id]>0)
         {
             byte[] szz = new byte[9];
@@ -378,14 +232,14 @@ public class Crafting : MonoBehaviour
             sizeofitem += recipes[id].size;
             tool.invimg[36].num.text = sizeofitem.ToString();
             GameObject[] a = GameObject.FindGameObjectsWithTag("crf");
-            a[2*id].GetComponentInChildren<Text>().text = e[id].ToString();
-            if (e[id] < 255)
+            a[w*2].GetComponentInChildren<Text>().text = e[id].ToString();
+            if (e[w] < 255)
             {
-                a[2 * id].GetComponentInChildren<Text>().text = e[id].ToString();
+                a[( w*2)].GetComponentInChildren<Text>().text = e[id].ToString();
             }
             else
             {
-                a[id * 2].GetComponentInChildren<Text>().text = ("255+").ToString();
+                a[(w * 2)].GetComponentInChildren<Text>().text = ("255+").ToString();
             }
         }
     }

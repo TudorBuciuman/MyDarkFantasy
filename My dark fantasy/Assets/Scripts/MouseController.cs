@@ -5,21 +5,20 @@ using UnityEngine;
 public class MouseController : MonoBehaviour
 {
 
-    private float sensivity = 400;
+    public static float sensivity = 400;
     public Transform orientation;
     public Toolbar toolbar;
-    public float xrot = 0;
-    public float yrot = 0;
-    void FixedUpdate()
+    public static float xrot = 0;
+    public static float yrot = 0;
+    void Update()
     {
         if(!toolbar.openedInv)
         Manage();   
     }
-
     void Manage()
     {
-        float x = Input.GetAxis("Mouse X") * Time.deltaTime * sensivity;
-        float y = Input.GetAxis("Mouse Y") * Time.deltaTime * sensivity;
+        float x = Input.GetAxis("Mouse X") * Time.smoothDeltaTime * sensivity;
+        float y = Input.GetAxis("Mouse Y") * Time.smoothDeltaTime * sensivity;
         xrot -= y;
         yrot += x;
 

@@ -105,7 +105,7 @@ public class Chunk
         float maxValue = 0;  
         for (int i = 0; i < octaves; i++)
         {
-            float noiseValue = Mathf.PerlinNoise(0.01f*(x + Offset.x) * frequency,0.01f*(z + Offset.y) * frequency);
+            float noiseValue = Mathf.PerlinNoise(0.005f*(x + Offset.x) * frequency,0.005f*(z + Offset.y) * frequency);
             total += noiseValue * amplitude;
 
             maxValue += amplitude;
