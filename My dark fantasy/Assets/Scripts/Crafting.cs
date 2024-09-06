@@ -208,12 +208,12 @@ public class Crafting : MonoBehaviour
                 {
                     for (int j = 0; j < 9; j++)
                     {
-                        if (tool.item[i, j] == d.id && tool.itemsize[i, j] >= d.size)
+                        if (tool.item[i, j] == d.id && tool.itemsize[i, j] >= szz[r])
                         {
-                            szz[r] -= d.size;
-                            tool.UpdateItem((byte)(i * 9 + j), d.size);
+                            tool.UpdateItem((byte)(i * 9 + j), szz[r]);
+                            szz[r] =0;                            
                         }
-                        else if (tool.item[i, j] == d.id && tool.itemsize[i, j] < d.size)
+                        else if (tool.item[i, j] == d.id && tool.itemsize[i, j] < szz[r])
                         {
                             szz[r] -= tool.itemsize[i, j];
                             tool.UpdateItem((byte)(i * 9 + j), tool.itemsize[i, j]);

@@ -10,7 +10,11 @@ using static UnityEditor.PlayerSettings;
 public class UiManager : MonoBehaviour
 {
     public static string scene=null;
+    public GameObject a;
+    public GameObject b;
 
+    public Button gameset;
+    public Button soundset;
     [Header("Basic Functions")]
     public Text renderdis;
     public Slider disSlider;
@@ -21,8 +25,11 @@ public class UiManager : MonoBehaviour
     public Slider sensivslid;
 
     [Header("Audio& soundtrack")]
-    public Text audio;
-    public Slider audioSlider;
+    public Toggle audioqm;
+    public Slider musicSlider;
+    public Text musictext;
+    public Slider soundsSlider;
+    public Text soundtext;
 
     public void Start()
     {
@@ -85,7 +92,10 @@ public class UiManager : MonoBehaviour
             {
                 render = 2,
                 sens = 40,
-                hud = true
+                hud = true,
+                totalsound = true,
+                movementlevel = 100,
+                musiclevel = 100
             };
 
             hud = true;
@@ -94,9 +104,14 @@ public class UiManager : MonoBehaviour
 
             disSlider.value = data.render;
             sensivslid.value = data.sens;
+            musicSlider.value=data.musiclevel;
+            soundsSlider.value=data.movementlevel;
             hudqm.isOn = data.hud;
+            audioqm.isOn=data.totalsound;
             renderdis.text=("Render  distance  "+data.render).ToString();
             sensiv.text = ("Mouse  sensivity  " + data.sens).ToString();
+            musictext.text=("Music   volume  "+data.musiclevel).ToString();
+            soundtext.text = ("Sound   volume  " + data.movementlevel).ToString();
 
         }
         else
@@ -109,9 +124,14 @@ public class UiManager : MonoBehaviour
             hud = data.hud;
             disSlider.value = data.render;
             sensivslid.value = data.sens;
+            musicSlider.value = data.musiclevel;
+            soundsSlider.value = data.movementlevel;
             hudqm.isOn = data.hud;
+            audioqm.isOn = data.totalsound;
             renderdis.text = ("Render  distance  " + data.render).ToString();
             sensiv.text = ("Mouse  sensivity  " + data.sens).ToString();
+            musictext.text = ("Music   volume  " + data.musiclevel).ToString();
+            soundtext.text = ("Sound   volume  " + data.movementlevel).ToString();
         }
     }
     public void SaveSettings()
@@ -120,24 +140,47 @@ public class UiManager : MonoBehaviour
         {
             render = (byte)(disSlider.value),
             sens = (byte)(sensivslid.value),
-            hud = hudqm.isOn
+            hud = hudqm.isOn,
+            totalsound = audioqm,
+            movementlevel = (byte)soundsSlider.value,
+            musiclevel = (byte)musicSlider.value
         };
         string json = JsonUtility.ToJson(data);
         File.WriteAllText(Path.Combine(Application.dataPath + "/Settings/settings.json"), json);
-        if (!scene.Equals("")    )
+
+        if (scene.Contains("World"))
         {
             SceneManager.LoadScene(scene);
-            if (scene.Contains("World"))
-            {
-                ChunkSerializer.CloseSet();
-            }
+            ChunkSerializer.CloseSet();
         }
         else
             SceneManager.LoadScene(0);
     }
-    public void Renderdis()
+    public void SoundSet()
     {
-
+        a.gameObject.SetActive(false);
+        b.gameObject.SetActive(true);
+    }
+    public void NormalSet()
+    {
+        a.gameObject.SetActive(true);
+        b.gameObject.SetActive(false);
+    }
+    public void UpdateRend()
+    {
+        renderdis.text= "Render  distance  "+disSlider.value.ToString();
+    }
+    public void UpdateSpd()
+    {
+        sensiv.text= "Mouse  sensivity  "+sensivslid.value.ToString();
+    }
+    public void UpdateMusic()
+    {
+        musictext.text = "Music   volume  " + musicSlider.value.ToString();
+    }
+    public void UpdateAudio()
+    {
+        soundtext.text = "Audio   volume  " + soundsSlider.value.ToString();
     }
     public void Quit()
     {
@@ -154,4 +197,7 @@ public class SettingsData
     public byte render=2;
     public byte sens = 40;
     public bool hud=true;
+    public bool totalsound = true;
+    public byte movementlevel = 50;
+    public byte musiclevel = 50;
 }

@@ -17,8 +17,8 @@ public class MouseController : MonoBehaviour
     }
     void Manage()
     {
-        float x = Input.GetAxis("Mouse X") * Time.smoothDeltaTime * sensivity;
-        float y = Input.GetAxis("Mouse Y") * Time.smoothDeltaTime * sensivity;
+        float x = Input.GetAxis("Mouse X") * Time.fixedDeltaTime * sensivity;
+        float y = Input.GetAxis("Mouse Y") * Time.fixedDeltaTime * sensivity;
         xrot -= y;
         yrot += x;
 

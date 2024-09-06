@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class ControllerImput : MonoBehaviour
 {
+
+    //Stiu ca e input - sunt doar silly :)
     public WorldManager wmanager;
     public Crafting craft;
     public itemsManager itemsManager;
@@ -44,19 +46,25 @@ public class ControllerImput : MonoBehaviour
 
     void Start()
     {
-        // QualitySettings.vSyncCount = 1;
+        bool esc=Toolbar.escape;
+        Toolbar.escape = true;
+        QualitySettings.vSyncCount = 1;
         UiManager ui = new();
         ui.ReadSet();
         Application.targetFrameRate = 60;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        if (ChunkSerializer.seed == null)
+        if (ChunkSerializer.seed == -1)
         {
             SceneManager.LoadScene(1);
             return;
         }
-        while (!ChunkSerializer.pret)
-            ;
+        else
+        {
+            while (!ChunkSerializer.pret)
+                ;
+            
+        }
         if (ChunkSerializer.pos != Vector3.zero)
         {
             controller.enabled = false;
@@ -67,18 +75,23 @@ public class ControllerImput : MonoBehaviour
         {
             transform.position = new Vector3(0,80,0);
         }
+        wmanager.GenerateWorld();
         controller.enabled = true;
         if (!UiManager.hud)
         {
-            Debug.Log("why");
             Hud1.SetActive(false);
             Hud2.SetActive(false);
             Hud3.GetComponent<Image>().color=Color.clear;
         }
-        if (Toolbar.escape)
+        if (esc)
         {
             toolbar.Escape();
         }
+        else
+        {
+            Toolbar.escape=false;
+        }
+        //soundTrack.PlaySong((byte)Random.Range(0, 6));
     }
 
     private void FixedUpdate()
@@ -94,7 +107,7 @@ public class ControllerImput : MonoBehaviour
             if (!toolbar.openedInv)
             {
                 HandleMovement();
-                HandleBlockPlacement();
+                HandleMouseInput();
             }
             else
             {
@@ -123,7 +136,7 @@ public class ControllerImput : MonoBehaviour
     }
     public ChunkCoord GetPosition()
     {
-        Vector3 position = transform.position;
+        Vector3 position = controller.transform.position;
         return new ChunkCoord(Mathf.FloorToInt(position.x) , Mathf.RoundToInt(position.z));
     }
     void CalculateVelocity()
@@ -140,7 +153,7 @@ public class ControllerImput : MonoBehaviour
         else
             controller.Move(moveDirection * Time.deltaTime * movementSpeed);
         
-            verticalMomentum += Time.fixedDeltaTime * gravity;
+        verticalMomentum += Time.fixedDeltaTime * gravity;
         moveDirection += Vector3.up * verticalMomentum * Time.deltaTime;
         if (moveDirection.y < 0)
         {
@@ -155,12 +168,12 @@ public class ControllerImput : MonoBehaviour
             if (wtime <= 0 && grounded)
             {
                 wtime = 1.2f;
-                soundTrack.Play(0);
+                soundTrack.Move(0);
             }
             else if (!grounded)
             {
                 wtime = 0;
-                soundTrack.stop();
+                soundTrack.stopmove();
             }
         }
         else
@@ -168,7 +181,7 @@ public class ControllerImput : MonoBehaviour
             if (wtime>0)
             {
                 wtime = 0;
-                soundTrack.stop();
+                soundTrack.stopmove();
             }
         }
         if (wtime > 0)
@@ -271,7 +284,19 @@ public class ControllerImput : MonoBehaviour
     }
     private float checkDownSpeed(float downSpeed)
     {
-
+        if (transform.position.y <= 1)
+        {
+            verticalMomentum = 0;
+            controller.enabled = false;
+            //animatie cu dark screen, gaseste tu ceva
+            transform.position = ChunkSerializer.pos+new Vector3(0,1,0);
+            controller.enabled = true;
+            return 0;
+        }
+        if (transform.position.y > 160)
+        {
+            return downSpeed;
+        }
         if (
             wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + downSpeed-1, transform.position.z - 0.3f)].isblock ||
             wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + downSpeed - 1, transform.position.z - 0.3f)].isblock ||
@@ -293,12 +318,15 @@ public class ControllerImput : MonoBehaviour
     }
     private float checkUpSpeed(float upSpeed)
     {
-
+        if (transform.position.y > 158)
+        {
+            return upSpeed;
+        }
         if (
-            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 1f + upSpeed, transform.position.z - 0.3f)].isblock ||
-            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 1f + upSpeed, transform.position.z - 0.3f)].isblock ||
-            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 1f + upSpeed, transform.position.z + 0.3f)].isblock ||
-            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 1f + upSpeed, transform.position.z + 0.3f)].isblock
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z - 0.3f)].isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z - 0.3f)].isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z + 0.3f)].isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z + 0.3f)].isblock
            )
         {
 
@@ -315,14 +343,14 @@ public class ControllerImput : MonoBehaviour
     }
 
     private float time = 0,holdtme=0;
-    int a, b, c;
+    public static int a, b, c;
     private bool breac=false;
-    void HandleBlockPlacement()
+    void HandleMouseInput()
     {
 
         if (Input.GetMouseButton(0)) // Left mouse button/break
         {
-            if (toolbar.item[0, toolbar.slothIndex]>0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility == 1)
+            if (toolbar.item[0, toolbar.slothIndex]>0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility == 10)
             {
                 if (!breac)
                 {
@@ -337,51 +365,116 @@ public class ControllerImput : MonoBehaviour
                     Vector3 pos = cam.position + (cam.forward * step);
                     if (wmanager.IsBlock(pos.x, pos.y, pos.z))
                     {
-                        if (brktime <= 0)
+                        if ((wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility == 0 || wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility > 1))
                         {
-                            soundTrack.Play(1);
+                            if (brktime <= 0)
+                            {
+                                soundTrack.Placement(1);
 
-                            brktime = 0.3f;
-                        }
-                        int g= Mathf.RoundToInt(pos.x), h= Mathf.RoundToInt(pos.z);
-                        int s=g, k=h;
-                        if (g < 0 && g % 16 != 0)
-                            s -= 16;
-                        if (h < 0 && h % 16 != 0)
-                        {
-                            k -= 16;
-                        }
-                        if (g < 0)
-                            g = 16 - (-g % 16);
-                        if (h < 0)
-                            h = 16 - (-h % 16);
-                        
-                        if (Mathf.RoundToInt(pos.x) == a && Mathf.RoundToInt(pos.y) == b && Mathf.RoundToInt(pos.z) == c)
-                        {
-                            holdtme += Time.deltaTime;
-                        }
-                        else
-                        {
-                            a = Mathf.RoundToInt(pos.x);
-                            b = Mathf.RoundToInt(pos.y);
-                            c = Mathf.RoundToInt(pos.z);
-                            box.gameObject.SetActive(true);
-                            box.transform.position = new Vector3(a, b, c);
-                            holdtme = 0;
-                        }
-                        if (holdtme >= wmanager.blockTypes[WorldManager.chunks[(s / 16+100), (k/16+100)].Voxels[g%16, Mathf.RoundToInt(pos.y), h%16]].brktme)
-                        {
-                            box.gameObject.SetActive(false);
-                            itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, pos);
-                            wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), 0);
+                                brktime = 0.3f;
+                            }
+                            int g = Mathf.RoundToInt(pos.x), h = Mathf.RoundToInt(pos.z);
+                            int s = g, k = h;
+                            if (g < 0 && g % 16 != 0)
+                                s -= 16;
+                            if (h < 0 && h % 16 != 0)
+                            {
+                                k -= 16;
+                            }
+                            if (g < 0)
+                                g = 16 - (-g % 16);
+                            if (h < 0)
+                                h = 16 - (-h % 16);
 
-                            breac = false;
-                            holdtme = 0;
-                        }
+                            if (Mathf.RoundToInt(pos.x) == a && Mathf.RoundToInt(pos.y) == b && Mathf.RoundToInt(pos.z) == c)
+                            {
+                                holdtme += Time.deltaTime;
+                            }
+                            else
+                            {
+                                a = Mathf.RoundToInt(pos.x);
+                                b = Mathf.RoundToInt(pos.y);
+                                c = Mathf.RoundToInt(pos.z);
+                                box.gameObject.SetActive(true);
+                                box.transform.position = new Vector3(a, b, c);
+                                holdtme = 0;
+                            }
+                            if (holdtme >= wmanager.blockTypes[WorldManager.chunks[(s / 16 + 100), (k / 16 + 100)].Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16]].brktme)
+                            {
+                                box.gameObject.SetActive(false);
+                                itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
+                                wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), 0);
 
+                                breac = false;
+                                holdtme = 0;
+                            }
+                        }
                         break;
                     }
+                    step += 0.1f;
+                }
+            }
+            else if(toolbar.item[0, toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility == 11)
+            {
+                if (!breac)
+                {
+                    holdtme = 0;
+                    breac = true;
+                }
+                float step = 0.1f;
+                while (step <= 5)
+                {
 
+                    time = 0.1f;
+                    Vector3 pos = cam.position + (cam.forward * step);
+                    if (wmanager.IsBlock(pos.x, pos.y, pos.z))
+                    {
+                        if (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility == 1)
+                        {
+                            if (brktime <= 0)
+                            {
+                                soundTrack.Placement(1);
+
+                                brktime = 0.3f;
+                            }
+                            int g = Mathf.RoundToInt(pos.x), h = Mathf.RoundToInt(pos.z);
+                            int s = g, k = h;
+                            if (g < 0 && g % 16 != 0)
+                                s -= 16;
+                            if (h < 0 && h % 16 != 0)
+                            {
+                                k -= 16;
+                            }
+                            if (g < 0)
+                                g = 16 - (-g % 16);
+                            if (h < 0)
+                                h = 16 - (-h % 16);
+
+                            if (Mathf.RoundToInt(pos.x) == a && Mathf.RoundToInt(pos.y) == b && Mathf.RoundToInt(pos.z) == c)
+                            {
+                                holdtme += Time.deltaTime;
+                            }
+                            else
+                            {
+                                a = Mathf.RoundToInt(pos.x);
+                                b = Mathf.RoundToInt(pos.y);
+                                c = Mathf.RoundToInt(pos.z);
+                                box.gameObject.SetActive(true);
+                                box.transform.position = new Vector3(a, b, c);
+                                holdtme = 0;
+                            }
+                            if (holdtme >= wmanager.blockTypes[WorldManager.chunks[(s / 16 + 100), (k / 16 + 100)].Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16]].brktme)
+                            {
+                                box.gameObject.SetActive(false);
+                                itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
+                                wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), 0);
+
+                                breac = false;
+                                holdtme = 0;
+                            }
+                        }
+                        break;
+                    }
                     step += 0.1f;
                 }
             }
@@ -389,15 +482,12 @@ public class ControllerImput : MonoBehaviour
         else if (breac)
         {
             breac = false;
-            if (brktime > 0)
-            {
-                soundTrack.stop();
-            }
+            
             brktime = 0;
             holdtme=0;
             a --;
             box.gameObject.SetActive(false);
-            soundTrack.stop();
+            soundTrack.stopbreak();
         }
         if(brktime > 0)
         {
@@ -406,7 +496,7 @@ public class ControllerImput : MonoBehaviour
         //right click
         if (Input.GetMouseButton(1) && time<=0)
         {
-            if (toolbar.item[0, toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility !=1)
+            if (toolbar.item[0, toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility <10)
             {
                 float step = 0.1f;
                 Vector3 lastPos = new Vector3();

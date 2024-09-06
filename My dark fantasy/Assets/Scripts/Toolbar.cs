@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 using System.Threading;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
+using System.IO;
+using System;
 public class Toolbar : MonoBehaviour
 {
     
@@ -15,6 +17,7 @@ public class Toolbar : MonoBehaviour
     public RectTransform highlight;
     public AllSlots[] itemSlots = new AllSlots[9];
     public ItemSlot[] invimg = new ItemSlot[38];
+    public PlayerData[] invData=new PlayerData[36];
     public Image crosshair;
     public Image inventory;
     public Image UIEscape;
@@ -31,25 +34,15 @@ public class Toolbar : MonoBehaviour
     public PointerEventData faranume;
     public GraphicRaycaster raycaster;
     public EventSystem eventSystem;
-    private void Start()
+    void Start()
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j <9; j++)
-            {
-                item[i, j] = (byte)(j%13+1);
-                itemsize[i,j] = (byte)(i*18+j+1);
-            }
-        }
-        item[0, 0] = 13;
+        ReadForInventory();
         for (int i=0; i<9; i++)
         {
             if (item[0,i] >0)
             {
                 itemSlots[i].image.sprite = World.blockTypes[item[0, i]].icon;
-                itemSlots[i].image.gameObject.SetActive(true);
-                itemSlots[i].num.gameObject.SetActive(true);
-                if (World.blockTypes[item[0, i]].utility == 0)
+                if (World.blockTypes[item[0, i]].utility < 10)
                 {
                     itemSlots[i].num.text = itemsize[0, i].ToString();
                     
@@ -68,6 +61,7 @@ public class Toolbar : MonoBehaviour
             float Scroll = Input.GetAxis("Mouse ScrollWheel");
             if (Scroll != 0)
             {
+                ControllerImput.a = 2300;
                 if (Scroll > 0)
                 {
                     if (slothIndex == 0)
@@ -326,6 +320,77 @@ public class Toolbar : MonoBehaviour
     {
         craft.CraftScreen(id);
     }
+
+    public void ReadForInventory()
+    {
+        string filePath = Path.Combine(ChunkSerializer.savePath, "playerData.json");
+        if (File.Exists(filePath))
+        {
+            string jsonString = File.ReadAllText(filePath);
+
+            PlayerDataOpener playerData = JsonUtility.FromJson<PlayerDataOpener>(jsonString);
+            foreach(ItemSave data in playerData.inventory)
+            {
+                item[data.sloth/9, data.sloth%9]=data.itemID;
+                itemsize[data.sloth/9,data.sloth%9]=data.quantity;
+            }
+        }
+        else
+        {
+            PlayerDataOpener playerData = new PlayerDataOpener
+            {
+                playerName = "Steve",
+                health = 20,
+                experienceLevel = 0,
+                inventory = new ItemSave[3]
+            {
+                new ItemSave { itemName = "Wood Sword", itemID = 19, quantity = 1,sloth=0 ,
+                   properties = new ItemProperties { damage = 5, speed =0.7f }},
+                new ItemSave { itemName = "Wood Pickaxe", itemID = 13, quantity = 1,sloth=1 ,
+                   properties = new ItemProperties { special=0, speed =0.7f } },
+                new ItemSave { itemName = "Wood Axe", itemID = 20, quantity = 1,sloth=2 ,
+                   properties = new ItemProperties { special=0,speed =0.7f } }
+            }
+            };
+            string jsonString = JsonUtility.ToJson(playerData, true);
+            File.WriteAllText(filePath, jsonString);
+            foreach(ItemSave data in playerData.inventory)
+            {
+                item[data.sloth/9, data.sloth%9]=data.itemID;
+                itemsize[data.sloth/9,data.sloth%9]=data.quantity;
+            }
+        }
+
+    }
+    public void SaveInventory()
+    {
+        PlayerDataOpener playerData = new PlayerDataOpener
+        {
+            playerName = "Steve",
+            health = 20,
+            experienceLevel = 0,
+            inventory = new ItemSave[36]
+        };
+        byte r = 0;
+        for(int i=0; i<4; i++)
+        {
+            for(int j=0; j<9; j++)
+            {
+                if (item[i, j] > 0)
+                {
+                    playerData.inventory[r] = new ItemSave { itemID = item[i, j], quantity = itemsize[i, j], sloth=(byte)(i*9+j) };
+                    r++;
+                }
+            }
+        }
+        if (r < playerData.inventory.Length)
+        {
+            System.Array.Resize(ref playerData.inventory, r);
+        }
+        string jsonString = JsonUtility.ToJson(playerData, true);
+        string filePath = Path.Combine(ChunkSerializer.savePath, "playerData.json");
+        File.WriteAllText(filePath, jsonString);
+    }
     public void Escape()
     {
         Application.targetFrameRate = 10;
@@ -365,7 +430,7 @@ public class Toolbar : MonoBehaviour
                 {
                     invimg[(i * 9) + j].image.gameObject.SetActive(true);
                     invimg[i*9+j].image.sprite = World.blockTypes[item[i,j]].icon;
-                    if (World.blockTypes[item[i, j]].utility == 0)
+                    if (World.blockTypes[item[i, j]].utility <10)
                     {
                         invimg[i * 9 + j].num.gameObject.SetActive(true);
                         invimg[i * 9 + j].num.text = itemsize[i, j].ToString();
@@ -510,7 +575,7 @@ public class Toolbar : MonoBehaviour
             if (item[0, i] > 0)
             {
                 itemSlots[i].image.sprite = World.blockTypes[item[0, i]].icon;
-                if (World.blockTypes[item[0, i]].utility !=1)
+                if (World.blockTypes[item[0, i]].utility <10)
                     itemSlots[i].num.text = itemsize[0, i].ToString();
                 else
                     itemSlots[i].num.text = null;
@@ -529,13 +594,15 @@ public class Toolbar : MonoBehaviour
     {
         Debug.Log(WorldManager.chunkstosave.Count);
         Application.runInBackground = true;
+        SaveInventory();
         ChunkSerializer.savePlayerData(control.playerPos(), control.playerRot());
         for (int i = 0; i<WorldManager.chunkstosave.Count; i++)
         {
+            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.chunks[WorldManager.chunkstosave[i].x+100, WorldManager.chunkstosave[i].y+100].Voxels;
             ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
         }
+        World.ClearData();
         ChunkSerializer.loadedChunks.Clear();
-        WorldManager.chunkstosave.Clear();
         Application.runInBackground = false;
         System.GC.Collect();
         SceneManager.LoadScene(1);
@@ -550,13 +617,15 @@ public class Toolbar : MonoBehaviour
     {
         //sunt obosit si plictisit ;<
         Application.runInBackground = true;
+        SaveInventory();
         ChunkSerializer.savePlayerData(control.playerPos(), control.playerRot());
         for (int i = 0; i < WorldManager.chunkstosave.Count; i++)
         {
+            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.chunks[WorldManager.chunkstosave[i].x + 100, WorldManager.chunkstosave[i].y + 100].Voxels;
             ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
         }
         ChunkSerializer.loadedChunks.Clear();
-        WorldManager.chunkstosave.Clear();
+        World.ClearData();
         Application.runInBackground = false;
         UiManager e = new();
         e.OpenSet("World");
@@ -611,5 +680,36 @@ public class Toolbar : MonoBehaviour
     public byte id;
     public Image image;
     public Text num;
+    }
+    [Serializable]
+    public class Enchantments
+    {
+        public int sharpness;
+        public int unbreaking;
+    }
+    [Serializable]
+    public class ItemProperties
+    {
+        public byte special;
+        public byte damage;
+        public float speed;
+    }
+    [Serializable]
+    public class ItemSave
+    {
+        public string itemName;
+        public byte itemID;
+        public byte quantity;
+        public byte sloth;
+        public ItemProperties properties;
+        public Enchantments enchantments; // This can be null for items without enchantments
+    }
+    [Serializable]
+    public class PlayerDataOpener
+    {
+        public string playerName;
+        public int health;
+        public int experienceLevel;
+        public ItemSave[] inventory;
     }
 

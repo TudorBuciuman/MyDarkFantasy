@@ -7,11 +7,10 @@ using System.Threading;
 using System;
 using System.IO.Compression;
 using Unity.VisualScripting;
-using NUnit.Framework;
 public class ChunkSerializer
 {
     public static string savePath;
-    public static int seed;
+    public static int seed=-1;
     public static bool pret = false;
     public static Vector3 pos; 
     public static Quaternion rot;
@@ -23,22 +22,23 @@ public class ChunkSerializer
 
         if (loadedChunks.ContainsKey((cx, cz)))
         {
-            WorldManager.chunks[cx + 100, cz + 100].Voxels=loadedChunks[(cx, cz)];
+            WorldManager.chunks[cx + 100, cz + 100].Voxels = loadedChunks[(cx, cz)];
         }
         else
         {
             // fiecare fisier contine 32x32 chunkuri
             int rx = cx / 32;
-            if(cx<0 && cx % 32 != 0)
+            if (cx < 0 && cx % 32 != 0)
                 rx--;
             int rz = cz / 32;
-            if(cz<0 && cz % 32!=0)
+            if (cz < 0 && cz % 32 != 0)
                 rz--;
             string fileName = savePath + $"/chunks/r.{rx}.{rz}.zlib";
             // Bazat pe pozitia chunkului pot citi din fisierul mare
             byte[,,] chunkData = ChunkReader(fileName, cx, cz);
+            lock (loadedChunks) { 
             loadedChunks[(cx, cz)] = chunkData;
-
+            }
             WorldManager.chunks[cx+100,cz+100].Voxels=chunkData;
         }
     }
@@ -55,36 +55,35 @@ public class ChunkSerializer
         // Calculate chunk coordinates within the region (32x32 grid)
         int regionChunkX = ((cx % 32) + 32) % 32;
         int regionChunkZ = ((cz % 32) + 32) % 32;
-        int chunkIndex = regionChunkX + regionChunkZ * 32;
+        int chunkIndex = regionChunkX + (regionChunkZ * 32);
 
-        // Move to the location of the chunk in the header (first 4 KiB)
+        // Seek to the chunk entry in the header
         fs.Seek(chunkIndex * 4, SeekOrigin.Begin);
-        int entry = reader.ReadInt32();
+        byte[] entry = reader.ReadBytes(4);
 
-        // Extract the chunk offset and sector count
-        int chunkOffset = (entry >> 8) & 0xFFFFFF; // Top 24 bits for offset (in 4 KiB sectors)
-        int chunkSectorCount = entry & 0xFF; // Last 8 bits for sector count
+        // Extract chunkOffset (3 bytes) and chunkSectorCount (1 byte)
+        int chunkOffset = (entry[0] << 8) | (entry[1]);
+        int chunkSectorCount = entry[3];
 
+        // Check if the chunk is empty or uninitialized
         if (chunkOffset == 0 || chunkSectorCount == 0)
         {
-            return null; // Chunk is not present in the region file
+            return null;
         }
 
-        // Calculate the exact byte offset in the file
         long offsetPosition = (long)chunkOffset * 4096;
 
+        // Check if offset is valid
         if (offsetPosition >= fs.Length)
         {
-            return null; // Offset is beyond the end of the file
+            return null;
         }
 
-        // Move to the chunk's data position
+        // Seek to the chunk data and read the compressed chunk
         fs.Seek(offsetPosition, SeekOrigin.Begin);
-
-        // Read the compressed chunk data
         byte[] compressedData = reader.ReadBytes(chunkSectorCount * 4096);
 
-        // Decompress the data using Zlib (Deflate)
+        // Decompress the chunk data using Zlib (Deflate)
         using (MemoryStream memoryStream = new MemoryStream(compressedData))
         using (DeflateStream deflateStream = new DeflateStream(memoryStream, CompressionMode.Decompress))
         using (MemoryStream resultStream = new MemoryStream())
@@ -93,22 +92,19 @@ public class ChunkSerializer
             return resultStream.ToArray();
         }
     }
-
     public static bool IsReal(int cx, int cz)
     {
         if (loadedChunks.TryGetValue((cx, cz), out byte[,,] value) && value != null)
         {
             return true;
         }
-        // cx -= 100;
-        // cz -= 100;
         int rx = cx / 32;
         int rz = cz / 32;
         if (cx < 0 && cx % 32 != 0)
             rx--;
         if (cz < 0 && cz % 32 != 0)
-            rz--; string fileName =savePath+ $"/chunks/r.{rx}.{rz}.zlib";
-
+            rz--; 
+        string fileName =savePath+ $"/chunks/r.{rx}.{rz}.zlib";
         byte[] data =  FindChunkInRegion(fileName,cx,cz);
         if (data == null)
         {
@@ -126,16 +122,12 @@ public class ChunkSerializer
             rx--;
         if(cz < 0 && cz % 32 != 0)
             rz--;
-        string fileName = Path.Combine(savePath, "chunks", $"r.{rx}.{rz}.zlib");
+        string fileName = savePath + $"/chunks/r.{rx}.{rz}.zlib";
         if (!loadedChunks.TryGetValue((cx, cz), out byte[,,] chunkData))
         {
-          //  Debug.Log("save uwu:)");
-            // If the chunk is not loaded, initialize an empty chunk
-            chunkData = new byte[16, 160, 16];
-            loadedChunks[(cx, cz)] = chunkData;
+            return;
         }
-
-        // Serialize and save the chunk to the region file
+        else
         SerializeChunkToRegion(fileName, cx, cz, chunkData);
     }
     public static void SerializeChunkToRegion(string fileName, int cx, int cz, byte[,,] data)
@@ -145,7 +137,6 @@ public class ChunkSerializer
         {
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
         }
-
         byte[] chunkData = new byte[16 * 16 * 160];
         int index = 0;
 
@@ -177,50 +168,46 @@ public class ChunkSerializer
         BinaryWriter writer = new(fs);
         BinaryReader reader = new(fs);
 
-        // Read the region header
-        int headerSize = 8192; // 8 KiB for both chunk locations and timestamps
-        byte[] header = new byte[headerSize];
-        fs.Read(header, 0, headerSize);
-
         // Calculate chunk index within the region
         int regionChunkX = ((cx % 32) + 32) % 32;
         int regionChunkZ = ((cz % 32) + 32) % 32;
-        int chunkIndex = regionChunkX + regionChunkZ * 32;
+        int chunkIndex = regionChunkX + (regionChunkZ * 32);
 
-        // Calculate new chunk offset and sector count
-        fs.Seek(0, SeekOrigin.End);
-        int newChunkOffset = (int)(fs.Position / 4096);
-        int chunkSectorCount = (compressedData.Length + 4095) / 4096;
+        int headerSize = 4096; // 4 KiB header with 3 bytes for location and 1 byte for size
+        byte[] header = new byte[headerSize];
 
-        // Update chunk location in the header
-        byte[] newChunkHeader = BitConverter.GetBytes((newChunkOffset << 8) | chunkSectorCount);
-        Array.Copy(newChunkHeader, 0, header, chunkIndex * 4, 3);
-
-        // Update the timestamp for the chunk
-        int timestamp = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-        byte[] timestampBytes = BitConverter.GetBytes(timestamp);
-        Array.Copy(timestampBytes, 0, header, 4096 + chunkIndex * 4, 4);
-
-        // Write the updated header back to the file
+        // Read the header at the beginning of the file
         fs.Seek(0, SeekOrigin.Begin);
-        fs.Write(header, 0, header.Length);
+        fs.Read(header, 0, headerSize);
 
-        // Write the compressed chunk data
+        // Find the current offset for the new chunk
+        fs.Seek(0, SeekOrigin.End);
+        int newChunkOffset = (int)(fs.Length / 4096); // Sector-aligned offset
+        if (fs.Length % 4096 != 0) newChunkOffset++;  // Round up if necessary
+
+        // Calculate the number of sectors required for the chunk
+        int chunkSectorCount = (compressedData.Length + 4095) / 4096; // Number of 4KiB sectors needed
+
+        // Update chunk location in the header (3 bytes for offset, 1 byte for sector count)
+        int headerValue = (newChunkOffset << 8) | chunkSectorCount;
+        header[chunkIndex * 4] = (byte)(headerValue >> 16);  // Offset upper byte
+        header[chunkIndex * 4 + 1] = (byte)(headerValue >> 8);  // Offset middle byte
+        header[chunkIndex * 4 + 2] = (byte)(headerValue);  // Offset lower byte
+        header[chunkIndex * 4 + 3] = (byte)chunkSectorCount;  // Sector count
+
+        // Write the updated header back to the beginning of the file
+        fs.Seek(0, SeekOrigin.Begin);
+        fs.Write(header, 0, headerSize);
+
+        // Seek to the new chunk's offset and write the compressed data
         fs.Seek(newChunkOffset * 4096, SeekOrigin.Begin);
         writer.Write(compressedData);
-
-        // Pad the last sector if necessary
-        if (compressedData.Length % 4096 != 0)
-        {
-            writer.Write(new byte[4096 - (compressedData.Length % 4096)]);
-        }
     }
     public static void CloseSet()
     {
         pret = false;
         string json = File.ReadAllText(savePath + "/playerprefab.json");
         PlayerData data = JsonUtility.FromJson<PlayerData>(json);
-
         pos = data.position;
         rot = data.rotation;
         MouseController.xrot = data.mx;
@@ -236,6 +223,7 @@ public class ChunkSerializer
             Directory.CreateDirectory(Path.GetDirectoryName(savePath + "/playerprefab.json"));
             pos =Vector3.zero;
             rot =Quaternion.identity;
+            WorldManager.currenttime = 300;
         }
         else
         {
@@ -246,6 +234,9 @@ public class ChunkSerializer
             rot = data.rotation;
             MouseController.xrot = data.mx;
             MouseController.yrot = data.my;
+            WorldManager.currenttime=data.currentTime;
+            WorldManager w = new();
+            w.PreCalculateTime();
         }
         pret = true;
     }
@@ -261,36 +252,19 @@ public class ChunkSerializer
             rotation = Rot,
             mx = MouseController.xrot,
             my = MouseController.yrot,
+            currentTime = WorldManager.currenttime
         };
         string json = JsonUtility.ToJson(data);
         File.WriteAllText(savePath + "/playerprefab.json", json);
 
     }
-    public static void SaveWorld()
-    {
-        if (!Directory.Exists(savePath))
-            Directory.CreateDirectory(savePath);
-        _ = new
-        BinaryFormatter();
-        _ = new FileStream(savePath + "world.world", FileMode.Create);
-
-    }
     public static byte[,,] ChunkReader(string savePath, int cx, int cz)
     {
-        // Calculate region coordinates
-        int rx = cx / 32;
-        int rz = cz / 32;
-        if (cx < 0 && cx % 32 != 0)
-            rx--;
-        if( cz < 0 && cz % 32 != 0) 
-            rz--;
         // Read the chunk data from the region file
         byte[] chunkData = FindChunkInRegion(savePath, cx, cz);
 
         if (chunkData == null)
         {
-            // If no data is found, return a new empty chunk
-            //Aici trebuie lucrat
             return new byte[16, 160, 16];
         }
 
@@ -320,4 +294,5 @@ public class PlayerData
     public Vector3 position;
     public Quaternion rotation;
     public float mx, my;
+    public float currentTime;
 }

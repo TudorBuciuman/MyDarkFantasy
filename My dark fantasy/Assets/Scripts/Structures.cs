@@ -9,8 +9,6 @@ public static class Structures
         
         if (biome == 0)
             MakeCacti(pos, offset);
-        else if (biome == 1)
-            Water(pos);
         else if (biome > 1)
         {
         
@@ -72,17 +70,11 @@ public static class Structures
         WorldManager.SetTo((int)pos.x , y + height + 1, (int)pos.z, 11);
         WorldManager.SetTo((int)pos.x , y + height + 1, (int)pos.z+1, 11);
         WorldManager.SetTo((int)pos.x + 1, y + height + 1, (int)pos.z, 11);
-    }
-    public static void Water(Vector3 pos)
-    {
-        for(int i=(int)pos.y; i<93; i++) {
-            WorldManager.chunks[(int)pos.x / 16 + 100, (int)pos.z / 16 + 100].Voxels[(int)pos.x%16, i, (int)pos.z % 16] = 9;
-        }
+        
     }
     //pluralul de la cactus
     public static void MakeCacti(Vector3 pos,Vector2 offset)
     {
-        Debug.Log("cacti");
         byte a = 1;
         int b=(int)pos.x;
         int c=(int)pos.z;
