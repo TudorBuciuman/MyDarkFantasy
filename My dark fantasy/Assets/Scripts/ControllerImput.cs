@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class ControllerImput : MonoBehaviour
@@ -14,7 +15,6 @@ public class ControllerImput : MonoBehaviour
     public itemsManager itemsManager;
     public SoundsManager soundTrack;
     public Toolbar toolbar;
-
     public GameObject Hud1;
     public GameObject Hud2;
     public GameObject Hud3;
@@ -29,31 +29,66 @@ public class ControllerImput : MonoBehaviour
     public float jump = 6f;
     public CharacterController controller;
     public GameObject box;
+    public FixedJoystick joystick;
+
+    public InputActionAsset inputActions;
+    private NewControls inputAction;
+    private InputAction androidclick;
+    private InputAction androidPress;
+    private InputActionMap androidActionMap;
+    private InputAction moveAction;
+    private InputAction jumpAction;
+    private InputAction sprintAction;
+    private InputAction ANDRmoveact;
+    private InputAction middleAction;
 
     private bool grounded=true;
     private Vector3 moveDirection = Vector3.zero;
-
+    public Camera cameracontrol;
     public  Quaternion Rotation;
     public  Vector3 Posi=Vector3.zero;
     private float pozX = 0f;
     private float pozZ = 0f;
     private float verticalMomentum=0;
     private bool sprint = false;
-    private bool cansprint=false;
     private bool jumpQm = false;
     public Text Pos;
+    public Text framerate;
+    public short fps=0;
     public float wtime=0,brktime=0;
 
+    private void Awake()
+    {
+        toolbar.openedInv = true;
+#if UNITY_ANDROID
+
+        androidclick= new InputAction(binding: "<Touchscreen>/primaryTouch/tap");
+        androidPress = new InputAction(binding: "<Touchscreen>/press");
+        //ANDRmoveact = androidActionMap.FindAction("joystick");
+        //ANDRmoveact.Enable();
+#endif
+        androidActionMap = inputActions.FindActionMap("Android");
+        sprintAction = inputActions.FindAction("Sprint");
+        androidActionMap.Enable();
+        moveAction = androidActionMap.FindAction("Movement");
+        middleAction = new InputAction(binding: "<Mouse>/middleButton");
+        
+        jumpAction = androidActionMap.FindAction("Jump");
+        jumpAction.Enable();
+        androidActionMap.FindAction("Escape").Enable();
+        androidActionMap.FindAction("Sprint").Enable();
+        moveAction.Enable();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
     void Start()
     {
-        bool esc=Toolbar.escape;
+        bool esc =Toolbar.escape;
         Toolbar.escape = true;
         QualitySettings.vSyncCount = 1;
         UiManager ui = new();
         ui.ReadSet();
         Application.targetFrameRate = 60;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         if (ChunkSerializer.seed == -1)
         {
             SceneManager.LoadScene(1);
@@ -65,22 +100,39 @@ public class ControllerImput : MonoBehaviour
                 ;
             
         }
+        bool newworld=false;
+        controller.enabled = false;
         if (ChunkSerializer.pos != Vector3.zero)
         {
-            controller.enabled = false;
+            wmanager.GenerateWorld();
             transform.position = ChunkSerializer.pos;
             transform.rotation = ChunkSerializer.rot;
         }
         else
         {
-            transform.position = new Vector3(0,80,0);
+            WorldManager.chunks[100,100] = new Chunk(new ChunkCoord(100,100), wmanager);
+            WorldManager.chunks[100, 100].MakeTerrain();
+            newworld = true;
+            transform.position = new Vector3(0,100,0);
         }
-        wmanager.GenerateWorld();
-        controller.enabled = true;
+        
+        if(newworld)
+        {
+            for(int i=120; i>50; i--)
+            {
+                if (WorldManager.chunks[100, 100].Voxels[0, i, 0] != 0)
+                {
+                    transform.position=new Vector3(0,i+2,0);
+                    break;
+                }
+            }
+
+        }
         if (!UiManager.hud)
         {
             Hud1.SetActive(false);
             Hud2.SetActive(false);
+            Pos.gameObject.SetActive(false);
             Hud3.GetComponent<Image>().color=Color.clear;
         }
         if (esc)
@@ -91,19 +143,29 @@ public class ControllerImput : MonoBehaviour
         {
             Toolbar.escape=false;
         }
-        //soundTrack.PlaySong((byte)Random.Range(0, 6));
+        if(Voxeldata.showfps)
+        InvokeRepeating("GetFps", 0, 0.3f);
+
+        toolbar.openedInv = false;
+        controller.enabled = true;
+
+        soundTrack.PlaySong((byte)Random.Range(0, 6));
     }
 
     private void FixedUpdate()
     {
         PlayerControll();
+
+    }
+    public void GetFps() { 
+        fps = ((short)(1f / Time.unscaledDeltaTime));
+        framerate.text = fps.ToString();
     }
     public void PlayerControll()
     {
         if (!Toolbar.escape)
         {
-           // if(moveDirection.y>gravity)
-         //   moveDirection.y -= gravity * Time.deltaTime;
+            
             if (!toolbar.openedInv)
             {
                 HandleMovement();
@@ -118,7 +180,6 @@ public class ControllerImput : MonoBehaviour
             if (jumpQm)
                 Jump();
             controller.Move(new Vector3(0,moveDirection.y,0)*Time.smoothDeltaTime * speed);
-            Pos.text = ((int)transform.position.x + "  " + (int)transform.position.y + "  " + (int)transform.position.z);
         }
         else if (Posi == Vector3.zero)
         {
@@ -151,8 +212,9 @@ public class ControllerImput : MonoBehaviour
             controller.Move(moveDirection * Time.deltaTime * sprintspeed);
         }
         else
+        {
             controller.Move(moveDirection * Time.deltaTime * movementSpeed);
-        
+        }
         verticalMomentum += Time.fixedDeltaTime * gravity;
         moveDirection += Vector3.up * verticalMomentum * Time.deltaTime;
         if (moveDirection.y < 0)
@@ -188,43 +250,168 @@ public class ControllerImput : MonoBehaviour
         {
             wtime-=Time.fixedDeltaTime;
         }
+        Pos.text = ((int)transform.position.x + "  " + (int)transform.position.y + "  " + (int)transform.position.z);
     }
-    void Jump()
+    public void Jump()
     {
+        if (grounded)
+        {
+            verticalMomentum = jump;
+            grounded = false;
+            jumpQm = false;
+        }
+    }
+    public void OnMovement(InputAction.CallbackContext context)
+    {
+        Vector2 movementInput = context.ReadValue<Vector2>();
+        pozX = movementInput.x;
+        pozZ = movementInput.y;
+    }
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if (!sprint)
+        {
+            sprint = true;
+            cameracontrol.GetComponent<Camera>().fieldOfView = 65;
 
-        verticalMomentum = jump;
-        grounded = false;
-        jumpQm = false;
+        }
+        else
+        {
+            sprint = false;
+            cameracontrol.GetComponent<Camera>().fieldOfView = 60;
+        }
+    }
+    void OnEnable()
+    {
+        // Enable the actions
+        moveAction.Enable();
 
+        sprintAction.Enable();
+        middleAction.performed += OnMiddleClicking;
+        middleAction.canceled += OnMiddleClicking;
+        middleAction.Enable();
+        sprintAction.performed += OnSprint;
+
+        
+
+        moveAction.performed += OnMovement;
+        moveAction.canceled += OnMovement;
+        if (androidclick!=null)
+        {
+            androidclick.Enable();
+            androidclick.performed += OnClicking1;
+            androidclick.canceled += OnClicking1;
+
+            androidPress.Enable();
+            androidPress.performed += OnClicking2;
+            androidPress.canceled += OnClicking2;
+
+            ANDRmoveact.performed += OnJoystickMovement;
+            ANDRmoveact.canceled += OnJoystickMovement;
+            ANDRmoveact.Enable();
+        }
+
+    }
+    public void OnMiddleClicking(InputAction.CallbackContext context)
+    {
+        float step = 0.1f;
+
+        while (step <= 5)
+        {
+
+            time = 0.1f;
+            Vector3 pos = cam.position + (cam.forward * step);
+            if (wmanager.IsBlock(pos.x, pos.y, pos.z))
+            {
+                toolbar.SearchInInventory(wmanager.Block(pos.x, pos.y, pos.z));
+                break;
+            }
+            step += 0.2f;
+        }
     }
     void HandleMovement()
     {
-        pozX = Input.GetAxis("Horizontal");
-        pozZ = Input.GetAxis("Vertical");
-        
-        if (Input.GetKey(KeyCode.W))
+        if(jumpAction.IsPressed())
         {
-            cansprint = true;
+            if (grounded)
+            {
+                moveDirection.y = jump;
+                grounded = false;
+                jumpQm = true;
+            }
         }
-        else
-            cansprint = false;
-       
-        if (cansprint && Input.GetKey(KeyCode.R))
-        {
-            sprint = true;
-        }
-        else if(!cansprint && sprint) 
-            sprint = false;
+        //pozX = joystick.Horizontal;
+        //pozZ = joystick.Vertical;
+    }
+    public void OnJoystickMovement(InputAction.CallbackContext context)
+    {
+        Vector2 movementInput = context.ReadValue<Vector2>();
+        pozX = movementInput.x;
+        pozZ = movementInput.y;
+        Debug.Log(pozX + " " + pozZ);
+    }
 
-        
-        if (Input.GetButton("Jump") && grounded)
-        {
-            moveDirection.y = jump;
-            grounded = false;
-            jumpQm = true;
+    public void OnClicking1(InputAction.CallbackContext context)
+    {
+        if (time <= 0) {
+            if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].utility < 10)
+            {
+                float step = 0.1f;
+                Vector3 lastPos = new Vector3();
+                while (step <= 5)
+                {
+                    Vector3 pos = cam.position + (cam.forward * step);
+                    if (wmanager.IsBlock(pos.x, pos.y, pos.z))
+                    {
+                        if (CanPlace(lastPos))
+                        {
+                            time = 0.2f;
+                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), toolbar.item[0, Toolbar.slothIndex]);
+                            toolbar.UpdateAnItem(Toolbar.slothIndex);
+                        }
+                        break;
+                    }
+                    lastPos = pos;
+                    step += 0.2f;
+                }
+            }
+            else
+            {
+                float step = 0.1f;
+                Vector3 lastPos = new Vector3();
+                while (step <= 5)
+                {
+                    Vector3 pos = cam.position + (cam.forward * step);
+                    if (wmanager.IsBlock(pos.x, pos.y, pos.z))
+                    {
+                        if (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility >= 2)
+                        {
+                            switch (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility)
+                            {
+                                case 2:
+                                    toolbar.OpenInventory(1);
+                                    break;
+                                case 3:
+                                    toolbar.OpenInventory(2);
+                                    break;
+                                case 4:
+                                    toolbar.OpenInventory(3);
+                                    break;
+                            }
+                        }
+                        time = 0.2f;
+                        break;
+                    }
+                    lastPos = pos;
+                    step += 0.2f;
+                
+            }
         }
-       
-
+    }
+    }
+    public void OnClicking2(InputAction.CallbackContext context)
+    {
+        Debug.Log(2);
     }
     public bool front
     {
@@ -342,15 +529,15 @@ public class ControllerImput : MonoBehaviour
 
     }
 
-    private float time = 0,holdtme=0;
+    public float time = 0,holdtme=0;
     public static int a, b, c;
-    private bool breac=false;
+    public bool breac=false;
     void HandleMouseInput()
     {
 
         if (Input.GetMouseButton(0)) // Left mouse button/break
         {
-            if (toolbar.item[0, toolbar.slothIndex]>0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility == 10)
+            if (toolbar.item[0, Toolbar.slothIndex]>0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].utility == 10)
             {
                 if (!breac)
                 {
@@ -414,7 +601,7 @@ public class ControllerImput : MonoBehaviour
                     step += 0.1f;
                 }
             }
-            else if(toolbar.item[0, toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility == 11)
+            else if(toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].utility == 11)
             {
                 if (!breac)
                 {
@@ -496,7 +683,7 @@ public class ControllerImput : MonoBehaviour
         //right click
         if (Input.GetMouseButton(1) && time<=0)
         {
-            if (toolbar.item[0, toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, toolbar.slothIndex]].utility <10)
+            if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].utility <10)
             {
                 float step = 0.1f;
                 Vector3 lastPos = new Vector3();
@@ -508,8 +695,8 @@ public class ControllerImput : MonoBehaviour
                         if (CanPlace(lastPos))
                         {
                             time = 0.2f;
-                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), toolbar.item[0, toolbar.slothIndex]);
-                            toolbar.UpdateAnItem(toolbar.slothIndex);
+                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), toolbar.item[0, Toolbar.slothIndex]);
+                            toolbar.UpdateAnItem(Toolbar.slothIndex);
                         }
                         break;
                     }

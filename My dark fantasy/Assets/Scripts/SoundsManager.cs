@@ -1,13 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Networking;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class SoundsManager : MonoBehaviour
 {
@@ -23,7 +17,7 @@ public class SoundsManager : MonoBehaviour
     
     public void Start()
     {
-        string settingsPath = Path.Combine(Application.dataPath, "Settings/settings.json");
+        string settingsPath = Path.Combine(Application.persistentDataPath, "Settings/settings.json");
         string json = File.ReadAllText(settingsPath);
         SettingsData data = JsonUtility.FromJson<SettingsData>(json);
         if (!data.totalsound)

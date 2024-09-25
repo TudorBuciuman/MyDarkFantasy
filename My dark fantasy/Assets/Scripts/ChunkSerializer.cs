@@ -1,12 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
-using System;
 using System.IO.Compression;
-using Unity.VisualScripting;
 public class ChunkSerializer
 {
     public static string savePath;
@@ -136,6 +131,10 @@ public class ChunkSerializer
         if (!File.Exists(fileName))
         {
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+            int hs = 4096; 
+            byte[] head = new byte[hs];
+            using FileStream fss = new(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            fss.Write(head, 0, 4096);
         }
         byte[] chunkData = new byte[16 * 16 * 160];
         int index = 0;
@@ -176,30 +175,39 @@ public class ChunkSerializer
         int headerSize = 4096; // 4 KiB header with 3 bytes for location and 1 byte for size
         byte[] header = new byte[headerSize];
 
-        // Read the header at the beginning of the file
         fs.Seek(0, SeekOrigin.Begin);
         fs.Read(header, 0, headerSize);
+        int newChunkOffset;
 
-        // Find the current offset for the new chunk
-        fs.Seek(0, SeekOrigin.End);
-        int newChunkOffset = (int)(fs.Length / 4096); // Sector-aligned offset
-        if (fs.Length % 4096 != 0) newChunkOffset++;  // Round up if necessary
+        fs.Seek(chunkIndex * 4, SeekOrigin.Begin);
+        byte[] entry = reader.ReadBytes(4);
 
-        // Calculate the number of sectors required for the chunk
+        int chunkOffset = (entry[0] << 8) | (entry[1]);
+        if (chunkOffset <= 0)
+        {
+            //se creaza o pozitie noua
+            fs.Seek(0, SeekOrigin.End);
+            newChunkOffset = (int)(fs.Length / 4096);
+            if (fs.Length % 4096 != 0) 
+                newChunkOffset++;
+        }
+        else
+        {
+            //pozitie gasita deja
+            newChunkOffset = chunkOffset;
+        }
+
         int chunkSectorCount = (compressedData.Length + 4095) / 4096; // Number of 4KiB sectors needed
 
-        // Update chunk location in the header (3 bytes for offset, 1 byte for sector count)
         int headerValue = (newChunkOffset << 8) | chunkSectorCount;
-        header[chunkIndex * 4] = (byte)(headerValue >> 16);  // Offset upper byte
-        header[chunkIndex * 4 + 1] = (byte)(headerValue >> 8);  // Offset middle byte
-        header[chunkIndex * 4 + 2] = (byte)(headerValue);  // Offset lower byte
-        header[chunkIndex * 4 + 3] = (byte)chunkSectorCount;  // Sector count
+        header[chunkIndex * 4] = (byte)(headerValue >> 16);  
+        header[chunkIndex * 4 + 1] = (byte)(headerValue >> 8);  
+        header[chunkIndex * 4 + 2] = (byte)(headerValue);  
+        header[chunkIndex * 4 + 3] = (byte)chunkSectorCount;  
 
-        // Write the updated header back to the beginning of the file
         fs.Seek(0, SeekOrigin.Begin);
         fs.Write(header, 0, headerSize);
 
-        // Seek to the new chunk's offset and write the compressed data
         fs.Seek(newChunkOffset * 4096, SeekOrigin.Begin);
         writer.Write(compressedData);
     }

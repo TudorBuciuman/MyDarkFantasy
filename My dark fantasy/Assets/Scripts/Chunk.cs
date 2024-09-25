@@ -1,15 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Data;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
 public class Chunk
 {
+    private readonly object listLock = new object();
     public byte[,,] Voxels = new byte[16, 160, 16];
     private readonly ChunkCoord Coord;
     public BiomeAttributes[,] biome;
@@ -91,7 +85,7 @@ public class Chunk
         }
         SetBlock(0, (byte)heightm[0,2]+1, 2, 17);
         SetBlock(5, (byte)heightm[5,3]+1, 3, 18);
-        lock(this){
+        lock(listLock){
             ChunkSerializer.loadedChunks.Add((Coord.x, Coord.y), Voxels);
         }
     }

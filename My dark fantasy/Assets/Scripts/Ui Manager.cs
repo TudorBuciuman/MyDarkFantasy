@@ -5,8 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEditor.PlayerSettings;
-
 public class UiManager : MonoBehaviour
 {
     public static string scene=null;
@@ -19,6 +17,7 @@ public class UiManager : MonoBehaviour
     public Text renderdis;
     public Slider disSlider;
     public Toggle hudqm;
+    public Toggle showfps;
     public static bool hud=true;
 
     public Text sensiv;
@@ -44,31 +43,31 @@ public class UiManager : MonoBehaviour
     }
     public void ReadSet()
     {
-        if (!File.Exists(Path.Combine(Application.dataPath + "/Settings/settings.json")))
+        if (!File.Exists(Path.Combine(Application.persistentDataPath + "/Settings/settings.json")))
         {
             MouseController.sensivity = 400;
-            Directory.CreateDirectory(Path.GetDirectoryName(Application.dataPath + "/Settings/settings.json"));
+            Directory.CreateDirectory(Path.GetDirectoryName(Application.persistentDataPath + "/Settings/settings.json"));
             SettingsData data = new()
             {
                 render = 2,
                 sens = 40,
-                hud = true
+                hud = true,
+                showfps = false
             };
             hud = true;
             string json = JsonUtility.ToJson(data);
-            File.WriteAllText(Path.Combine(Application.dataPath + "/Settings/settings.json"), json);
+            File.WriteAllText(Path.Combine(Application.persistentDataPath + "/Settings/settings.json"), json);
         }
         else
         {
-            string json = File.ReadAllText(Path.Combine(Application.dataPath + "/Settings/settings.json"));
+            string json = File.ReadAllText(Path.Combine(Application.persistentDataPath + "/Settings/settings.json"));
             SettingsData data = JsonUtility.FromJson<SettingsData>(json);
-
-            MouseController.sensivity = 10 * data.sens;
+            Voxeldata.showfps = data.showfps;
+            MouseController.sensivity = data.sens*10;
             Voxeldata.NumberOfChunks = data.render;
                 hud = data.hud;
         }
     }
-
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
@@ -82,7 +81,7 @@ public class UiManager : MonoBehaviour
     private void LoadSettingsScene()
     {
         // Now the scene is loaded, proceed with your logic
-        string settingsPath = Path.Combine(Application.dataPath, "Settings/settings.json");
+        string settingsPath = Path.Combine(Application.persistentDataPath, "Settings/settings.json");
         if (!File.Exists(settingsPath))
         {
             MouseController.sensivity = 400;
@@ -94,6 +93,7 @@ public class UiManager : MonoBehaviour
                 sens = 40,
                 hud = true,
                 totalsound = true,
+                showfps = false,
                 movementlevel = 100,
                 musiclevel = 100
             };
@@ -101,7 +101,7 @@ public class UiManager : MonoBehaviour
             hud = true;
             string json = JsonUtility.ToJson(data);
             File.WriteAllText(settingsPath, json);
-
+            showfps.isOn = false;
             disSlider.value = data.render;
             sensivslid.value = data.sens;
             musicSlider.value=data.musiclevel;
@@ -128,6 +128,7 @@ public class UiManager : MonoBehaviour
             soundsSlider.value = data.movementlevel;
             hudqm.isOn = data.hud;
             audioqm.isOn = data.totalsound;
+            showfps.isOn = data.showfps;
             renderdis.text = ("Render  distance  " + data.render).ToString();
             sensiv.text = ("Mouse  sensivity  " + data.sens).ToString();
             musictext.text = ("Music   volume  " + data.musiclevel).ToString();
@@ -141,12 +142,13 @@ public class UiManager : MonoBehaviour
             render = (byte)(disSlider.value),
             sens = (byte)(sensivslid.value),
             hud = hudqm.isOn,
+            showfps = showfps.isOn,
             totalsound = audioqm,
             movementlevel = (byte)soundsSlider.value,
             musiclevel = (byte)musicSlider.value
         };
         string json = JsonUtility.ToJson(data);
-        File.WriteAllText(Path.Combine(Application.dataPath + "/Settings/settings.json"), json);
+        File.WriteAllText(Path.Combine(Application.persistentDataPath + "/Settings/settings.json"), json);
 
         if (scene.Contains("World"))
         {
@@ -200,4 +202,5 @@ public class SettingsData
     public bool totalsound = true;
     public byte movementlevel = 50;
     public byte musiclevel = 50;
+    public bool showfps = false;
 }

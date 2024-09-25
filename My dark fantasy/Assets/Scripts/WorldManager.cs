@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
-using UnityEngine.UI;
 using System.Threading;
-using UnityEngine.SceneManagement;
-using System.Linq;
+using System.IO;
+using UnityEngine.UIElements;
+using Unity.VisualScripting;
+using JetBrains.Annotations;
 
 
 public class WorldManager : MonoBehaviour
@@ -486,4 +485,44 @@ public class BlockProprieties
             _ => -1,
         };
     }
+}
+
+[System.Serializable]
+public class allItems
+{
+    public Items[] items;
+}
+[System.Serializable]
+public class Items
+{
+    public string Name;
+    public byte place;
+    public byte itemtexture;
+    public bool isblock;
+    public Blocks blocks;
+    public Tool tool;
+    public normalitem item;
+}
+
+[System.Serializable]
+public class Blocks
+{
+    public byte backfacetexture;
+    public byte frontfacetexture;
+    public byte topfacetexture;
+    public byte bottomfacetexture;
+    public byte leftfacetexture;
+    public byte rightfacetexture;
+    public float breakTime;
+}
+[System.Serializable]
+public class Tool
+{
+    public byte id;
+    public byte damage;
+}
+[System.Serializable]
+public class normalitem
+{
+    public byte coolfunction;
 }

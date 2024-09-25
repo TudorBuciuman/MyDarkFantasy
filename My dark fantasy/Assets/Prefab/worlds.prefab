@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   random: 0
-  name: {fileID: 0}
+  Wname: {fileID: 0}
   img: {fileID: 0}
   Text: {fileID: 0}
   create: {fileID: 0}
@@ -148,6 +148,11 @@ MonoBehaviour:
   seed: {fileID: 0}
   world: {fileID: 0}
   worldParent: {fileID: 0}
+  deleteqm: {fileID: 0}
+  deleteornot: {fileID: 0}
+  changewname: {fileID: 0}
+  copywseed: {fileID: 0}
+  save: {fileID: 0}
 --- !u!1 &3118390683409050504
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +276,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4603652354357537238}
         m_TargetAssemblyTypeName: NewWorld, Assembly-CSharp
-        m_MethodName: EditWorld
+        m_MethodName: TryEditWorld
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

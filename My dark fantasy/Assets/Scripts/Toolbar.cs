@@ -1,17 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Threading;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
 using System.IO;
 using System;
 public class Toolbar : MonoBehaviour
 {
     
     public WorldManager World;
+    public NewControls inputActions;
     public ControllerImput control;
     public Crafting craft;
     public RectTransform highlight;
@@ -22,11 +20,13 @@ public class Toolbar : MonoBehaviour
     public Image inventory;
     public Image UIEscape;
     public Image select;
+    public Button openInv;
+    public Button closeInv;
 
     public byte[,] item = new byte[4, 9];
     public byte[,] itemsize = new byte[4, 9];
     public byte selectedsloth;
-    public byte slothIndex = 0;
+    public static byte slothIndex = 0;
     float time = 0f;
     public bool openedInv = false;
     public static bool escape = false;
@@ -34,8 +34,16 @@ public class Toolbar : MonoBehaviour
     public PointerEventData faranume;
     public GraphicRaycaster raycaster;
     public EventSystem eventSystem;
+    private void Awake()
+    {
+#if UNITY_ANDROID
+        openInv.gameObject.SetActive(true);
+#endif
+    }
     void Start()
     {
+        inputActions = new NewControls();
+        inputActions.Android.Enable();
         ReadForInventory();
         for (int i=0; i<9; i++)
         {
@@ -76,6 +84,7 @@ public class Toolbar : MonoBehaviour
                 highlight.position = itemSlots[slothIndex].image.transform.position;
                 World.selectedSlot = (byte)slothIndex;
             }
+
         }
         else 
         {
@@ -84,9 +93,8 @@ public class Toolbar : MonoBehaviour
         }
         if (!escape)
         {
-            if (Input.GetKey(KeyCode.E) && time <= 0)
+            if (inputActions.Android.OpenInv.triggered)
             {
-                time = 0.4f;
                 if (openedInv)
                 {
                     CloseInventory();
@@ -316,13 +324,32 @@ public class Toolbar : MonoBehaviour
         }
     }
     public byte lastitem=255;
+    public void Changesloth(byte a)
+    {
+
+         slothIndex = a;
+        highlight.position = itemSlots[slothIndex].image.transform.position;
+        World.selectedSlot = (byte)slothIndex;
+
+    }
     public void TryCrafting(byte id)
     {
         craft.CraftScreen(id);
     }
-
+    public void OpenInventoryAnd()
+    {
+        OpenInventory(0);
+        closeInv.gameObject.SetActive(true);
+    }
+    public void CloseInvAnd()
+    {
+        closeInv.gameObject.SetActive(false);
+        CloseInventory();
+    }
     public void ReadForInventory()
     {
+        while (ChunkSerializer.savePath.Length == 0)
+            ; 
         string filePath = Path.Combine(ChunkSerializer.savePath, "playerData.json");
         if (File.Exists(filePath))
         {
@@ -665,6 +692,66 @@ public class Toolbar : MonoBehaviour
         {
             invimg[id].num.text = num.ToString();
         }
+    }
+    public void SearchInInventory(byte id)
+    {
+        for(byte i = 0; i<9; i++)
+        {
+            if (item[0, i] == id)
+            {
+                slothIndex = i;
+                highlight.position = itemSlots[slothIndex].image.transform.position;
+                return;
+            }
+        }
+        for(int i=1; i<4; i++)
+        {
+            for(int j=0; j<9; j++)
+            {
+                if (item[i, j] == id)
+                {
+                    if (item[0, slothIndex] == 0)
+                    {
+                        itemsize[0, slothIndex] = itemsize[i, j];
+                        itemSlots[slothIndex].image.sprite = World.blockTypes[id].icon;
+                        itemSlots[slothIndex].num.text = itemsize[i,j].ToString();
+
+                        itemsize[i, j] = 0;
+                        item[0, slothIndex] = id;
+                        item[i, j] = 0;
+                        return;
+                    }
+                    else
+                    {
+                        for(byte k=0; k<9; k++)
+                        {
+                            if (item[0, k] == 0)
+                            {
+                                slothIndex = k;
+                                highlight.position = itemSlots[slothIndex].image.transform.position;
+                                itemsize[0, slothIndex] = itemsize[i, j];
+                                itemSlots[slothIndex].image.sprite = World.blockTypes[id].icon;
+                                itemSlots[slothIndex].num.text = itemsize[i, j].ToString();
+                                itemsize[i, j] = 0;
+                                item[0, slothIndex] = id;
+                                item[i, j] = 0;
+                                return;
+                            }
+                        }
+                    }
+                    itemSlots[slothIndex].image.sprite = World.blockTypes[id].icon;
+                    
+                    byte a = itemsize[0,slothIndex], b= item[0, slothIndex];
+                    itemSlots[slothIndex].num.text = itemsize[i, j].ToString();
+                    itemsize[0, slothIndex] = itemsize[i, j];
+                    itemsize[i, j] = a;
+                    item[0, slothIndex] = id;
+                    item[i, j] = b;
+                    return;
+                }
+            }
+        }
+
     }
 }
     [System.Serializable]
