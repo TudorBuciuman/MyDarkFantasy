@@ -18,7 +18,7 @@ public class MouseController : MonoBehaviour
     void Update()
     {
         if (!toolbar.openedInv)
-         Manage();
+        Manage();
         //AndroidMovement();
         //pentru android trebuie folosita prima si pentru pc a doua
     }

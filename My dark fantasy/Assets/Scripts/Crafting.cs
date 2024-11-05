@@ -66,7 +66,7 @@ public class Crafting : MonoBehaviour
                     ind[options] = p;
                     e[p] = k;
                     GameObject c = Instantiate(Prefa, transform);
-                    c.GetComponentInChildren<Image>().sprite = world.blockTypes[recipes[p].id].icon;
+                    c.GetComponentInChildren<Image>().sprite = world.blockTypes[recipes[p].id].itemSprite;
                     if (k < 255)
                         c.GetComponentInChildren<Text>().text = k.ToString();
                     else
@@ -126,7 +126,7 @@ public class Crafting : MonoBehaviour
                         ind[options] = p;
                         e[p] = k;
                         GameObject c = Instantiate(Prefa, transform);
-                        c.GetComponentInChildren<Image>().sprite = world.blockTypes[recipes[p].id].icon;
+                        c.GetComponentInChildren<Image>().sprite = world.blockTypes[recipes[p].id].itemSprite;
                         if (k < 255)
                             c.GetComponentInChildren<Text>().text = k.ToString();
                         else

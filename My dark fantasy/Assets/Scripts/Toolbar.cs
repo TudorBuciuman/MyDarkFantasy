@@ -20,12 +20,14 @@ public class Toolbar : MonoBehaviour
     public Image inventory;
     public Image UIEscape;
     public Image select;
+    public Button playSong;
     public Button openInv;
     public Button closeInv;
 
     public byte[,] item = new byte[4, 9];
     public byte[,] itemsize = new byte[4, 9];
     public byte selectedsloth;
+    //slothIndex este intre 0->9 iar selectedsloth e pentru cand deschizi inv
     public static byte slothIndex = 0;
     float time = 0f;
     public bool openedInv = false;
@@ -34,23 +36,24 @@ public class Toolbar : MonoBehaviour
     public PointerEventData faranume;
     public GraphicRaycaster raycaster;
     public EventSystem eventSystem;
-    private void Awake()
-    {
-#if UNITY_ANDROID
-        openInv.gameObject.SetActive(true);
-#endif
-    }
     void Start()
     {
         inputActions = new NewControls();
         inputActions.Android.Enable();
+        for(int j=0; j<4; j++) {
+            for (int i = 0; i < 9; i++)
+            {
+                item[j, i] = 0;
+                itemsize[j, i] = 0;
+            }
+        }
         ReadForInventory();
         for (int i=0; i<9; i++)
         {
             if (item[0,i] >0)
             {
-                itemSlots[i].image.sprite = World.blockTypes[item[0, i]].icon;
-                if (World.blockTypes[item[0, i]].utility < 10)
+                itemSlots[i].image.sprite = World.blockTypes[item[0, i]].itemSprite;
+                if (World.blockTypes[item[0, i]].Items.isblock)
                 {
                     itemSlots[i].num.text = itemsize[0, i].ToString();
                     
@@ -82,7 +85,6 @@ public class Toolbar : MonoBehaviour
                 if (slothIndex == 9)
                     slothIndex = 0;
                 highlight.position = itemSlots[slothIndex].image.transform.position;
-                World.selectedSlot = (byte)slothIndex;
             }
 
         }
@@ -120,9 +122,11 @@ public class Toolbar : MonoBehaviour
     }
     public void SearchForImput()
     {
-        faranume = new PointerEventData(eventSystem);
-        faranume.position = Input.mousePosition ;
-        List<RaycastResult> results = new List<RaycastResult>();
+        faranume = new PointerEventData(eventSystem)
+        {
+            position = Input.mousePosition
+        };
+        List<RaycastResult> results = new();
         raycaster.Raycast(faranume,results);
         foreach (var slot in results)
         {
@@ -141,7 +145,7 @@ public class Toolbar : MonoBehaviour
                 
                 if (selectedsloth<36 && f!=36)
                 {
-                    if (f != 50)
+                    if (f != 50 && f!=37)
                     {
                         if (selectedsloth == f)
                         {
@@ -157,7 +161,7 @@ public class Toolbar : MonoBehaviour
 
                             select.gameObject.SetActive(false);
                             invimg[selectedsloth].image.sprite = invimg[f].image.sprite;
-                            invimg[f].image.sprite = World.blockTypes[0].icon;
+                            invimg[f].image.sprite = World.blockTypes[0].itemSprite;
                             invimg[selectedsloth].num.text = invimg[f].num.text;
                             invimg[f].num.text = null;
                             selectedsloth = 50;
@@ -166,7 +170,7 @@ public class Toolbar : MonoBehaviour
                         {
                             if (itemsize[selectedsloth / 9, selectedsloth % 9] + itemsize[f / 9, f % 9] <= 96)
                             {
-                                invimg[f].image.sprite = World.blockTypes[0].icon;
+                                invimg[f].image.sprite = World.blockTypes[0].itemSprite;
                                 itemsize[selectedsloth / 9, selectedsloth % 9] += itemsize[f / 9, f % 9];
                                 itemsize[f / 9, f % 9] = 0;
                                 item[f / 9, f % 9] = 0;
@@ -191,11 +195,16 @@ public class Toolbar : MonoBehaviour
                             item[selectedsloth / 9, selectedsloth % 9] = b;
                             invimg[selectedsloth].num.text = itemsize[selectedsloth / 9, selectedsloth % 9].ToString();
                             invimg[f].num.text = itemsize[f / 9, f % 9].ToString();
-                            invimg[selectedsloth].image.sprite = World.blockTypes[item[selectedsloth / 9, selectedsloth % 9]].icon;
-                            invimg[f].image.sprite = World.blockTypes[item[f / 9, f % 9]].icon;
+                            invimg[selectedsloth].image.sprite = World.blockTypes[item[selectedsloth / 9, selectedsloth % 9]].itemSprite;
+                            invimg[f].image.sprite = World.blockTypes[item[f / 9, f % 9]].itemSprite;
                         }
                         select.gameObject.SetActive(false);
                         selectedsloth = 50;
+                    }
+                    else if (f == 37 && selectedsloth<36)
+                    {
+                        select.transform.position = img.transform.position;
+                        select.gameObject.SetActive(true);
                     }
                     else
                     {
@@ -284,7 +293,7 @@ public class Toolbar : MonoBehaviour
                 Image img = slot.gameObject.GetComponent<Image>();
                 for (byte i=0; i<craft.options; i++)
                 {
-                    if (World.blockTypes[craft.recipes[craft.ind[i]].id].icon.name == img.sprite.name)
+                    if (World.blockTypes[craft.recipes[craft.ind[i]].id].itemSprite.name == img.sprite.name)
                     {
                         if (i != lastitem)
                         {
@@ -313,7 +322,7 @@ public class Toolbar : MonoBehaviour
                             craft.itemcreated = 255;
                             if (craft.sizeofitem == 0)
                             {
-                                invimg[36].image.sprite = World.blockTypes[0].icon;
+                                invimg[36].image.sprite = World.blockTypes[0].itemSprite;
                                 if(selectedsloth==36)
                                     selectedsloth = 50;
                             }
@@ -326,11 +335,8 @@ public class Toolbar : MonoBehaviour
     public byte lastitem=255;
     public void Changesloth(byte a)
     {
-
-         slothIndex = a;
+        slothIndex = a;
         highlight.position = itemSlots[slothIndex].image.transform.position;
-        World.selectedSlot = (byte)slothIndex;
-
     }
     public void TryCrafting(byte id)
     {
@@ -354,9 +360,9 @@ public class Toolbar : MonoBehaviour
         if (File.Exists(filePath))
         {
             string jsonString = File.ReadAllText(filePath);
-
             PlayerDataOpener playerData = JsonUtility.FromJson<PlayerDataOpener>(jsonString);
-            foreach(ItemSave data in playerData.inventory)
+            slothIndex =playerData.slothid;
+            foreach (ItemSave data in playerData.inventory)
             {
                 item[data.sloth/9, data.sloth%9]=data.itemID;
                 itemsize[data.sloth/9,data.sloth%9]=data.quantity;
@@ -364,18 +370,19 @@ public class Toolbar : MonoBehaviour
         }
         else
         {
-            PlayerDataOpener playerData = new PlayerDataOpener
+            PlayerDataOpener playerData = new ()
             {
                 playerName = "Steve",
                 health = 20,
+                slothid = 0,
                 experienceLevel = 0,
                 inventory = new ItemSave[3]
             {
-                new ItemSave { itemName = "Wood Sword", itemID = 19, quantity = 1,sloth=0 ,
+                new(){ itemName = "Wood Sword", itemID = 19, quantity = 1,sloth=0 ,
                    properties = new ItemProperties { damage = 5, speed =0.7f }},
-                new ItemSave { itemName = "Wood Pickaxe", itemID = 13, quantity = 1,sloth=1 ,
+                new() { itemName = "Wood Pickaxe", itemID = 13, quantity = 1,sloth=1 ,
                    properties = new ItemProperties { special=0, speed =0.7f } },
-                new ItemSave { itemName = "Wood Axe", itemID = 20, quantity = 1,sloth=2 ,
+                new() { itemName = "Wood Axe", itemID = 20, quantity = 1,sloth=2 ,
                    properties = new ItemProperties { special=0,speed =0.7f } }
             }
             };
@@ -387,14 +394,16 @@ public class Toolbar : MonoBehaviour
                 itemsize[data.sloth/9,data.sloth%9]=data.quantity;
             }
         }
+        highlight.position = itemSlots[slothIndex].image.transform.position;
 
     }
     public void SaveInventory()
     {
-        PlayerDataOpener playerData = new PlayerDataOpener
+        PlayerDataOpener playerData = new ()
         {
             playerName = "Steve",
             health = 20,
+            slothid =slothIndex,
             experienceLevel = 0,
             inventory = new ItemSave[36]
         };
@@ -446,7 +455,7 @@ public class Toolbar : MonoBehaviour
         crosshair.gameObject.SetActive(false);
         invimg[37].image.gameObject.SetActive(true);
         invimg[36].image.gameObject.SetActive(true);
-        invimg[36].image.sprite = World.blockTypes[0].icon;
+        invimg[36].image.sprite = World.blockTypes[0].itemSprite;
         selectedsloth = 50;
         
         for(int i=0; i<4; i++)
@@ -456,8 +465,8 @@ public class Toolbar : MonoBehaviour
                 if (itemsize[i,j] != 0)
                 {
                     invimg[(i * 9) + j].image.gameObject.SetActive(true);
-                    invimg[i*9+j].image.sprite = World.blockTypes[item[i,j]].icon;
-                    if (World.blockTypes[item[i, j]].utility <10)
+                    invimg[i*9+j].image.sprite = World.blockTypes[item[i,j]].itemSprite;
+                    if (World.blockTypes[item[i, j]].Items.isblock)
                     {
                         invimg[i * 9 + j].num.gameObject.SetActive(true);
                         invimg[i * 9 + j].num.text = itemsize[i, j].ToString();
@@ -466,7 +475,7 @@ public class Toolbar : MonoBehaviour
                 else if (itemsize[i,j] == 0 || item[i,j]==0)
                 {
                     invimg[i * 9 + j].image.gameObject.SetActive(true);
-                    invimg[i * 9 + j].image.sprite = World.blockTypes[0].icon;
+                    invimg[i * 9 + j].image.sprite = World.blockTypes[0].itemSprite;
                 }
             }
         }
@@ -484,7 +493,7 @@ public class Toolbar : MonoBehaviour
             {
                 if (item[i, j]==id)
                 {
-                    if (itemsize[i,j]+size<96)
+                    if (itemsize[i,j]+size<=96)
                     {
                         itemsize[i, j]+=size;
                         size = 0;
@@ -492,12 +501,17 @@ public class Toolbar : MonoBehaviour
                         {
                             itemSlots[j].num.text = itemsize[i,j].ToString();
                         }
-                        break;
+                        j = 9;
+                        i = 4;
                     }
                     else if(itemsize[i, j] < 96)
                     {
                         size -= (byte)(96 - itemsize[i, j]);
                         itemsize[i, j] = 96;
+                        if (i < 1)
+                        {
+                            itemSlots[j].num.text = itemsize[i, j].ToString();
+                        }
                     }
                 }
             }
@@ -515,10 +529,11 @@ public class Toolbar : MonoBehaviour
                         size = 0;
                         if (i < 1)
                         {
-                            itemSlots[j].image.sprite = World.blockTypes[id].icon;
+                            itemSlots[j].image.sprite = World.blockTypes[id].itemSprite;
                             itemSlots[j].num.text = itemsize[i,j].ToString();
                         }
-                        break;
+                        i = 4;
+                        j = 9;
                     }
                 }
             }
@@ -601,15 +616,15 @@ public class Toolbar : MonoBehaviour
         {
             if (item[0, i] > 0)
             {
-                itemSlots[i].image.sprite = World.blockTypes[item[0, i]].icon;
-                if (World.blockTypes[item[0, i]].utility <10)
+                itemSlots[i].image.sprite = World.blockTypes[item[0, i]].itemSprite;
+                if (World.blockTypes[item[0, i]].Items.isblock)
                     itemSlots[i].num.text = itemsize[0, i].ToString();
                 else
                     itemSlots[i].num.text = null;
             }
             else 
             {
-                itemSlots[i].image.sprite = World.blockTypes[0].icon;
+                itemSlots[i].image.sprite = World.blockTypes[0].itemSprite;
                 itemSlots[i].num.text = null;
             }
         }
@@ -622,7 +637,7 @@ public class Toolbar : MonoBehaviour
         Debug.Log(WorldManager.chunkstosave.Count);
         Application.runInBackground = true;
         SaveInventory();
-        ChunkSerializer.savePlayerData(control.playerPos(), control.playerRot());
+        ChunkSerializer.savePlayerData(control.PlayerPos(), control.PlayerRot());
         for (int i = 0; i<WorldManager.chunkstosave.Count; i++)
         {
             ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.chunks[WorldManager.chunkstosave[i].x+100, WorldManager.chunkstosave[i].y+100].Voxels;
@@ -645,7 +660,7 @@ public class Toolbar : MonoBehaviour
         //sunt obosit si plictisit ;<
         Application.runInBackground = true;
         SaveInventory();
-        ChunkSerializer.savePlayerData(control.playerPos(), control.playerRot());
+        ChunkSerializer.savePlayerData(control.PlayerPos(), control.PlayerRot());
         for (int i = 0; i < WorldManager.chunkstosave.Count; i++)
         {
             ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.chunks[WorldManager.chunkstosave[i].x + 100, WorldManager.chunkstosave[i].y + 100].Voxels;
@@ -665,9 +680,9 @@ public class Toolbar : MonoBehaviour
         byte num= itemsize[0, id];
         if (num == 0)
         {
-            itemSlots[id].image.sprite = World.blockTypes[0].icon;
+            itemSlots[id].image.sprite = World.blockTypes[0].itemSprite;
             itemSlots[id].num.text=null;
-            invimg[id].image.sprite= World.blockTypes[0].icon;
+            invimg[id].image.sprite= World.blockTypes[0].itemSprite;
             invimg[id].num.text = null;
             item[0, id] = 0;
             itemsize[0, id] =0;
@@ -683,7 +698,7 @@ public class Toolbar : MonoBehaviour
         byte num = itemsize[id / 9, id % 9];
         if (num == 0)
         {
-            invimg[id].image.sprite = World.blockTypes[0].icon;
+            invimg[id].image.sprite = World.blockTypes[0].itemSprite;
             invimg[id].num.text = null;
             item[id / 9, id % 9] = 0;
             itemsize[id / 9, id % 9] = 0;
@@ -713,7 +728,7 @@ public class Toolbar : MonoBehaviour
                     if (item[0, slothIndex] == 0)
                     {
                         itemsize[0, slothIndex] = itemsize[i, j];
-                        itemSlots[slothIndex].image.sprite = World.blockTypes[id].icon;
+                        itemSlots[slothIndex].image.sprite = World.blockTypes[id].itemSprite;
                         itemSlots[slothIndex].num.text = itemsize[i,j].ToString();
 
                         itemsize[i, j] = 0;
@@ -730,7 +745,7 @@ public class Toolbar : MonoBehaviour
                                 slothIndex = k;
                                 highlight.position = itemSlots[slothIndex].image.transform.position;
                                 itemsize[0, slothIndex] = itemsize[i, j];
-                                itemSlots[slothIndex].image.sprite = World.blockTypes[id].icon;
+                                itemSlots[slothIndex].image.sprite = World.blockTypes[id].itemSprite;
                                 itemSlots[slothIndex].num.text = itemsize[i, j].ToString();
                                 itemsize[i, j] = 0;
                                 item[0, slothIndex] = id;
@@ -739,7 +754,7 @@ public class Toolbar : MonoBehaviour
                             }
                         }
                     }
-                    itemSlots[slothIndex].image.sprite = World.blockTypes[id].icon;
+                    itemSlots[slothIndex].image.sprite = World.blockTypes[id].itemSprite;
                     
                     byte a = itemsize[0,slothIndex], b= item[0, slothIndex];
                     itemSlots[slothIndex].num.text = itemsize[i, j].ToString();
@@ -798,5 +813,6 @@ public class Toolbar : MonoBehaviour
         public int health;
         public int experienceLevel;
         public ItemSave[] inventory;
+        public byte slothid;
     }
 

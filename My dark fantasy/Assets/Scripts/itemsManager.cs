@@ -10,7 +10,7 @@ public class itemsManager : MonoBehaviour
     {
         
         GameObject itemk = Instantiate(itemp, pos, Quaternion.identity);
-        itemk.GetComponent<SpriteRenderer>().sprite= world.blockTypes[id].icon;
+        itemk.GetComponent<SpriteRenderer>().sprite= world.blockTypes[id].itemSprite;
         Item item=itemk.AddComponent<Item>();
         item.Initialize(id, size, (int)(pos.x / 16), (int)(pos.y / 16),this,itemk);
     }

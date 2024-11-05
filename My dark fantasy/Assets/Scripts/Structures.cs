@@ -21,56 +21,64 @@ public static class Structures
         
         if ((Noise.GetThe2DPerlin(new Vector2(pos.x, pos.z), new Vector2(offset.x, offset.y), 0.4f, 0.8f)))
             height += 2;
-        for (int j =y+3; j<y+height; j++){
-            for (int l = (int)pos.x - 2; l <= (int)pos.x + 2; l++) {
-                for (int k = (int)pos.z - 2; k <= (int)pos.z + 2; k++) {
+        for (int j =y+4; j<y+height; j++){
+            for (int l = x - 2; l <= x + 2; l++) {
+                for (int k = z - 2; k <= z + 2; k++) {
                     if(l>0 &&  k>0) 
                         WorldManager.chunks[(l / 16 + 100), (k / 16 + 100)].Voxels[l % 16, j, k % 16] = 11;
                     else if(l>0 && k < 0)
                     {
                         if(k%16==0)
-                            WorldManager.chunks[(l / 16 + 100), (k / 16 + 100)].Voxels[l % 16, j, 16-(-k%16)] = 11;
+                            WorldManager.chunks[(l / 16 + 100), (k / 16 + 100)].Voxels[l % 16, j,0] = 11;
                         else
                             WorldManager.chunks[(l / 16 + 100), (k / 16 + 99)].Voxels[l % 16, j, 16 - (-k % 16)] = 11;
                     }
                     else if(l<0 && k < 0)
                     {
                         if (k % 16 == 0 && l%16==0)
-                            WorldManager.chunks[(l / 16 + 100), (k / 16 + 100)].Voxels[16 - (-l % 16), j, 16 - (-k % 16)] = 11;
+                            WorldManager.chunks[(l / 16 + 100), (k / 16 + 100)].Voxels[0, j, 0] = 11;
                         else if(k%16==0)
-                            WorldManager.chunks[(l / 16 + 99), (k / 16 + 100)].Voxels[16 - (-l % 16), j, 16 - (-k % 16)] = 11;
+                            WorldManager.chunks[(l / 16 + 99), (k / 16 + 100)].Voxels[16 - (-l % 16), j, 0] = 11;
                         else if(l%16==0)
-                            WorldManager.chunks[(l / 16 + 100), (k / 16 + 99)].Voxels[16 - (-l % 16), j, 16 - (-k % 16)] = 11;
+                            WorldManager.chunks[(l / 16 + 100), (k / 16 + 99)].Voxels[0, j, 16 - (-k % 16)] = 11;
                             else
                             WorldManager.chunks[(l / 16 + 99), (k / 16 + 99)].Voxels[16 - (-l % 16), j, 16 - (-k % 16)] = 11;
                     }
                     else if (l < 0 && k > 0)
                     {
                         if (l % 16 == 0)
-                            WorldManager.chunks[(l / 16 + 100), (k / 16 + 100)].Voxels[16 - (-l % 16), j, k%16] = 11;
+                            WorldManager.chunks[(l / 16 + 100), (k / 16 + 100)].Voxels[0, j, k%16] = 11;
                         else
                             WorldManager.chunks[(l / 16 + 99), (k / 16 + 100)].Voxels[16 - (-l % 16), j, k%16] = 11;
                     }
                 }
             }
         }
-        for (int l = (int)pos.x - 1; l <=(int)pos.x + 1; l++)
+
+        for (int l = x - 2; l <= x + 2; l++)
         {
-            for (int k = (int)pos.z - 1; k <= (int)pos.z + 1; k++)
+            for (int k = z - 2; k <= z + 2; k++)
+            {
+                WorldManager.SetTo(l, y + 3, k, 11);
+
+            }
+        }
+        for (int l = x - 1; l <=x + 1; l++)
+        {
+            for (int k = z - 1; k <= z + 1; k++)
             {
                 WorldManager.SetTo(l, y + height, k, 11);
             }
         }
         for (int i = y; i <= y + height; i++)
         {
-            WorldManager.SetTo((int)pos.x, i, (int)pos.z, 7);
+            WorldManager.SetTo(x, i, z, 7);
         }
-        WorldManager.SetTo((int)pos.x-1, y+height+1, (int)pos.z, 11);
-        WorldManager.SetTo((int)pos.x, y + height + 1, (int)pos.z-1, 11);
-        WorldManager.SetTo((int)pos.x , y + height + 1, (int)pos.z, 11);
-        WorldManager.SetTo((int)pos.x , y + height + 1, (int)pos.z+1, 11);
-        WorldManager.SetTo((int)pos.x + 1, y + height + 1, (int)pos.z, 11);
-        
+        WorldManager.SetTo(x -1, y+height+1, z, 11);
+        WorldManager.SetTo(x, y + height + 1, z -1, 11);
+        WorldManager.SetTo(x , y + height + 1, z, 11);
+        WorldManager.SetTo(x , y + height + 1, z +1, 11);
+        WorldManager.SetTo(x + 1, y + height + 1, z, 11);
     }
     //pluralul de la cactus
     public static void MakeCacti(Vector3 pos,Vector2 offset)

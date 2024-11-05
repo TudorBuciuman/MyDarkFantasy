@@ -14,10 +14,10 @@ public class craftinginv : MonoBehaviour
         foreach (itemsneeded d in crf.recipes[id].Recipe)
         {
             GameObject c = Instantiate(Prefa, transform);
-            c.GetComponentInChildren<Image>().sprite = world.blockTypes[d.id].icon;
+            c.GetComponentInChildren<Image>().sprite = world.blockTypes[d.id].itemSprite;
             c.GetComponentInChildren<Text>().text = (d.size).ToString();
         }
-        toolbar.invimg[36].image.sprite = world.blockTypes[crf.recipes[id].id].icon;
+        toolbar.invimg[36].image.sprite = world.blockTypes[crf.recipes[id].id].itemSprite;
         toolbar.invimg[36].image.gameObject.SetActive(true);
         toolbar.invimg[36].num.gameObject.SetActive(true);
     }

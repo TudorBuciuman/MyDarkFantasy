@@ -6,6 +6,8 @@ using System.IO;
 using UnityEngine.UIElements;
 using Unity.VisualScripting;
 using JetBrains.Annotations;
+using System.Collections;
+using System.Linq;
 
 
 public class WorldManager : MonoBehaviour
@@ -17,26 +19,59 @@ public class WorldManager : MonoBehaviour
     public BiomeAttributes[] Biome;
     [Range(0f, 0.85f)]
     public static float GlobalLight=0;
+    [SerializeField] 
+    private Light DirectionalLight;
+
     public Toolbar Toolbar;
     public Chunk chunk;
     public Material material;
+    public Material waterMat;
     public BlockProprieties[] blockTypes;
-    readonly List<ChunkCoord> activechunks = new();
-    public byte selectedSlot = 0;
+    readonly HashSet<ChunkCoord> activechunks = new();
     public Queue<ChunkCoord> unmeshedchk = new ();
     public static List<ChunkCoord> chunkstosave = new ();
-    public Queue<ChunkCoord> nextChunk = new ();
+    public static Queue<ChunkCoord> nextChunk = new ();
     public static Chunk[,] chunks = new Chunk[Voxeldata.SizeOfWorld, Voxeldata.SizeOfWorld];
+    public void Awake()
+    {
+        if (!OnAppOpened.readytogo)
+        {
+            OnAppOpened appOpened = new();
+            appOpened.ReadWhatNeedsTo();
+        }
+        blockTypes = new BlockProprieties[OnAppOpened.itemsnum];
+        for(int i=0; i<OnAppOpened.itemsnum; i++)
+        {
+            blockTypes[i]=OnAppOpened.blockTypes[i];
+
+        }
+    }
+    public void Start()
+    {
+        StartCoroutine(UpdateChunksCoroutine());
+    }
 
     private void FixedUpdate()
     {
+
         if (!Toolbar.openedInv)
         {
-            CheckViewDistance();
-            CalculateTime();
-            Shader.SetGlobalFloat("globallight", GlobalLight);
+            //CheckViewDistance();
+           CalculateTime();
+            //Shader.SetGlobalFloat("globallight", GlobalLight);
         }
+    }
+    
+    private IEnumerator UpdateChunksCoroutine()
+    {
+        while (true)
+        {
+            if(!Toolbar.openedInv)
+            CheckViewDistance(); 
+
+            yield return new WaitForSeconds(0.2f); 
         }
+    }
     public void CalculateTime()
     {
         currenttime += Time.deltaTime;
@@ -52,7 +87,7 @@ public class WorldManager : MonoBehaviour
         {
             currenttime -= 1200;
         }
-
+        DirectionalLight.transform.localRotation = Quaternion.Euler(new Vector3((currenttime/1200 * 360f) - 90f, 170f, 0));
     }
     public void PreCalculateTime()
     {
@@ -76,11 +111,37 @@ public class WorldManager : MonoBehaviour
     {
         if (chunks[coord.x + 100, coord.y + 100] != null)
         {
-            
             return true;
-        }
-            
+        }       
         return false;
+    }
+    public void BakeNewWorld()
+    {
+        for (int i = -7; i <= 7; i++)
+        {
+            for (int j = -7; j <= 7; j++)
+            {
+            chunks[i+100, j+100] = new Chunk(new ChunkCoord(i+100,j+100), this);
+            activechunks.Add(new ChunkCoord(i+100, j+100));
+            chunks[i+100, j+100].MakeTerrain();
+        
+            }
+        }
+        for (int i = -2; i <= 2; i++)
+        {
+            for (int j = -2; j <= 2; j++)
+            {
+                chunks[i + 100, j + 100].Make3d();
+            }
+        }
+        
+        for (int i = -2; i <= 2; i++)
+        {
+            for (int j = -2; j <= 2; j++)
+            {
+                chunks[i + 100, j + 100].CreateMesh();
+            }
+        }
     }
     public Chunk GetChunkFromVector3(Vector3 pos)
     {
@@ -103,7 +164,6 @@ public class WorldManager : MonoBehaviour
         {
             Thread thread = new(() => ChunkSerializer.LoadChunk(x - 100, y - 100));
             thread.Start();
-            //ChunkSerializer.SaveChunk(x-100, y-100);
         }
 
     }
@@ -119,7 +179,7 @@ public class WorldManager : MonoBehaviour
         {
             if (z % 16 == 0)
             {
-                chunks[(x / 16 + 100), (z / 16 + 100)].Voxels[x % 16, y, 16 - (-z % 16)] = id;
+                chunks[(x / 16 + 100), (z / 16 + 100)].Voxels[x % 16, y, 0] = id;
             }
             else
             {
@@ -129,18 +189,18 @@ public class WorldManager : MonoBehaviour
         else if (x < 0 && z < 0)
         {
             if (z % 16 == 0 && x % 16 == 0)
-                chunks[(x / 16 + 100), (z / 16 + 100)].Voxels[16 - (-x % 16), y , 16 - (-z % 16)] = id;
+                chunks[(x / 16 + 100), (z / 16 + 100)].Voxels[0, y , 0] = id;
             else if (z % 16 == 0)
-                chunks[(x / 16 + 99), (z / 16 + 100)].Voxels[16 - (-x % 16), y , 16 - (-z % 16)] = id;
+                chunks[(x / 16 + 99), (z / 16 + 100)].Voxels[16 - (-x % 16), y , 0] = id;
             else if (x % 16 == 0)
-                chunks[(x / 16 + 100), (z / 16 + 99)].Voxels[16 - (-x % 16), y , 16 - (-z    % 16)] = id;
+                chunks[(x / 16 + 100), (z / 16 + 99)].Voxels[0, y , 16 - (-z    % 16)] = id;
             else
                 chunks[(x / 16 + 99), (z / 16 + 99)].Voxels[16 - (-x % 16), y , 16 - (-z % 16)] = id;
         }
         else if (x < 0 && z > 0)
         {
             if (x % 16 == 0)
-                chunks[(x / 16 + 100), (z / 16 + 100)].Voxels[16 - (-x % 16), y, z % 16] = id;
+                chunks[(x / 16 + 100), (z / 16 + 100)].Voxels[0, y, z % 16] = id;
             else
                 chunks[(x / 16 + 99), (z / 16 + 100)].Voxels[16 - (-x % 16), y, z % 16] = id;
         }
@@ -154,14 +214,13 @@ public class WorldManager : MonoBehaviour
                 chunkstosave.Remove(a);
                 break;
             }
-              
         }
         ChunkSerializer.loadedChunks[(x, y)] = chunks[x + 100, y + 100].Voxels;
         activechunks.Remove(new ChunkCoord(x + 100, y + 100));
         ChunkSerializer.SaveChunk(x, y);
         chunkstosave.Remove(new ChunkCoord(x, y));
     }
-    public void NextChunk(int x, int y)
+    public static void NextChunk(int x, int y)
     {
         nextChunk.Enqueue(new ChunkCoord(x,y));
     }
@@ -204,39 +263,50 @@ public class WorldManager : MonoBehaviour
             else
             chunks[x / 16 + 99, z / 16 + 99].Voxels[(16 - (-x % 16)), y, (16 - (-z % 16))] = id;
         }
-        if (x<0 && x%16!=0)
-           x -= 16;
-        if(z<0 && z%16!=0) 
-           z -= 16;
-        chunks[x/16 + 100, z / 16 + 100].CreateMesh();
-        if (x % 16 == 0 && z % 16 == 0)
-        {
-            chunks[x / 16 + 100, z / 16 + 100].CreateMesh();
-            chunks[x / 16 + 100, z / 16 + 99].CreateMesh();
-            chunks[x / 16 + 99, z / 16 + 100].CreateMesh();
-            chunks[x / 16 + 99, z / 16 + 99].CreateMesh();
+        int adjustedX = x < 0 ? (x / 16) - 1 : x / 16;
+        int adjustedZ = z < 0 ? (z / 16) - 1 : z / 16;
 
-        }
-        else if (x % 16 == 0)
+        int baseChunkX = adjustedX + 100;
+        int baseChunkZ = adjustedZ + 100;
+
+        chunks[baseChunkX, baseChunkZ].CreateMesh();
+
+        int localX = (x % 16 + 16) % 16;
+        int localZ = (z % 16 + 16) % 16;
+
+        bool onXEdge = localX == 0;
+        bool onZEdge = localZ == 0;
+        bool onPositiveXEdge = localX == 15;
+        bool onPositiveZEdge = localZ == 15;
+
+        if (onXEdge && onZEdge)
         {
-            if (x >= 0)
-                chunks[x / 16 + 99, z / 16 + 100].CreateMesh();
-            else
-                chunks[x / 16 + 100, z / 16 + 100].CreateMesh();
+            chunks[baseChunkX, baseChunkZ - 1].CreateMesh();
+            chunks[baseChunkX - 1, baseChunkZ].CreateMesh();
+            chunks[baseChunkX - 1, baseChunkZ - 1].CreateMesh();
         }
-        else if (z % 16 == 0)
+        else if (onXEdge)
         {
-            if (z >= 0)
-                chunks[x / 16 + 100, z / 16 + 99].CreateMesh();
-            else
-                chunks[x / 16 + 100, z / 16 + 100].CreateMesh();
+            chunks[baseChunkX - 1, baseChunkZ].CreateMesh();
         }
-        else if (x % 16 == 15 && z % 16 == 15)
-            chunks[x / 16 + 101, z / 16 + 101].CreateMesh();
-        else if (x % 16 == 15)
-            chunks[x / 16 + 101, z / 16 + 100].CreateMesh();
-        else if (z % 16 == 15)
-            chunks[x / 16 + 100, z / 16 + 101].CreateMesh();
+        else if (onZEdge)
+        {
+            chunks[baseChunkX, baseChunkZ - 1].CreateMesh();
+        }
+        else if (onPositiveXEdge && onPositiveZEdge)
+        {
+            chunks[baseChunkX + 1, baseChunkZ + 1].CreateMesh();
+        }
+        else if (onPositiveXEdge)
+        {
+            chunks[baseChunkX + 1, baseChunkZ].CreateMesh();
+        }
+        else if (onPositiveZEdge)
+        {
+            chunks[baseChunkX, baseChunkZ + 1].CreateMesh();
+        }
+
+
     }
     public void GenerateWorld()
     {
@@ -365,80 +435,86 @@ public class WorldManager : MonoBehaviour
         }
     }
 
-    public void CheckViewDistance()
+    public void CheckViewDistance() 
     {
-        ChunkCoord plpos = CImp.GetPosition();
-        plpos = new ChunkCoord(plpos.x / 16, plpos.y / 16);
-        List<ChunkCoord> notactivechunks = new(activechunks);
-        
-        for (int x = plpos.x - (Voxeldata.NumberOfChunks+2); x <= plpos.x + Voxeldata.NumberOfChunks+2; x++)
+        ChunkCoord playerPos = CImp.GetPosition();
+        playerPos = new ChunkCoord(playerPos.x / 16, playerPos.y / 16);
+
+        //Separarea chunkurilor active de inactive
+        UpdateActiveChunks(playerPos);
+
+        //Aici incepe deja prelucrarea, creerea meshurilor
+        ProcessQueuedChunks();
+    }
+    private void UpdateActiveChunks(ChunkCoord playerPos)
+    {
+        HashSet<ChunkCoord> chunksToDeactivate = new(activechunks);
+        int X = playerPos.x, Z = playerPos.y;
+        for (int x =X - (Voxeldata.NumberOfChunks + 4); x <= X + (Voxeldata.NumberOfChunks + 4); x++)
         {
-            for (int z = plpos.y - (Voxeldata.NumberOfChunks+2); z <= plpos.y + Voxeldata.NumberOfChunks+2; z++)
+            for (int z = Z - (Voxeldata.NumberOfChunks + 4); z <= Z + (Voxeldata.NumberOfChunks + 4); z++)
             {
-                if (!IsChunkInWorld(new ChunkCoord(x, z)))
+                ChunkCoord coord = new (x, z);
+
+                if (!IsChunkInWorld(coord))
                 {
                     CreateNewChunk(x, z);
                 }
-                for (int i = 0; i < notactivechunks.Count; i++)
+                else
                 {
-                    if (notactivechunks[i].x == (x + 100) && notactivechunks[i].y == (z + 100))
+                    Chunk chunk = chunks[x + 100, z + 100];
+                    if (chunk != null)
                     {
-                        notactivechunks.RemoveAt(i);
+                        if (!chunk.mademesh && !chunk.start && AreNeighborChunksReady(x, z))
+                        {
+                            NextChunk(x + 100, z + 100); 
+                            nextChunk.Enqueue(new ChunkCoord(x + 100, z + 100)); 
+                            chunk.start = true; 
+                        }
+
+                        if (!chunk.chunkObject.activeSelf)
+                        {
+                            chunk.chunkObject.SetActive(true);
+                            activechunks.Add(new ChunkCoord(x + 100, z + 100));
+                        }
                     }
-
                 }
+                chunksToDeactivate.Remove(new ChunkCoord(x + 100, z + 100));
             }
         }
-        for (int x = plpos.x - Voxeldata.NumberOfChunks; x <= plpos.x + Voxeldata.NumberOfChunks; x++)
+        DeactivateChunks(chunksToDeactivate);
+    }
+    private void DeactivateChunks(HashSet<ChunkCoord> chunksToDeactivate)
+    {
+        foreach (var coord in chunksToDeactivate)
         {
-            for (int z = plpos.y - Voxeldata.NumberOfChunks; z <= plpos.y + Voxeldata.NumberOfChunks; z++)
+            Chunk chunk = chunks[coord.x, coord.y];
+            if (chunk != null && chunk.mademesh)
             {
-                if (!chunks[x + 100, z + 100].mademesh && !chunks[x + 100, z + 100].start)
-                {
-                    NextChunk(x + 100, z + 100);
-                    chunks[x + 100, z + 100].start = true;
-                }/*
-                else if (!chunks[x + 100, z + 100])
-                {
-                    chunks[x + 100, z + 100].chunkObject.SetActive(true);
-                    activechunks.Add(new ChunkCoord(x + 100, z + 100));
-                }
-                */
-                
+                SaveChunk(coord.x - 100, coord.y - 100);
+                chunk.chunkObject.SetActive(false);
+                activechunks.Remove(coord);
             }
         }
-        
-        for (int i = 0; i < notactivechunks.Count; i++)
+    }
+    private void ProcessQueuedChunks()
+    {
+        int maxChunksPerFrame = 1;
+        for (int i = 0; i < nextChunk.Count && i < maxChunksPerFrame; i++)
         {
-            //Debug.Log(notactivechunks[i].x + " " + notactivechunks[i].y + " " + chunks[notactivechunks[i].x, notactivechunks[i].y].mademesh);
-            if (chunks[notactivechunks[i].x, notactivechunks[i].y].mademesh)
+            ChunkCoord coord = nextChunk.Peek();
+            Chunk chunk = chunks[coord.x, coord.y];
+            if (chunk != null)
             {
-                SaveChunk(notactivechunks[i].x - 100, notactivechunks[i].y - 100);
-                if (chunkstosave.Contains(new ChunkCoord(notactivechunks[i].x - 100, notactivechunks[i].y - 100)))
-                    chunkstosave.Remove(new ChunkCoord(notactivechunks[i].x - 100, notactivechunks[i].y - 100));
-                
-            }
-            Destroy(chunks[notactivechunks[i].x, notactivechunks[i].y].chunkObject);
-            chunks[notactivechunks[i].x, notactivechunks[i].y] = null;
-            activechunks.Remove(notactivechunks[i]);
-        }
-
-        int r = nextChunk.Count;
-        for (int i = 0; i<r && i < 1; i++)
-        {
-            if (chunks[nextChunk.Peek().x, nextChunk.Peek().y] != null)
-            {
-                if (chunks[nextChunk.Peek().x, nextChunk.Peek().y].strmade)
+                if (chunk.strmade)
                 {
-                    int a = nextChunk.Peek().x, b = nextChunk.Peek().y;
+                    chunk.CreateMesh();
                     nextChunk.Dequeue();
-                    chunks[a,b].CreateMesh();
                 }
                 else
                 {
-                    Thread cm = new(chunks[nextChunk.Peek().x, nextChunk.Peek().y].Make3d);
-                    cm.Start();
-                    chunks[nextChunk.Peek().x, nextChunk.Peek().y].Make3d();
+                    Thread thread = new(() => chunk.Make3d());
+                    thread.Start();
                 }
             }
             else
@@ -446,7 +522,14 @@ public class WorldManager : MonoBehaviour
                 nextChunk.Dequeue();
             }
         }
-       
+    }
+
+    bool AreNeighborChunksReady(int x, int z)
+    {
+        return (chunks[x + 100 - 1, z + 100] != null && 
+                chunks[x + 100 + 1, z + 100] != null && 
+                chunks[x + 100, z + 100 - 1] != null && 
+                chunks[x + 100, z + 100 + 1] != null);  
     }
     public void ClearData()
     {
@@ -455,40 +538,14 @@ public class WorldManager : MonoBehaviour
         activechunks.Clear();
     }
 }
-[System.Serializable]
 public class BlockProprieties
 {
-    public string Name;
-    public byte place;
-    public byte utility;
-    public bool isblock;
-    public float brktme;
-    public Sprite icon;
-    [Header("Textures")]
-    public int backfacetexture;
-    public int frontfacetexture;
-    public int topfacetexture;
-    public int bottomfacetexture;
-    public int leftfacetexture;
-    public int rightfacetexture;
-
-    public int GetTextureID(byte index)
-    {
-        return index switch
-        {
-            0 => frontfacetexture,
-            1 => backfacetexture,
-            2 => rightfacetexture,
-            3 => leftfacetexture,
-            4 => topfacetexture,
-            5 => bottomfacetexture,
-            _ => -1,
-        };
-    }
+    public Items Items;
+    public Sprite itemSprite;
 }
 
 [System.Serializable]
-public class allItems
+public class AllItems
 {
     public Items[] items;
 }
@@ -501,12 +558,13 @@ public class Items
     public bool isblock;
     public Blocks blocks;
     public Tool tool;
-    public normalitem item;
+    public Normalitem item;
 }
 
 [System.Serializable]
 public class Blocks
 {
+    public byte type;
     public byte backfacetexture;
     public byte frontfacetexture;
     public byte topfacetexture;
@@ -514,15 +572,32 @@ public class Blocks
     public byte leftfacetexture;
     public byte rightfacetexture;
     public float breakTime;
+    public byte durability;
+    public byte special;
+
+    public byte GetTextureID(byte face)
+    {
+        return face switch
+        {
+            0 => backfacetexture,
+            1 => frontfacetexture,
+            2 => rightfacetexture,
+            3 => leftfacetexture,
+            4 => topfacetexture,
+            5 => bottomfacetexture,
+            _ => 0,
+        };
+    }
 }
 [System.Serializable]
 public class Tool
 {
+    public byte type;
     public byte id;
     public byte damage;
 }
 [System.Serializable]
-public class normalitem
+public class Normalitem
 {
     public byte coolfunction;
 }

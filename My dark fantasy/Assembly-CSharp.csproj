@@ -63,7 +63,9 @@
     <Compile Include="Assets\Joystick Pack\Scripts\Joysticks\FixedJoystick.cs" />
     <Compile Include="Assets\Scripts\Voxeldata.cs" />
     <Compile Include="Assets\Scripts\WorldManager.cs" />
+    <Compile Include="Assets\Scripts\ItemsFunctions.cs" />
     <Compile Include="Assets\Scripts\BiomeAttributes.cs" />
+    <Compile Include="Assets\Scripts\ChunkUpdate.cs" />
     <Compile Include="Assets\Scripts\Ui Manager.cs" />
     <Compile Include="Assets\Scripts\Crafting.cs" />
     <Compile Include="Assets\Scripts\craftinginv.cs" />
@@ -80,15 +82,19 @@
     <Compile Include="Assets\Joystick Pack\Examples\JoystickPlayerExample.cs" />
     <Compile Include="Assets\Scripts\AndroidInv.cs" />
     <Compile Include="Assets\Joystick Pack\Scripts\Joysticks\VariableJoystick.cs" />
+    <Compile Include="Assets\Scripts\Quests.cs" />
     <Compile Include="Assets\Joystick Pack\Examples\JoystickSetterExample.cs" />
     <Compile Include="Assets\Scripts\Chunk.cs" />
     <Compile Include="Assets\Scripts\Structures.cs" />
     <Compile Include="Assets\Scripts\MouseController.cs" />
+    <Compile Include="Assets\Scripts\OnAppOpened.cs" />
     <Compile Include="Assets\Scripts\SoundsManager.cs" />
     <Compile Include="Assets\Scripts\Toolbar.cs" />
+    <Compile Include="Assets\Scripts\EndCredits.cs" />
     <Compile Include="Assets\Scripts\NewWorld.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Data\Shaders\WaterShader.shader" />
     <None Include="Assets\Data\Shaders\StandardShader.shader" />
   </ItemGroup>
   <ItemGroup>

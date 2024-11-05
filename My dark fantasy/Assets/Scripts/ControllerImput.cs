@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class ControllerImput : MonoBehaviour
 {
 
-    //Stiu ca e input - sunt doar silly :)
+    //Stiu ca e input - sunt doar silly :}
     public WorldManager wmanager;
     public Crafting craft;
     public itemsManager itemsManager;
@@ -19,27 +19,26 @@ public class ControllerImput : MonoBehaviour
     public GameObject Hud2;
     public GameObject Hud3;
     public Transform cam;
-    public float movementSpeed = 5f;
-    public float sprintspeed = 8f;
-    public float lookSpeed = 400f;
-    public float smoothSpeed = 100.0f;
-    public float gravity = -8f;
+    public static float movementSpeed = 5f;
+    public static float sprintspeed = 8f;
+    public static float lookSpeed = 400f;
+    public static float smoothSpeed = 100.0f;
+    public static float gravity = -9f;
     public Transform orientation;
-    public float speed = 50f;
-    public float jump = 6f;
+    public static float speed = 50f;
+    public static float jump = 4.5f;
     public CharacterController controller;
     public GameObject box;
     public FixedJoystick joystick;
 
     public InputActionAsset inputActions;
-    private NewControls inputAction;
-    private InputAction androidclick;
-    private InputAction androidPress;
+    private readonly InputAction androidclick;
+    private readonly InputAction androidPress;
     private InputActionMap androidActionMap;
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
-    private InputAction ANDRmoveact;
+    private readonly InputAction ANDRmoveact;
     private InputAction middleAction;
 
     private bool grounded=true;
@@ -55,29 +54,28 @@ public class ControllerImput : MonoBehaviour
     public Text Pos;
     public Text framerate;
     public short fps=0;
-    public float wtime=0,brktime=0;
-
+    public static float wtime=0,brktime=0;
     private void Awake()
     {
         toolbar.openedInv = true;
+        androidActionMap = inputActions.FindActionMap("Android");
+        androidActionMap.Enable();
+        moveAction = androidActionMap.FindAction("Movement");
+        moveAction.Enable();
+
+
 #if UNITY_ANDROID
 
         androidclick= new InputAction(binding: "<Touchscreen>/primaryTouch/tap");
-        androidPress = new InputAction(binding: "<Touchscreen>/press");
-        //ANDRmoveact = androidActionMap.FindAction("joystick");
-        //ANDRmoveact.Enable();
-#endif
-        androidActionMap = inputActions.FindActionMap("Android");
-        sprintAction = inputActions.FindAction("Sprint");
-        androidActionMap.Enable();
-        moveAction = androidActionMap.FindAction("Movement");
-        middleAction = new InputAction(binding: "<Mouse>/middleButton");
-        
-        jumpAction = androidActionMap.FindAction("Jump");
-        jumpAction.Enable();
+        androidPress = new InputAction(binding: "<Touchscreen>/press");       
         androidActionMap.FindAction("Escape").Enable();
         androidActionMap.FindAction("Sprint").Enable();
-        moveAction.Enable();
+#endif
+
+        sprintAction = inputActions.FindAction("Sprint");
+        jumpAction = androidActionMap.FindAction("Jump");
+        jumpAction.Enable();
+        middleAction = new InputAction(binding: "<Mouse>/middleButton");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -104,14 +102,13 @@ public class ControllerImput : MonoBehaviour
         controller.enabled = false;
         if (ChunkSerializer.pos != Vector3.zero)
         {
+            transform.SetPositionAndRotation(ChunkSerializer.pos, ChunkSerializer.rot);
             wmanager.GenerateWorld();
-            transform.position = ChunkSerializer.pos;
-            transform.rotation = ChunkSerializer.rot;
         }
         else
         {
             WorldManager.chunks[100,100] = new Chunk(new ChunkCoord(100,100), wmanager);
-            WorldManager.chunks[100, 100].MakeTerrain();
+            wmanager.BakeNewWorld();
             newworld = true;
             transform.position = new Vector3(0,100,0);
         }
@@ -143,15 +140,16 @@ public class ControllerImput : MonoBehaviour
         {
             Toolbar.escape=false;
         }
-        if(Voxeldata.showfps)
-        InvokeRepeating("GetFps", 0, 0.3f);
 
+        ItemsFunctions.ItemsStart(wmanager,itemsManager);
+        if(Voxeldata.showfps)
+        InvokeRepeating(nameof(GetFps), 0, 0.3f);
+        InvokeRepeating(nameof(PlayScary), 20f, 45f);
         toolbar.openedInv = false;
         controller.enabled = true;
 
-        soundTrack.PlaySong((byte)Random.Range(0, 6));
+        //soundTrack.PlaySong((byte)Random.Range(0, 6));
     }
-
     private void FixedUpdate()
     {
         PlayerControll();
@@ -160,6 +158,20 @@ public class ControllerImput : MonoBehaviour
     public void GetFps() { 
         fps = ((short)(1f / Time.unscaledDeltaTime));
         framerate.text = fps.ToString();
+    }
+    public void PlayScary()
+    {
+        if (transform.position.y < 50)
+        {
+            soundTrack.PlayRandomSound(0);
+        }
+        else if(transform.position.y>100){
+            soundTrack.PlayRandomSound(1);
+        }
+        else if (WorldManager.currenttime > 900)
+        {
+            soundTrack.PlayRandomSound(2);
+        }
     }
     public void PlayerControll()
     {
@@ -179,7 +191,7 @@ public class ControllerImput : MonoBehaviour
             CalculateVelocity();
             if (jumpQm)
                 Jump();
-            controller.Move(new Vector3(0,moveDirection.y,0)*Time.smoothDeltaTime * speed);
+            controller.Move(speed * Time.smoothDeltaTime * new Vector3(0,moveDirection.y,0));
         }
         else if (Posi == Vector3.zero)
         {
@@ -187,11 +199,11 @@ public class ControllerImput : MonoBehaviour
             Posi = transform.position;
         }
     }
-    public Vector3 playerPos()
+    public Vector3 PlayerPos()
     {
         return Posi;
     }
-    public Quaternion playerRot()
+    public Quaternion PlayerRot()
     {
         return Rotation;
     }
@@ -203,26 +215,26 @@ public class ControllerImput : MonoBehaviour
     void CalculateVelocity()
     {
         moveDirection = transform.right * pozX + transform.forward * pozZ;
-        if ((moveDirection.z > 0 && front) || (moveDirection.z < 0 && back))
+        if ((moveDirection.z > 0 && Front) || (moveDirection.z < 0 && Back))
             moveDirection.z = 0;
-        if ((moveDirection.x > 0 && right) || (moveDirection.x < 0 && left))
+        if ((moveDirection.x > 0 && Right) || (moveDirection.x < 0 && Left))
             moveDirection.x = 0;
         if (sprint)
         {
-            controller.Move(moveDirection * Time.deltaTime * sprintspeed);
+            controller.Move(sprintspeed * Time.deltaTime * moveDirection);
         }
         else
         {
-            controller.Move(moveDirection * Time.deltaTime * movementSpeed);
+            controller.Move(movementSpeed * Time.deltaTime * moveDirection);
         }
         verticalMomentum += Time.fixedDeltaTime * gravity;
-        moveDirection += Vector3.up * verticalMomentum * Time.deltaTime;
+        moveDirection += Time.deltaTime * verticalMomentum * Vector3.up;
         if (moveDirection.y < 0)
         {
-            moveDirection.y = checkDownSpeed(moveDirection.y);
+            moveDirection.y = CheckDownSpeed(moveDirection.y);
         }
         else if (moveDirection.y > 0)
-            moveDirection.y = checkUpSpeed(moveDirection.y);
+            moveDirection.y = CheckUpSpeed(moveDirection.y);
         if(moveDirection.y==0)
             verticalMomentum = 0;
         if ((moveDirection.x != 0 || moveDirection.y != 0))
@@ -235,7 +247,7 @@ public class ControllerImput : MonoBehaviour
             else if (!grounded)
             {
                 wtime = 0;
-                soundTrack.stopmove();
+                soundTrack.Stopmove();
             }
         }
         else
@@ -243,7 +255,7 @@ public class ControllerImput : MonoBehaviour
             if (wtime>0)
             {
                 wtime = 0;
-                soundTrack.stopmove();
+                soundTrack.Stopmove();
             }
         }
         if (wtime > 0)
@@ -348,16 +360,15 @@ public class ControllerImput : MonoBehaviour
         Vector2 movementInput = context.ReadValue<Vector2>();
         pozX = movementInput.x;
         pozZ = movementInput.y;
-        Debug.Log(pozX + " " + pozZ);
     }
 
     public void OnClicking1(InputAction.CallbackContext context)
     {
         if (time <= 0) {
-            if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].utility < 10)
+            if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.isblock )
             {
                 float step = 0.1f;
-                Vector3 lastPos = new Vector3();
+                Vector3 lastPos = new();
                 while (step <= 5)
                 {
                     Vector3 pos = cam.position + (cam.forward * step);
@@ -378,15 +389,14 @@ public class ControllerImput : MonoBehaviour
             else
             {
                 float step = 0.1f;
-                Vector3 lastPos = new Vector3();
                 while (step <= 5)
                 {
                     Vector3 pos = cam.position + (cam.forward * step);
                     if (wmanager.IsBlock(pos.x, pos.y, pos.z))
                     {
-                        if (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility >= 2)
+                        if (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.special >= 2)
                         {
-                            switch (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility)
+                            switch (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.special)
                             {
                                 case 2:
                                     toolbar.OpenInventory(1);
@@ -402,7 +412,6 @@ public class ControllerImput : MonoBehaviour
                         time = 0.2f;
                         break;
                     }
-                    lastPos = pos;
                     step += 0.2f;
                 
             }
@@ -413,63 +422,63 @@ public class ControllerImput : MonoBehaviour
     {
         Debug.Log(2);
     }
-    public bool front
+    public bool Front
     {
 
         get
         {
             if (
-                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y, transform.position.z + 0.5f)].isblock ||
-                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y - 1, transform.position.z + 0.5f)].isblock
+                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y, transform.position.z + 0.5f)].Items.isblock ||
+                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y - 1, transform.position.z + 0.5f)].Items.isblock
                 )
                 return true;
             return false;
         }
 
     }
-    public bool back
+    public bool Back
     {
         
         get
         {
             if (
-                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y, transform.position.z - 0.5f)].isblock ||
-                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y - 1, transform.position.z - 0.5f)].isblock
+                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y, transform.position.z - 0.5f)].Items.isblock ||
+                wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y - 1, transform.position.z - 0.5f)].Items.isblock
                 )
                 return true;
                 return false;
         }
 
     }
-    public bool left
+    public bool Left
     {
 
         get
         {
             if (
-                wmanager.blockTypes[wmanager.Block(transform.position.x - 0.5f, transform.position.y, transform.position.z)].isblock ||
-                wmanager.blockTypes[wmanager.Block(transform.position.x - 0.5f, transform.position.y - 1f, transform.position.z)].isblock
+                wmanager.blockTypes[wmanager.Block(transform.position.x - 0.5f, transform.position.y, transform.position.z)].Items.isblock ||
+                wmanager.blockTypes[wmanager.Block(transform.position.x - 0.5f, transform.position.y - 1f, transform.position.z)].Items.isblock
                 )
                 return true;
             return false;
         }
 
     }
-    public bool right
+    public bool Right
     {
 
         get
         {
             if (
-                wmanager.blockTypes[wmanager.Block(transform.position.x + 0.5f, transform.position.y, transform.position.z)].isblock ||
-                wmanager.blockTypes[wmanager.Block(transform.position.x + 0.5f, transform.position.y - 1, transform.position.z)].isblock
+                wmanager.blockTypes[wmanager.Block(transform.position.x + 0.5f, transform.position.y, transform.position.z)].Items.isblock ||
+                wmanager.blockTypes[wmanager.Block(transform.position.x + 0.5f, transform.position.y - 1, transform.position.z)].Items.isblock
                 )
                 return true;
             return false;
         }
 
     }
-    private float checkDownSpeed(float downSpeed)
+    private float CheckDownSpeed(float downSpeed)
     {
         if (transform.position.y <= 1)
         {
@@ -485,10 +494,10 @@ public class ControllerImput : MonoBehaviour
             return downSpeed;
         }
         if (
-            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + downSpeed-1, transform.position.z - 0.3f)].isblock ||
-            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + downSpeed - 1, transform.position.z - 0.3f)].isblock ||
-            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + downSpeed - 1, transform.position.z + 0.3f)].isblock ||
-            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + downSpeed - 1, transform.position.z + 0.3f)].isblock 
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + downSpeed-1, transform.position.z - 0.3f)].Items.isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + downSpeed - 1, transform.position.z - 0.3f)].Items.isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + downSpeed - 1, transform.position.z + 0.3f)].Items.isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + downSpeed - 1, transform.position.z + 0.3f)].Items.isblock
            )
         {
             grounded = true;
@@ -503,17 +512,17 @@ public class ControllerImput : MonoBehaviour
         }
 
     }
-    private float checkUpSpeed(float upSpeed)
+    private float CheckUpSpeed(float upSpeed)
     {
         if (transform.position.y > 158)
         {
             return upSpeed;
         }
         if (
-            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z - 0.3f)].isblock ||
-            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z - 0.3f)].isblock ||
-            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z + 0.3f)].isblock ||
-            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z + 0.3f)].isblock
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z - 0.3f)].Items.isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z - 0.3f)].Items.isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x + 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z + 0.3f)].Items.isblock ||
+            wmanager.blockTypes[wmanager.Block(transform.position.x - 0.3f, transform.position.y + 0.7f + upSpeed, transform.position.z + 0.3f)].Items.isblock
            )
         {
 
@@ -537,7 +546,7 @@ public class ControllerImput : MonoBehaviour
 
         if (Input.GetMouseButton(0)) // Left mouse button/break
         {
-            if (toolbar.item[0, Toolbar.slothIndex]>0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].utility == 10)
+            if (toolbar.item[0, Toolbar.slothIndex]>0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.tool.type == 1)
             {
                 if (!breac)
                 {
@@ -552,7 +561,7 @@ public class ControllerImput : MonoBehaviour
                     Vector3 pos = cam.position + (cam.forward * step);
                     if (wmanager.IsBlock(pos.x, pos.y, pos.z))
                     {
-                        if ((wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility == 0 || wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility > 1))
+                        if ((wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.durability == 0))
                         {
                             if (brktime <= 0)
                             {
@@ -582,13 +591,13 @@ public class ControllerImput : MonoBehaviour
                                 a = Mathf.RoundToInt(pos.x);
                                 b = Mathf.RoundToInt(pos.y);
                                 c = Mathf.RoundToInt(pos.z);
-                                box.gameObject.SetActive(true);
+                                box.SetActive(true);
                                 box.transform.position = new Vector3(a, b, c);
                                 holdtme = 0;
                             }
-                            if (holdtme >= wmanager.blockTypes[WorldManager.chunks[(s / 16 + 100), (k / 16 + 100)].Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16]].brktme)
+                            if (holdtme >= wmanager.blockTypes[WorldManager.chunks[(s / 16 + 100), (k / 16 + 100)].Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16]].Items.blocks.breakTime)
                             {
-                                box.gameObject.SetActive(false);
+                                box.SetActive(false);
                                 itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
                                 wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), 0);
 
@@ -601,7 +610,7 @@ public class ControllerImput : MonoBehaviour
                     step += 0.1f;
                 }
             }
-            else if(toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].utility == 11)
+            else if(toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.tool.type == 2)
             {
                 if (!breac)
                 {
@@ -616,7 +625,7 @@ public class ControllerImput : MonoBehaviour
                     Vector3 pos = cam.position + (cam.forward * step);
                     if (wmanager.IsBlock(pos.x, pos.y, pos.z))
                     {
-                        if (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility == 1)
+                        if (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.durability == 1)
                         {
                             if (brktime <= 0)
                             {
@@ -624,19 +633,6 @@ public class ControllerImput : MonoBehaviour
 
                                 brktime = 0.3f;
                             }
-                            int g = Mathf.RoundToInt(pos.x), h = Mathf.RoundToInt(pos.z);
-                            int s = g, k = h;
-                            if (g < 0 && g % 16 != 0)
-                                s -= 16;
-                            if (h < 0 && h % 16 != 0)
-                            {
-                                k -= 16;
-                            }
-                            if (g < 0)
-                                g = 16 - (-g % 16);
-                            if (h < 0)
-                                h = 16 - (-h % 16);
-
                             if (Mathf.RoundToInt(pos.x) == a && Mathf.RoundToInt(pos.y) == b && Mathf.RoundToInt(pos.z) == c)
                             {
                                 holdtme += Time.deltaTime;
@@ -646,16 +642,14 @@ public class ControllerImput : MonoBehaviour
                                 a = Mathf.RoundToInt(pos.x);
                                 b = Mathf.RoundToInt(pos.y);
                                 c = Mathf.RoundToInt(pos.z);
-                                box.gameObject.SetActive(true);
+                                box.SetActive(true);
                                 box.transform.position = new Vector3(a, b, c);
                                 holdtme = 0;
                             }
-                            if (holdtme >= wmanager.blockTypes[WorldManager.chunks[(s / 16 + 100), (k / 16 + 100)].Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16]].brktme)
+                            if (holdtme >= 1.4f)
                             {
-                                box.gameObject.SetActive(false);
-                                itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
-                                wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), 0);
-
+                                box.SetActive(false);
+                                ItemsFunctions.CutDownTree(pos,wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)));
                                 breac = false;
                                 holdtme = 0;
                             }
@@ -673,8 +667,8 @@ public class ControllerImput : MonoBehaviour
             brktime = 0;
             holdtme=0;
             a --;
-            box.gameObject.SetActive(false);
-            soundTrack.stopbreak();
+            box.SetActive(false);
+            soundTrack.Stopbreak();
         }
         if(brktime > 0)
         {
@@ -683,10 +677,10 @@ public class ControllerImput : MonoBehaviour
         //right click
         if (Input.GetMouseButton(1) && time<=0)
         {
-            if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].utility <10)
+            if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.isblock)
             {
                 float step = 0.1f;
-                Vector3 lastPos = new Vector3();
+                Vector3 lastPos = new();
                 while (step <= 5)
                 {
                     Vector3 pos = cam.position + (cam.forward * step);
@@ -707,15 +701,14 @@ public class ControllerImput : MonoBehaviour
             else
             {
                 float step = 0.1f;
-                Vector3 lastPos = new Vector3();
                 while (step <= 5)
                 {
                     Vector3 pos = cam.position + (cam.forward * step);
                     if (wmanager.IsBlock(pos.x, pos.y, pos.z))
                     {
-                        if (wmanager.blockTypes[wmanager.Block(pos.x,pos.y,pos.z)].utility>=2)
+                        if (wmanager.blockTypes[wmanager.Block(pos.x,pos.y,pos.z)].Items.blocks.special>=2)
                         {
-                            switch(wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].utility)
+                            switch(wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.special)
                             {
                                 case 2: toolbar.OpenInventory(1);
                                     break;
@@ -728,7 +721,7 @@ public class ControllerImput : MonoBehaviour
                         time = 0.2f;
                         break;
                     }
-                    lastPos = pos;
+
                     step += 0.2f;
                 }
             }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Windows;
 using Unity.VisualScripting;
+using System.Linq;
 
 public class NewWorld : MonoBehaviour
 {
@@ -36,20 +37,30 @@ public class NewWorld : MonoBehaviour
             string directoryPath = Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds");
             if (Directory.Exists(directoryPath))
             {
+                DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+                DirectoryInfo[] directories = directoryInfo.GetDirectories()
+                    .OrderByDescending(dir => dir.LastWriteTime)
+                    .ToArray();
                 string[] files = Directory.GetDirectories(directoryPath);
-                foreach (string file in files)
-                {
-                    string[] smlfiles = Directory.GetFiles(file, "*.info");
-                    string content = File.ReadAllText(smlfiles[0]);
-                    string[] words = content.Split(new char[] { ' ', '\n', '\r', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
-                    GameObject go = Instantiate(world, worldParent.transform);
-                    string a=null;
-                    for (int j = 1; j < words.Length - 2; j++)
-                    {
-                        a +=" "+ words[j];
-                    }
-                    go.GetComponentInChildren<Text>().text = a.ToString();
+                foreach (DirectoryInfo dir in directories){
 
+                    string[] smlfiles = Directory.GetFiles(dir.FullName, "*.info");
+
+                    if (smlfiles.Length > 0) 
+                    {
+                        string content = File.ReadAllText(smlfiles[0]); 
+                        string[] words = content.Split(new char[] { ' ', '\n', '\r', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                        GameObject go = Instantiate(world, worldParent.transform);
+
+                        string a = null;
+                        for (int j = 1; j < words.Length - 2; j++)
+                        {
+                            a += " " + words[j];
+                        }
+
+                        go.GetComponentInChildren<Text>().text = a?.ToString();
+                    }
                     nr++;
                 }
             }
