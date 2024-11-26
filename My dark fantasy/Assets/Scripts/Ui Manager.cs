@@ -33,14 +33,12 @@ public class UiManager : MonoBehaviour
     public void Start()
     {
         Application.targetFrameRate = 30;
-
+        if (SceneManager.GetActiveScene().name == "Settings")
+            LoadSettingsScene();
+        else if (SceneManager.loadedSceneCount == 2)
+            LoadSettingsScene();
     }
 
-    public void Awake()
-    {
-        if(SceneManager.GetActiveScene().name=="Settings")
-        LoadSettingsScene();
-    }
     public void ReadSet()
     {
         if (!File.Exists(Path.Combine(Application.persistentDataPath + "/Settings/settings.json")))
@@ -75,7 +73,7 @@ public class UiManager : MonoBehaviour
     public void OpenSet(string sceneName)
     {
         scene = sceneName;
-        SceneManager.LoadScene("Settings");
+        SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
 
     }
     private void LoadSettingsScene()
@@ -94,8 +92,8 @@ public class UiManager : MonoBehaviour
                 hud = true,
                 totalsound = true,
                 showfps = false,
-                movementlevel = 100,
-                musiclevel = 100
+                movementlevel = 80,
+                musiclevel = 80
             };
 
             hud = true;
@@ -152,7 +150,7 @@ public class UiManager : MonoBehaviour
 
         if (scene.Contains("World"))
         {
-            SceneManager.LoadScene(scene);
+            SceneManager.UnloadSceneAsync("Settings");
             ChunkSerializer.CloseSet();
         }
         else

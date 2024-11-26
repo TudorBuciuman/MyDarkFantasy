@@ -38,9 +38,10 @@ public class NewWorld : MonoBehaviour
             if (Directory.Exists(directoryPath))
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-                DirectoryInfo[] directories = directoryInfo.GetDirectories()
-                    .OrderByDescending(dir => dir.LastWriteTime)
-                    .ToArray();
+                var directories = directoryInfo.GetDirectories()
+                .AsParallel() // Parallel LINQ pentru multi-threading si performanta sporita
+                .OrderByDescending(dir => dir.LastWriteTime)
+                .ToArray();
                 string[] files = Directory.GetDirectories(directoryPath);
                 foreach (DirectoryInfo dir in directories){
 
@@ -158,7 +159,6 @@ public class NewWorld : MonoBehaviour
         GameObject a = GameObject.FindGameObjectWithTag("manager");
         a.GetComponent<NewWorld>().EditWorld(this.gameObject);    
     }
-
     public void EditWorld(GameObject c)
     {
         wset.gameObject.SetActive(true);

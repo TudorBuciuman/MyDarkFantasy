@@ -9,14 +9,17 @@ using UnityEngine.Networking;
 public class OnAppOpened : MonoBehaviour
 {
     public static bool readytogo=false;
+    public TextAsset dialogueFile;
+    public Text FunnyText;
     public Sprite moon;
     public GameObject screenn,but1,but2,but3;
     public static byte itemsnum;
-    public static BlockProprieties[] blockTypes=new BlockProprieties[23];
+    public static BlockProprieties[] blockTypes=new BlockProprieties[51];
     
     public Sprite[] itemsAtlas;
     void Awake()
     {
+        dialogueFile = Resources.Load<TextAsset>($"UIMessage");
         DateTime currentTime = DateTime.Now;
         if (currentTime.Hour > 18 || currentTime.Hour<6)
         {
@@ -33,6 +36,7 @@ public class OnAppOpened : MonoBehaviour
             ReadWhatNeedsTo();
         #endif
         } 
+        SetFunnyText();
     }
     IEnumerator AndroidRead()
     {
@@ -78,5 +82,12 @@ public class OnAppOpened : MonoBehaviour
             w++;
         }
     }
-    
+    public void SetFunnyText()
+    {
+        int line = UnityEngine.Random.Range(0, 28);
+        string[] dialogueLines = dialogueFile.text.Split('\n');
+        FunnyText.text = dialogueLines[line];
+
+    }
+
 }

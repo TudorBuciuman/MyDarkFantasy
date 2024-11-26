@@ -30,29 +30,64 @@ MonoBehaviour:
   lodes:
   - name: dirt
     Idblock: 1
-    minheight: 10
+    minheight: 30
     maxheight: 70
-    scale: 0.3
-    threshold: 0.54
+    scale: 0.2
+    threshold: 0.58
     noiseOffSet: 0.7
   - name: iron
     Idblock: 10
     minheight: 2
-    maxheight: 70
+    maxheight: 50
     scale: 0.2
     threshold: 0.58
     noiseOffSet: 0.3
   - name: coal
     Idblock: 9
-    minheight: 2
-    maxheight: 70
-    scale: 0.4
-    threshold: 0.58
-    noiseOffSet: 0.5
+    minheight: 20
+    maxheight: 120
+    scale: 0.2
+    threshold: 0.54
+    noiseOffSet: 0.6
   - name: cobblestone
     Idblock: 8
     minheight: 2
     maxheight: 70
-    scale: 0.04
-    threshold: 0.54
-    noiseOffSet: 0.1
+    scale: 0.01
+    threshold: 0.81
+    noiseOffSet: 0.4
+  - name: gold
+    Idblock: 25
+    minheight: 2
+    maxheight: 20
+    scale: 0.34
+    threshold: 0.62
+    noiseOffSet: 0.3
+  - name: diamond
+    Idblock: 26
+    minheight: 2
+    maxheight: 20
+    scale: 0.1
+    threshold: 0.63
+    noiseOffSet: 0.24
+  - name: ruby
+    Idblock: 24
+    minheight: 2
+    maxheight: 25
+    scale: 0.1
+    threshold: 0.61
+    noiseOffSet: 0.25
+  - name: sapphire
+    Idblock: 29
+    minheight: 11
+    maxheight: 30
+    scale: 0.2
+    threshold: 0.59
+    noiseOffSet: 0.2
+  - name: copper
+    Idblock: 32
+    minheight: 70
+    maxheight: 120
+    scale: 0.21
+    threshold: 0.59
+    noiseOffSet: 0.3

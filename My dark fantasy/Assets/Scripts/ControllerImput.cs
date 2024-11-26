@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -15,44 +16,55 @@ public class ControllerImput : MonoBehaviour
     public itemsManager itemsManager;
     public SoundsManager soundTrack;
     public Toolbar toolbar;
-    public GameObject Hud1;
-    public GameObject Hud2;
-    public GameObject Hud3;
+    public GameObject Hud1,Hud2,Hud3;
     public Transform cam;
-    public static float movementSpeed = 5f;
-    public static float sprintspeed = 8f;
+    public static ControllerImput Instance;
+
+    public float movementSpeed = 5f;
+    public const float sprintspeed = 6f;
+    public const float shiftSpeed= 3f;
+    public const float normalSpeed= 5f;
+    public float movementAcceleration = 4f;
+    public float sprintAcceleration = 5f;
+    private Vector3 currentVelocity = Vector3.zero;
+    private float verticalMomentum = 0f;
     public static float lookSpeed = 400f;
     public static float smoothSpeed = 100.0f;
-    public static float gravity = -9f;
+    public const float gravity = -10f;
     public Transform orientation;
     public static float speed = 50f;
-    public static float jump = 4.5f;
+    public static float jump = 4.8f;
     public CharacterController controller;
     public GameObject box;
     public FixedJoystick joystick;
 
     public InputActionAsset inputActions;
-    private readonly InputAction androidclick;
-    private readonly InputAction androidPress;
+    private InputAction androidclick;
+    private InputAction androidPress;
     private InputActionMap androidActionMap;
     private InputAction moveAction;
+    private InputAction shiftAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
+    private InputAction escapeAction;
     private readonly InputAction ANDRmoveact;
     private InputAction middleAction;
 
-    private bool grounded=true;
+    private bool grounded=false;
+    private bool shift=false;
     private Vector3 moveDirection = Vector3.zero;
     public Camera cameracontrol;
     public  Quaternion Rotation;
     public  Vector3 Posi=Vector3.zero;
     private float pozX = 0f;
     private float pozZ = 0f;
-    private float verticalMomentum=0;
     private bool sprint = false;
     private bool jumpQm = false;
     public Text Pos;
     public Text framerate;
+
+    public Image itemimg,mapImg,mapImg2;
+
     public short fps=0;
     public static float wtime=0,brktime=0;
     private void Awake()
@@ -62,17 +74,19 @@ public class ControllerImput : MonoBehaviour
         androidActionMap.Enable();
         moveAction = androidActionMap.FindAction("Movement");
         moveAction.Enable();
-
+        shiftAction = androidActionMap.FindAction("Shifting");
+        shiftAction.Enable();
 
 #if UNITY_ANDROID
 
         androidclick= new InputAction(binding: "<Touchscreen>/primaryTouch/tap");
-        androidPress = new InputAction(binding: "<Touchscreen>/press");       
-        androidActionMap.FindAction("Escape").Enable();
-        androidActionMap.FindAction("Sprint").Enable();
+        androidPress = new InputAction(binding: "<Touchscreen>/press");
+        
 #endif
-
-        sprintAction = inputActions.FindAction("Sprint");
+        androidActionMap.FindAction("Sprint").Enable();
+         escapeAction = androidActionMap.FindAction("Escape");
+        escapeAction.Enable();
+         sprintAction = inputActions.FindAction("Sprint");
         jumpAction = androidActionMap.FindAction("Jump");
         jumpAction.Enable();
         middleAction = new InputAction(binding: "<Mouse>/middleButton");
@@ -81,6 +95,7 @@ public class ControllerImput : MonoBehaviour
     }
     void Start()
     {
+        Instance = this;
         bool esc =Toolbar.escape;
         Toolbar.escape = true;
         QualitySettings.vSyncCount = 1;
@@ -107,7 +122,7 @@ public class ControllerImput : MonoBehaviour
         }
         else
         {
-            WorldManager.chunks[100,100] = new Chunk(new ChunkCoord(100,100), wmanager);
+            WorldManager.AddChunk(0,0, new Chunk(new ChunkCoord(100,100), wmanager));
             wmanager.BakeNewWorld();
             newworld = true;
             transform.position = new Vector3(0,100,0);
@@ -117,7 +132,7 @@ public class ControllerImput : MonoBehaviour
         {
             for(int i=120; i>50; i--)
             {
-                if (WorldManager.chunks[100, 100].Voxels[0, i, 0] != 0)
+                if (WorldManager.GetChunk(0,0).Voxels[0, i, 0] != 0)
                 {
                     transform.position=new Vector3(0,i+2,0);
                     break;
@@ -125,13 +140,7 @@ public class ControllerImput : MonoBehaviour
             }
 
         }
-        if (!UiManager.hud)
-        {
-            Hud1.SetActive(false);
-            Hud2.SetActive(false);
-            Pos.gameObject.SetActive(false);
-            Hud3.GetComponent<Image>().color=Color.clear;
-        }
+        ReRead();
         if (esc)
         {
             toolbar.Escape();
@@ -141,13 +150,13 @@ public class ControllerImput : MonoBehaviour
             Toolbar.escape=false;
         }
 
-        ItemsFunctions.ItemsStart(wmanager,itemsManager);
+        ItemsFunctions.ItemsStart(wmanager,itemsManager,itemimg,mapImg,mapImg2);
         if(Voxeldata.showfps)
         InvokeRepeating(nameof(GetFps), 0, 0.3f);
         InvokeRepeating(nameof(PlayScary), 20f, 45f);
+        InvokeRepeating(nameof(PosOut), 0, 0.05f);
         toolbar.openedInv = false;
         controller.enabled = true;
-
         //soundTrack.PlaySong((byte)Random.Range(0, 6));
     }
     private void FixedUpdate()
@@ -158,6 +167,23 @@ public class ControllerImput : MonoBehaviour
     public void GetFps() { 
         fps = ((short)(1f / Time.unscaledDeltaTime));
         framerate.text = fps.ToString();
+    }
+    public void ReRead()
+    {
+        if (!UiManager.hud)
+        {
+            Hud1.SetActive(false);
+            Hud2.SetActive(false);
+            Pos.gameObject.SetActive(false);
+            Hud3.GetComponent<Image>().gameObject.SetActive(false);
+        }
+        else
+        {
+            Hud1.SetActive(true);
+            Hud2.SetActive(true);
+            Pos.gameObject.SetActive(true);
+            Hud3.GetComponent<Image>().gameObject.SetActive(true);
+        }
     }
     public void PlayScary()
     {
@@ -215,54 +241,79 @@ public class ControllerImput : MonoBehaviour
     void CalculateVelocity()
     {
         moveDirection = transform.right * pozX + transform.forward * pozZ;
+
         if ((moveDirection.z > 0 && Front) || (moveDirection.z < 0 && Back))
-            moveDirection.z = 0;
-        if ((moveDirection.x > 0 && Right) || (moveDirection.x < 0 && Left))
-            moveDirection.x = 0;
-        if (sprint)
         {
-            controller.Move(sprintspeed * Time.deltaTime * moveDirection);
+            moveDirection.z = 0;
+            currentVelocity.z = 0;
+        }
+        if ((moveDirection.x > 0 && Right) || (moveDirection.x < 0 && Left))
+        {
+            moveDirection.x = 0;
+            currentVelocity.x = 0;
+        }
+        float targetSpeed = sprint ? sprintspeed : movementSpeed;
+        float acceleration = sprint ? sprintAcceleration : movementAcceleration;
+        float deceleration = sprint ? 25 : 13;
+
+        Vector3 targetHorizontalVelocity = moveDirection * targetSpeed;
+
+        if (moveDirection.magnitude > 0)
+        {
+            currentVelocity.x = Mathf.MoveTowards(currentVelocity.x, targetHorizontalVelocity.x, acceleration * Time.fixedDeltaTime);
+            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, targetHorizontalVelocity.z, acceleration * Time.fixedDeltaTime);
+        }
+    
+        else 
+        {
+            currentVelocity.x = Mathf.MoveTowards(currentVelocity.x, 0, deceleration * Time.fixedDeltaTime);
+            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, 0, deceleration * Time.fixedDeltaTime);
+        }
+        
+        if (!grounded) 
+        {
+            verticalMomentum += gravity * Time.fixedDeltaTime;
+            verticalMomentum = Mathf.Clamp(verticalMomentum, -50, 10);
+        }
+        currentVelocity.y = verticalMomentum*Time.fixedDeltaTime;
+
+       
+        if (currentVelocity.y > 0) 
+        {
+            currentVelocity.y = CheckUpSpeed(currentVelocity.y);
+        }
+        else if (currentVelocity.y < 0) 
+        {
+            currentVelocity.y = CheckDownSpeed(currentVelocity.y);
         }
         else
         {
-            controller.Move(movementSpeed * Time.deltaTime * moveDirection);
+            grounded = true;
         }
-        verticalMomentum += Time.fixedDeltaTime * gravity;
-        moveDirection += Time.deltaTime * verticalMomentum * Vector3.up;
-        if (moveDirection.y < 0)
+        currentVelocity.y *= speed;
+        controller.Move(currentVelocity * Time.fixedDeltaTime);
+
+        if (moveDirection.magnitude > 0 && grounded)
         {
-            moveDirection.y = CheckDownSpeed(moveDirection.y);
-        }
-        else if (moveDirection.y > 0)
-            moveDirection.y = CheckUpSpeed(moveDirection.y);
-        if(moveDirection.y==0)
-            verticalMomentum = 0;
-        if ((moveDirection.x != 0 || moveDirection.y != 0))
-        {
-            if (wtime <= 0 && grounded)
+            if (wtime <= 0)
             {
                 wtime = 1.2f;
                 soundTrack.Move(0);
             }
-            else if (!grounded)
-            {
-                wtime = 0;
-                soundTrack.Stopmove();
-            }
         }
         else
         {
-            if (wtime>0)
-            {
-                wtime = 0;
-                soundTrack.Stopmove();
-            }
+            soundTrack.Stopmove();
+            wtime = 0;
         }
+
         if (wtime > 0)
-        {
-            wtime-=Time.fixedDeltaTime;
-        }
-        Pos.text = ((int)transform.position.x + "  " + (int)transform.position.y + "  " + (int)transform.position.z);
+            wtime -= Time.fixedDeltaTime;
+        
+    }
+    public void PosOut()
+    {
+        Pos.text = $"{(int)transform.position.x}  {(int)transform.position.y}  {(int)transform.position.z}";
     }
     public void Jump()
     {
@@ -281,48 +332,94 @@ public class ControllerImput : MonoBehaviour
     }
     public void OnSprint(InputAction.CallbackContext context)
     {
-        if (!sprint)
-        {
-            sprint = true;
-            cameracontrol.GetComponent<Camera>().fieldOfView = 65;
+        sprint =!sprint;
+        float targetFOV = sprint ? 65f : 60f;
+        StartCoroutine(SmoothFOVTransition(targetFOV, 0.3f));
+    }
+    private IEnumerator SmoothFOVTransition(float targetFOV, float duration)
+    {
+        Camera camera = cameracontrol.GetComponent<Camera>();
+        float startFOV = camera.fieldOfView;
+        float elapsedTime = 0f;
 
-        }
-        else
+        while (elapsedTime < duration)
         {
-            sprint = false;
-            cameracontrol.GetComponent<Camera>().fieldOfView = 60;
+            camera.fieldOfView = Mathf.Lerp(startFOV, targetFOV, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
+
+        camera.fieldOfView = targetFOV;
     }
     void OnEnable()
     {
-        // Enable the actions
         moveAction.Enable();
-
+        middleAction.Enable();
         sprintAction.Enable();
+        escapeAction.Enable();
+        shiftAction.Enable();
+
+        shiftAction.performed += OnShift;
+        shiftAction.canceled -= OnShift;
         middleAction.performed += OnMiddleClicking;
         middleAction.canceled += OnMiddleClicking;
-        middleAction.Enable();
         sprintAction.performed += OnSprint;
-
-        
-
+        sprintAction.canceled -= OnSprint;
+        escapeAction.performed += OnEscape;
+        escapeAction.canceled -= OnEscape;
         moveAction.performed += OnMovement;
         moveAction.canceled += OnMovement;
+
         if (androidclick!=null)
         {
             androidclick.Enable();
+            androidPress.Enable();
+            ANDRmoveact.Enable();
+
             androidclick.performed += OnClicking1;
             androidclick.canceled += OnClicking1;
 
-            androidPress.Enable();
             androidPress.performed += OnClicking2;
             androidPress.canceled += OnClicking2;
 
             ANDRmoveact.performed += OnJoystickMovement;
             ANDRmoveact.canceled += OnJoystickMovement;
-            ANDRmoveact.Enable();
         }
 
+    }
+    void OnDisable()
+    {
+        middleAction.performed -= OnMiddleClicking;
+        middleAction.canceled -= OnMiddleClicking;
+        sprintAction.performed -= OnSprint;
+        sprintAction.canceled -= OnSprint;
+        escapeAction.performed -= OnEscape;
+        escapeAction.canceled -= OnEscape;
+        moveAction.performed -= OnMovement;
+        moveAction.canceled -= OnMovement;
+        shiftAction.canceled -= OnShift;
+
+        shiftAction.Disable();
+        moveAction.Disable();
+        middleAction.Disable();
+        sprintAction.Disable();
+        escapeAction.Disable();
+
+        if (androidclick != null)
+        {
+            androidclick.performed -= OnClicking1;
+            androidclick.canceled -= OnClicking1;
+
+            androidPress.performed -= OnClicking2;
+            androidPress.canceled -= OnClicking2;
+
+            ANDRmoveact.performed -= OnJoystickMovement;
+            ANDRmoveact.canceled -= OnJoystickMovement;
+
+            androidclick.Disable();
+            androidPress.Disable();
+            ANDRmoveact.Disable();
+        }
     }
     public void OnMiddleClicking(InputAction.CallbackContext context)
     {
@@ -361,7 +458,13 @@ public class ControllerImput : MonoBehaviour
         pozX = movementInput.x;
         pozZ = movementInput.y;
     }
-
+    public void OnEscape(InputAction.CallbackContext context)
+    {
+        if(!Toolbar.escape)
+        toolbar.Escape();
+        else
+        toolbar.Again();
+    }
     public void OnClicking1(InputAction.CallbackContext context)
     {
         if (time <= 0) {
@@ -422,11 +525,20 @@ public class ControllerImput : MonoBehaviour
     {
         Debug.Log(2);
     }
+
+    public void OnShift(InputAction.CallbackContext context)
+    {
+        movementSpeed= shift? normalSpeed: shiftSpeed;
+        shift = !shift;
+        float targetFOV = shift ? 50f : 60f;
+        StartCoroutine(SmoothFOVTransition(targetFOV, 0.3f));
+    }
     public bool Front
     {
-
         get
         {
+            if(transform.position.y>159)
+                return false;
             if (
                 wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y, transform.position.z + 0.5f)].Items.isblock ||
                 wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y - 1, transform.position.z + 0.5f)].Items.isblock
@@ -441,6 +553,8 @@ public class ControllerImput : MonoBehaviour
         
         get
         {
+            if (transform.position.y > 159)
+                return false;
             if (
                 wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y, transform.position.z - 0.5f)].Items.isblock ||
                 wmanager.blockTypes[wmanager.Block(transform.position.x, transform.position.y - 1, transform.position.z - 0.5f)].Items.isblock
@@ -455,6 +569,8 @@ public class ControllerImput : MonoBehaviour
 
         get
         {
+            if (transform.position.y > 159)
+                return false;
             if (
                 wmanager.blockTypes[wmanager.Block(transform.position.x - 0.5f, transform.position.y, transform.position.z)].Items.isblock ||
                 wmanager.blockTypes[wmanager.Block(transform.position.x - 0.5f, transform.position.y - 1f, transform.position.z)].Items.isblock
@@ -469,6 +585,8 @@ public class ControllerImput : MonoBehaviour
 
         get
         {
+            if (transform.position.y > 159)
+                return false;
             if (
                 wmanager.blockTypes[wmanager.Block(transform.position.x + 0.5f, transform.position.y, transform.position.z)].Items.isblock ||
                 wmanager.blockTypes[wmanager.Block(transform.position.x + 0.5f, transform.position.y - 1, transform.position.z)].Items.isblock
@@ -489,7 +607,7 @@ public class ControllerImput : MonoBehaviour
             controller.enabled = true;
             return 0;
         }
-        if (transform.position.y > 160)
+        if (transform.position.y > 159)
         {
             return downSpeed;
         }
@@ -514,7 +632,7 @@ public class ControllerImput : MonoBehaviour
     }
     private float CheckUpSpeed(float upSpeed)
     {
-        if (transform.position.y > 158)
+        if (transform.position.y > 156)
         {
             return upSpeed;
         }
@@ -566,8 +684,7 @@ public class ControllerImput : MonoBehaviour
                             if (brktime <= 0)
                             {
                                 soundTrack.Placement(1);
-
-                                brktime = 0.3f;
+                                brktime = 1.47f;
                             }
                             int g = Mathf.RoundToInt(pos.x), h = Mathf.RoundToInt(pos.z);
                             int s = g, k = h;
@@ -595,7 +712,7 @@ public class ControllerImput : MonoBehaviour
                                 box.transform.position = new Vector3(a, b, c);
                                 holdtme = 0;
                             }
-                            if (holdtme >= wmanager.blockTypes[WorldManager.chunks[(s / 16 + 100), (k / 16 + 100)].Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16]].Items.blocks.breakTime)
+                            if (holdtme >= wmanager.blockTypes[WorldManager.GetChunk(s/16,k/16).Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16]].Items.blocks.breakTime)
                             {
                                 box.SetActive(false);
                                 itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
@@ -630,8 +747,7 @@ public class ControllerImput : MonoBehaviour
                             if (brktime <= 0)
                             {
                                 soundTrack.Placement(1);
-
-                                brktime = 0.3f;
+                                brktime = 1f;
                             }
                             if (Mathf.RoundToInt(pos.x) == a && Mathf.RoundToInt(pos.y) == b && Mathf.RoundToInt(pos.z) == c)
                             {
@@ -677,7 +793,15 @@ public class ControllerImput : MonoBehaviour
         //right click
         if (Input.GetMouseButton(1) && time<=0)
         {
-            if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.isblock)
+            if(toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.tool.type==4)
+            {
+                ItemsFunctions.MakeMap();
+                toolbar.UpdateAnItem(Toolbar.slothIndex);
+                toolbar.item[0,Toolbar.slothIndex] = 23;
+                toolbar.itemsize[0,Toolbar.slothIndex] = 1;
+                toolbar.itemSlots[Toolbar.slothIndex].image.sprite = wmanager.blockTypes[23].itemSprite;
+            }
+            else if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.isblock)
             {
                 float step = 0.1f;
                 Vector3 lastPos = new();
@@ -748,5 +872,10 @@ public class ControllerImput : MonoBehaviour
 
         }
         return true;
+    }
+
+    public void CloseMap()
+    {
+        mapImg.gameObject.SetActive(false);
     }
 }

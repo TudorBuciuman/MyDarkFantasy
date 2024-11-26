@@ -17,7 +17,7 @@ public class ChunkSerializer
 
         if (loadedChunks.ContainsKey((cx, cz)))
         {
-            WorldManager.chunks[cx + 100, cz + 100].Voxels = loadedChunks[(cx, cz)];
+            WorldManager.GetChunk(cx,cz).Voxels = loadedChunks[(cx, cz)];
         }
         else
         {
@@ -34,7 +34,7 @@ public class ChunkSerializer
             lock (loadedChunks) { 
             loadedChunks[(cx, cz)] = chunkData;
             }
-            WorldManager.chunks[cx+100,cz+100].Voxels=chunkData;
+            WorldManager.GetChunk(cx,cz).Voxels=chunkData;
         }
     }
     public static byte[] FindChunkInRegion(string fileName, int cx, int cz)
@@ -221,6 +221,7 @@ public class ChunkSerializer
         MouseController.xrot = data.mx;
         MouseController.yrot = data.my;
         pret = true;
+        ControllerImput.Instance.ReRead();
     }
     public void Sync(string sv,int Seed)
     {
@@ -290,7 +291,7 @@ public class ChunkSerializer
                 }
             }
         }
-        WorldManager.chunks[cx + 100, cz + 100].Voxels = voxelData;
+        WorldManager.GetChunk(cx, cz).Voxels = voxelData;
         return voxelData;
     }
 

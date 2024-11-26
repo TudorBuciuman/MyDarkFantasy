@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Shifting",
+                    "type": "Button",
+                    "id": "67e874c9-b8c2-4852-8851-e88ff3f802f5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -161,6 +170,17 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "a7ab40d1-7dbc-4fb8-ba17-b0ff44478655",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "android",
+                    "action": "Shifting",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

@@ -71,6 +71,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Shifting"",
+                    ""type"": ""Button"",
+                    ""id"": ""67e874c9-b8c2-4852-8851-e88ff3f802f5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -183,6 +192,17 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7ab40d1-7dbc-4fb8-ba17-b0ff44478655"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""android"",
+                    ""action"": ""Shifting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -213,6 +233,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         m_Android_OpenInv = m_Android.FindAction("OpenInv", throwIfNotFound: true);
         m_Android_Escape = m_Android.FindAction("Escape", throwIfNotFound: true);
         m_Android_Movement = m_Android.FindAction("Movement", throwIfNotFound: true);
+        m_Android_Shifting = m_Android.FindAction("Shifting", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -279,6 +300,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Android_OpenInv;
     private readonly InputAction m_Android_Escape;
     private readonly InputAction m_Android_Movement;
+    private readonly InputAction m_Android_Shifting;
     public struct AndroidActions
     {
         private @NewControls m_Wrapper;
@@ -288,6 +310,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         public InputAction @OpenInv => m_Wrapper.m_Android_OpenInv;
         public InputAction @Escape => m_Wrapper.m_Android_Escape;
         public InputAction @Movement => m_Wrapper.m_Android_Movement;
+        public InputAction @Shifting => m_Wrapper.m_Android_Shifting;
         public InputActionMap Get() { return m_Wrapper.m_Android; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -312,6 +335,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
+            @Shifting.started += instance.OnShifting;
+            @Shifting.performed += instance.OnShifting;
+            @Shifting.canceled += instance.OnShifting;
         }
 
         private void UnregisterCallbacks(IAndroidActions instance)
@@ -331,6 +357,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
+            @Shifting.started -= instance.OnShifting;
+            @Shifting.performed -= instance.OnShifting;
+            @Shifting.canceled -= instance.OnShifting;
         }
 
         public void RemoveCallbacks(IAndroidActions instance)
@@ -364,5 +393,6 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         void OnOpenInv(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
+        void OnShifting(InputAction.CallbackContext context);
     }
 }

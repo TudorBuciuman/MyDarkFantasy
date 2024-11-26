@@ -85,6 +85,7 @@
     <Compile Include="Assets\Scripts\Quests.cs" />
     <Compile Include="Assets\Joystick Pack\Examples\JoystickSetterExample.cs" />
     <Compile Include="Assets\Scripts\Chunk.cs" />
+    <Compile Include="Assets\Scripts\SceneReader.cs" />
     <Compile Include="Assets\Scripts\Structures.cs" />
     <Compile Include="Assets\Scripts\MouseController.cs" />
     <Compile Include="Assets\Scripts\OnAppOpened.cs" />
@@ -94,7 +95,10 @@
     <Compile Include="Assets\Scripts\NewWorld.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Data\ImportantFiles\Storytelling.txt" />
+    <None Include="Assets\Resources\Dialogues\EndScene.txt" />
     <None Include="Assets\Data\Shaders\WaterShader.shader" />
+    <None Include="Assets\Resources\UIMessage.txt" />
     <None Include="Assets\Data\Shaders\StandardShader.shader" />
   </ItemGroup>
   <ItemGroup>

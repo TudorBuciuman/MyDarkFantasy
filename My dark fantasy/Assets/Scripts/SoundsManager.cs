@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Networking;
@@ -10,6 +11,7 @@ public class SoundsManager : MonoBehaviour
     public AudioMixer soundsMixer;
     public AudioMixer musicMixer;
     public AudioSource mouseSource;
+    public AudioSource pickup;
     public AudioSource songs;
     public AudioClip[] clip=new AudioClip[10];
     public static string Master = "sounds";
@@ -22,22 +24,30 @@ public class SoundsManager : MonoBehaviour
         SettingsData data = JsonUtility.FromJson<SettingsData>(json);
         if (!data.totalsound)
         {
-            musicMixer.SetFloat("Master", -80f);
-            soundsMixer.SetFloat("Master", -80f);
+            musicMixer.SetFloat(Music, -80f);
+            soundsMixer.SetFloat(Master, -80f);
         }
         else
         {
-            musicMixer.SetFloat(Music, data.musiclevel-80);
-            soundsMixer.SetFloat(Master, data.movementlevel - 80);
+            float musicVolume = Mathf.Lerp(-80f, 0f, data.musiclevel / 100f); 
+            float soundsVolume = Mathf.Lerp(-80f, 0f, data.movementlevel / 100f); 
+
+            musicMixer.SetFloat(Music, musicVolume);
+            soundsMixer.SetFloat(Master, soundsVolume);
         }
     }
     public void PlaySong(byte id)
     {
-        if (!mouseSource.isPlaying)
+        if (!songs.isPlaying)
         {
             string path = Path.Combine(Application.streamingAssetsPath, "Songs");
             StartCoroutine(LoadAndPlayMusic(path, id));
         }
+    }
+    public void PlaySceneSong(byte id)
+    {
+        string path = Path.Combine(Application.streamingAssetsPath, "Songs");
+        StartCoroutine(LoadAndPlayMusic(path, id));
     }
     public void PlayRandomSound(byte id)
     {
@@ -73,6 +83,11 @@ public class SoundsManager : MonoBehaviour
         mouseSource.clip = clip[id];
         mouseSource.Play();
     }
+    public void PickUp()
+    {
+        pickup.clip = clip[10];
+        pickup.Play();
+    }
     public void Stopmove()
     {
         moveSource.Stop();
@@ -92,11 +107,11 @@ public class SoundsManager : MonoBehaviour
 
     #if UNITY_STANDALONE_WIN
         string[] musicFiles = Directory.GetFiles(path, "*.ogg");
-        musicFilePath = "file://" + musicFiles[id-1];
-    #elif UNITY_ANDROID
+        musicFilePath = System.IO.Path.Combine(Application.streamingAssetsPath, $"Songs/song{id}.ogg");
+#elif UNITY_ANDROID
         musicFilePath = Path.Combine(Application.streamingAssetsPath, $"song{id}.ogg");
-    #endif
-
+        Debug.Log(musicFilePath);
+#endif
         using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
         yield return www.SendWebRequest();
 
@@ -114,4 +129,5 @@ public class SoundsManager : MonoBehaviour
             }
         }
     }
+
 }

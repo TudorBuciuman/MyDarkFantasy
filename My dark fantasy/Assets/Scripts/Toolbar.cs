@@ -9,6 +9,7 @@ public class Toolbar : MonoBehaviour
 {
     
     public WorldManager World;
+    public SoundsManager soundTrack;
     public NewControls inputActions;
     public ControllerImput control;
     public Crafting craft;
@@ -23,15 +24,17 @@ public class Toolbar : MonoBehaviour
     public Button playSong;
     public Button openInv;
     public Button closeInv;
+    public Image holdingItem;
 
     public byte[,] item = new byte[4, 9];
     public byte[,] itemsize = new byte[4, 9];
     public byte selectedsloth;
     //slothIndex este intre 0->9 iar selectedsloth e pentru cand deschizi inv
     public static byte slothIndex = 0;
-    float time = 0f;
     public bool openedInv = false;
     public static bool escape = false;
+
+    public static bool mapActive = false;
 
     public PointerEventData faranume;
     public GraphicRaycaster raycaster;
@@ -40,13 +43,14 @@ public class Toolbar : MonoBehaviour
     {
         inputActions = new NewControls();
         inputActions.Android.Enable();
-        for(int j=0; j<4; j++) {
+        for (int j=0; j<4; j++) {
             for (int i = 0; i < 9; i++)
             {
                 item[j, i] = 0;
                 itemsize[j, i] = 0;
             }
         }
+
         ReadForInventory();
         for (int i=0; i<9; i++)
         {
@@ -64,6 +68,9 @@ public class Toolbar : MonoBehaviour
                 }
             }
         }
+        if(World.blockTypes[item[0, slothIndex]].Items.tool.type!=5)
+        holdingItem.sprite = World.blockTypes[item[0,slothIndex]].itemSprite;
+
     }
     void Update()
     {
@@ -79,12 +86,25 @@ public class Toolbar : MonoBehaviour
                         slothIndex = 8;
                     else
                     slothIndex--;
+                    
                 }
                 else
                     slothIndex++;
                 if (slothIndex == 9)
                     slothIndex = 0;
                 highlight.position = itemSlots[slothIndex].image.transform.position;
+                if (mapActive)
+                {
+                    control.CloseMap();
+                    mapActive = false;
+                }
+                else if (World.blockTypes[item[0, slothIndex]].Items.tool.type == 5)
+                {
+                    ItemsFunctions.MakeMap();
+                    holdingItem.sprite = World.blockTypes[0].itemSprite;
+                }
+                if (World.blockTypes[item[0, slothIndex]].Items.tool.type != 5)
+                    holdingItem.sprite = World.blockTypes[item[0, slothIndex]].itemSprite;
             }
 
         }
@@ -108,17 +128,6 @@ public class Toolbar : MonoBehaviour
                 }
             }
         }
-            if (Input.GetKey(KeyCode.Escape) && time <= 0)
-            {
-                time = 0.3f;
-                if (!escape)
-                    Escape();
-                else
-                    Again();
-            }
-            if (time > 0)
-                time -= Time.deltaTime;
-        
     }
     public void SearchForImput()
     {
@@ -337,6 +346,19 @@ public class Toolbar : MonoBehaviour
     {
         slothIndex = a;
         highlight.position = itemSlots[slothIndex].image.transform.position;
+        if (mapActive)
+        {
+            control.CloseMap();
+            mapActive = false;
+        }
+        else if (World.blockTypes[item[0, slothIndex]].Items.tool.type == 5)
+        {
+            ItemsFunctions.MakeMap();
+            holdingItem.sprite = World.blockTypes[0].itemSprite;
+
+        }
+        if (World.blockTypes[item[0, slothIndex]].Items.tool.type != 5)
+            holdingItem.sprite = World.blockTypes[item[0, slothIndex]].itemSprite;
     }
     public void TryCrafting(byte id)
     {
@@ -541,6 +563,7 @@ public class Toolbar : MonoBehaviour
 
         if (size == 0)
         {
+            soundTrack.PickUp();
             Destroy(obj.obj);
         }
         else
@@ -630,23 +653,23 @@ public class Toolbar : MonoBehaviour
         }
         lastitem = 255;
         invimg[36].image.gameObject.SetActive(false);
+        if (World.blockTypes[item[0, slothIndex]].Items.tool.type != 5)
+            holdingItem.sprite = World.blockTypes[item[0, slothIndex]].itemSprite;
 
     }
     public void CloseScene()
     {
         Debug.Log(WorldManager.chunkstosave.Count);
-        Application.runInBackground = true;
         SaveInventory();
         ChunkSerializer.savePlayerData(control.PlayerPos(), control.PlayerRot());
         for (int i = 0; i<WorldManager.chunkstosave.Count; i++)
         {
-            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.chunks[WorldManager.chunkstosave[i].x+100, WorldManager.chunkstosave[i].y+100].Voxels;
+            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.GetChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y).Voxels;
             ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
         }
         World.ClearData();
+        inputActions.Android.Disable();
         ChunkSerializer.loadedChunks.Clear();
-        Application.runInBackground = false;
-        System.GC.Collect();
         SceneManager.LoadScene(1);
         escape = false;
         openedInv = false;
@@ -658,17 +681,18 @@ public class Toolbar : MonoBehaviour
     public void EscapeNSetUp()
     {
         //sunt obosit si plictisit ;<
-        Application.runInBackground = true;
         SaveInventory();
         ChunkSerializer.savePlayerData(control.PlayerPos(), control.PlayerRot());
+        /*
         for (int i = 0; i < WorldManager.chunkstosave.Count; i++)
         {
-            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.chunks[WorldManager.chunkstosave[i].x + 100, WorldManager.chunkstosave[i].y + 100].Voxels;
+            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.GetChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y).Voxels;
             ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
         }
         ChunkSerializer.loadedChunks.Clear();
         World.ClearData();
-        Application.runInBackground = false;
+        inputActions.Android.Disable();
+        */
         UiManager e = new();
         e.OpenSet("World");
         //escape = false;
@@ -686,6 +710,8 @@ public class Toolbar : MonoBehaviour
             invimg[id].num.text = null;
             item[0, id] = 0;
             itemsize[0, id] =0;
+            if (World.blockTypes[item[0, slothIndex]].Items.tool.type != 5)
+                holdingItem.sprite = World.blockTypes[0].itemSprite;
         }
         else
         {

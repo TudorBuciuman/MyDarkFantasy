@@ -6,7 +6,7 @@ public class Chunk
 {
     private readonly object listLock = new object();
     public byte[,,] Voxels = new byte[16, 160, 16];
-    private readonly ChunkCoord Coord;
+    public ChunkCoord Coord;
     public BiomeAttributes[,] biome;
     public Material waterMat;
     public byte[,] biom=new byte[16,16];
@@ -37,8 +37,6 @@ public class Chunk
     public Chunk(ChunkCoord coord, WorldManager wmanager)
     {
         Coord = coord;
-        Coord.x -= 100;
-        Coord.y -= 100;
         chunkObject = new GameObject("Chunk " + (Coord.x).ToString() + " " + (Coord.y).ToString());
         chunkObject.transform.position = new Vector3(Coord.x * 16, 0f, Coord.y * 16);
         child1 = new GameObject("1", typeof(MeshFilter), typeof(MeshRenderer));
@@ -80,9 +78,9 @@ public class Chunk
                 height[x, z] = (byte)heightm[x, z];
                 SetBlock(x, 0, z, 5);
                 for (int i = 1; i < y - 3; i++)
-                    SetBlock(x, i, z, 4);
+                   SetBlock(x, i, z, 4);
                 for (int i = (y - 3); i < y; i++)
-                    SetBlock(x, i, z, biome[x, z].middleblock);
+                   SetBlock(x, i, z, biome[x, z].middleblock);
 
                 SetBlock(x, y, z, biome[x, z].topblock);
                
@@ -121,7 +119,7 @@ public class Chunk
         for (int i = 0; i < 16; i++)
         {
             for(int j=0; j<16; j++) { 
-            byte index = 0, l = 0;
+            byte index = 0;
                 float worldX = Coord.x * 16 + i;
                 float worldZ = Coord.y * 16 + j;
                 float erosion = CombinedNoise(worldX, worldZ,4,0.01f,2f)-0.5f;
@@ -166,9 +164,8 @@ public class Chunk
                 else
                     height += 64 * continentalness;
                 
-                if (valley == 0)
-                    ;
-                else if (valley < (-0.4f))
+               
+                if (valley < (-0.4f))
                     height =60- valley * 45;
                 else if (valley < -0.3)
                     height += valley * 30;
@@ -350,7 +347,7 @@ public class Chunk
                         Voxels[x, y, z] = 0;
                     }
 
-                    else if (n > 0 && n < 0.2)
+                    else if (n > 0.03 && n < 0.27f)
                     {
                         foreach (Lode lode in biome[x, z].lodes)
                         {
@@ -475,12 +472,12 @@ public class Chunk
     }
     void PlaceWater(List<Vector3> vertices, List<int> triangles, List<Vector2> uv, Dictionary<Vector3, int> vertexDict, byte voxel, Vector3 pos)
     {
-        if (isntWater((int)pos.x, (int)pos.y, (int)pos.z + 1)) AddWaterFace(vertices, 0, triangles, uv, vertexDict, voxel, pos, Vector3.forward);
-        if (isntWater((int)pos.x, (int)pos.y, (int)pos.z - 1)) AddWaterFace(vertices, 1, triangles, uv, vertexDict, voxel, pos, Vector3.back);
-        if (isntWater((int)pos.x + 1, (int)pos.y, (int)pos.z)) AddWaterFace(vertices, 2, triangles, uv, vertexDict, voxel, pos, Vector3.right);
-        if (isntWater((int)pos.x - 1, (int)pos.y, (int)pos.z)) AddWaterFace(vertices, 3, triangles, uv, vertexDict, voxel, pos, Vector3.left);
-        if (isntWater((int)pos.x, (int)(pos.y) + 1, (int)pos.z)) AddWaterFace(vertices, 4, triangles, uv, vertexDict, voxel, pos, Vector3.up);
-        if (isntWater((int)pos.x, (int)pos.y - 1, (int)pos.z)) AddWaterFace(vertices, 5, triangles, uv, vertexDict, voxel, pos, Vector3.down);
+        if (IsntWater((int)pos.x, (int)pos.y, (int)pos.z + 1)) AddWaterFace(vertices, 0, triangles, uv, vertexDict, voxel, pos, Vector3.forward);
+        if (IsntWater((int)pos.x, (int)pos.y, (int)pos.z - 1)) AddWaterFace(vertices, 1, triangles, uv, vertexDict, voxel, pos, Vector3.back);
+        if (IsntWater((int)pos.x + 1, (int)pos.y, (int)pos.z)) AddWaterFace(vertices, 2, triangles, uv, vertexDict, voxel, pos, Vector3.right);
+        if (IsntWater((int)pos.x - 1, (int)pos.y, (int)pos.z)) AddWaterFace(vertices, 3, triangles, uv, vertexDict, voxel, pos, Vector3.left);
+        if (IsntWater((int)pos.x, (int)(pos.y) + 1, (int)pos.z)) AddWaterFace(vertices, 4, triangles, uv, vertexDict, voxel, pos, Vector3.up);
+        if (IsntWater((int)pos.x, (int)pos.y - 1, (int)pos.z)) AddWaterFace(vertices, 5, triangles, uv, vertexDict, voxel, pos, Vector3.down);
     }
     void MakeFlowers(List<Vector3> vertices, List<int> triangles, List<Vector2> uv, Dictionary<Vector3, int> vertexDict, byte voxel, Vector3 position)
     {
@@ -623,70 +620,69 @@ public class Chunk
             return false;
         //performanta
         if (x == 16 && z >= 0 && z < 16)
-            return !world.blockTypes[WorldManager.chunks[Coord.x + 101, Coord.y + 100].Voxels[0, y, z]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x+1,Coord.y).Voxels[0, y, z]].Items.isblock;
         if (x == 16 && z == 16)
-            return !world.blockTypes[WorldManager.chunks[Coord.x + 101, Coord.y + 101].Voxels[0, y, 0]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y+1).Voxels[0, y, 0]].Items.isblock;
         if ((x>=0 && x<16) && z==16)
         {
-            return !world.blockTypes[WorldManager.chunks[Coord.x+100,Coord.y+101].Voxels[x,y,0]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x, Coord.y + 1).Voxels[x,y,0]].Items.isblock;
         }
         if(x==16 && z < 0)
         {
-            return !world.blockTypes[WorldManager.chunks[Coord.x+101, Coord.y +99].Voxels[0, y, 15]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x +1,Coord.y-1).Voxels[0, y, 15]].Items.isblock;
         }
         if (x<0 && z < 0)
         {
-            return !world.blockTypes[WorldManager.chunks[Coord.x + 99, Coord.y + 99].Voxels[15, y, 15]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x-1, Coord.y-1).Voxels[15, y, 15]].Items.isblock;
         }
         if ((x >= 0 && x<16) && z < 0)
         {
-            
-            return !world.blockTypes[WorldManager.chunks[Coord.x + 100, Coord.y + 99].Voxels[x, y, 15]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x , Coord.y-1).Voxels[x, y, 15]].Items.isblock;
         }
         if (x < 0 && (z >= 0 && z<16))
         {
-            return !world.blockTypes[WorldManager.chunks[Coord.x + 99, Coord.y + 100].Voxels[15, y, z]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y).Voxels[15, y, z]].Items.isblock;
         }
         if (x < 0 && z==16)
         {
-            return !world.blockTypes[WorldManager.chunks[Coord.x + 99, Coord.y + 101].Voxels[15, y, 0]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x-1, Coord.y + 1).Voxels[15, y, 0]].Items.isblock;
         }
         
         return (!world.blockTypes[Voxels[x, y, z]].Items.isblock);
     }
-    bool isntWater(int x, int y, int z)
+    bool IsntWater(int x, int y, int z)
     {
         if (y < 0 || y >= 159)
             return false;
         //performanta
         if (x == 16 && z >= 0 && z < 16)
-            return !(world.blockTypes[WorldManager.chunks[Coord.x + 101, Coord.y + 100].Voxels[0, y, z]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y).Voxels[0, y, z]].Items.blocks.type==5);
         if (x == 16 && z == 16)
-            return !(world.blockTypes[WorldManager.chunks[Coord.x + 101, Coord.y + 101].Voxels[0, y, 0]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y+1).Voxels[0, y, 0]].Items.blocks.type==5);
         if ((x >= 0 && x < 16) && z == 16)
         {
-            return !(world.blockTypes[WorldManager.chunks[Coord.x + 100, Coord.y + 101].Voxels[x, y, 0]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x , Coord.y+1).Voxels[x, y, 0]].Items.blocks.type==5);
         }
         if (x == 16 && z < 0)
         {
-            return !(world.blockTypes[WorldManager.chunks[Coord.x + 101, Coord.y + 99].Voxels[0, y, 15]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y-1).Voxels[0, y, 15]].Items.blocks.type==5);
         }
         if (x < 0 && z < 0)
         {
-            return !(world.blockTypes[WorldManager.chunks[Coord.x + 99, Coord.y + 99].Voxels[15, y, 15]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y-1).Voxels[15, y, 15]].Items.blocks.type==5);
         }
         if ((x >= 0 && x < 16) && z < 0)
         {
 
-            return !(world.blockTypes[WorldManager.chunks[Coord.x + 100, Coord.y + 99].Voxels[x, y, 15]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x , Coord.y-1).Voxels[x, y, 15]].Items.blocks.type==5);
         }
         if (x < 0 && (z >= 0 && z < 16))
         {
-            return !(world.blockTypes[WorldManager.chunks[Coord.x + 99, Coord.y + 100].Voxels[15, y, z]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y).Voxels[15, y, z]].Items.blocks.type==5);
         }
         if (x < 0 && z == 16)
         {
-            return !(world.blockTypes[WorldManager.chunks[Coord.x + 99, Coord.y + 101].Voxels[15, y, 0]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y+1).Voxels[15, y, 0]].Items.blocks.type==5);
         }
 
         return !(world.blockTypes[Voxels[x, y, z]].Items.blocks.type==5);
