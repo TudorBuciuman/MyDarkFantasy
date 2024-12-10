@@ -144,7 +144,13 @@ public class NewWorld : MonoBehaviour
         {
             if (gm[i].gameObject == this.gameObject)
             {
-                string[] files = Directory.GetDirectories(Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds"));
+                string directoryPath = Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds");
+                DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+                var directories = directoryInfo.GetDirectories()
+                .AsParallel() // Parallel LINQ pentru multi-threading si performanta sporita
+                .OrderByDescending(dir => dir.LastWriteTime)
+                .ToArray();
+                string[] files = Directory.GetDirectories(directoryPath);
                 string[] smlfiles = Directory.GetFiles(files[i], "*.info");
                 string content = File.ReadAllText(smlfiles[0]);
                 string[] words = content.Split(new char[] { ' ', '\n', '\r', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);

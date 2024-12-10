@@ -13,6 +13,7 @@ public class Chunk
     public Lode lode;
     public byte maxheight = 4;
     public bool mademesh = false;
+    public bool strstart;
     public bool ready = false;
     public WorldManager world;
     public GameObject chunkObject;
@@ -331,7 +332,7 @@ public class Chunk
     }
     public void Make3d()
     {
-        strmade = true;
+        strstart=true;
         PerlinNoise3D();
         for (int x = 0; x < 16; x++)
         {
@@ -366,7 +367,7 @@ public class Chunk
             }
         }
             ChunkSerializer.loadedChunks[(Coord.x, Coord.y)] = Voxels;
-        
+        if(MathF.Abs(Coord.x)>1 || MathF.Abs(Coord.y)>1)
         for (int x = 0; x < 16; x++)
         {
             for (int z = 0; z < 16; z++)
@@ -379,7 +380,7 @@ public class Chunk
                 }
             }
         }
-        
+        strmade = true;
     }
     public void CreateMesh()
     {
@@ -573,7 +574,6 @@ public class Chunk
 
         float uvSize = 0.0625f;
         byte bid = (byte)world.blockTypes[voxel].Items.blocks.GetTextureID(face);
-
         Vector2 uvBase = GetUVForVoxelType(bid);
         uv.Add(uvBase + new Vector2(0, 0) * uvSize);
         uv.Add(uvBase + new Vector2(1, 0) * uvSize);

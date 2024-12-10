@@ -12,6 +12,7 @@ public class ControllerImput : MonoBehaviour
 
     //Stiu ca e input - sunt doar silly :}
     public WorldManager wmanager;
+    public HealthSistem healthSistem;
     public Crafting craft;
     public itemsManager itemsManager;
     public SoundsManager soundTrack;
@@ -99,8 +100,7 @@ public class ControllerImput : MonoBehaviour
         bool esc =Toolbar.escape;
         Toolbar.escape = true;
         QualitySettings.vSyncCount = 1;
-        UiManager ui = new();
-        ui.ReadSet();
+        UiManager.ReadSet();
         Application.targetFrameRate = 60;
         if (ChunkSerializer.seed == -1)
         {
@@ -284,7 +284,20 @@ public class ControllerImput : MonoBehaviour
         }
         else if (currentVelocity.y < 0) 
         {
-            currentVelocity.y = CheckDownSpeed(currentVelocity.y);
+            float r=CheckDownSpeed(currentVelocity.y);
+            if (r == 0)
+            {
+                if (currentVelocity.y < -0.25f)
+                {
+                    float c=currentVelocity.y;
+                    currentVelocity.y = 0;
+                    grounded = true;
+                    verticalMomentum = -0.1f;
+                    healthSistem.UpdateHealth(c * 10);
+                }
+                grounded = true;
+            }
+            currentVelocity.y = r;
         }
         else
         {
@@ -602,7 +615,7 @@ public class ControllerImput : MonoBehaviour
         {
             verticalMomentum = 0;
             controller.enabled = false;
-            //animatie cu dark screen, gaseste tu ceva
+            healthSistem.UpdateHealth(-100);
             transform.position = ChunkSerializer.pos+new Vector3(0,1,0);
             controller.enabled = true;
             return 0;

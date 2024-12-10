@@ -8,11 +8,13 @@ using Unity.VisualScripting;
 using JetBrains.Annotations;
 using System.Collections;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 
 public class WorldManager : MonoBehaviour
 {
     public ControllerImput CImp;
+    public SceneReader SceneReader;
     public Time time;
     public static bool ready = false;
     public static float currenttime;
@@ -33,6 +35,7 @@ public class WorldManager : MonoBehaviour
     public static Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
     public void Awake()
     {
+        chunks.Clear();
         if (!OnAppOpened.readytogo)
         {
             OnAppOpened appOpened = new();
@@ -52,13 +55,23 @@ public class WorldManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+/*
         if (!Toolbar.openedInv)
         {
             //CheckViewDistance();
            CalculateTime();
             //Shader.SetGlobalFloat("globallight", GlobalLight);
         }
+     /*
+        if (Input.GetKeyUp(KeyCode.UpArrow))
+        {
+            SceneReader.gameObject.SetActive(true);
+            Toolbar.openedInv = true;
+            Toolbar.escape = true;
+            SceneReader.SceneLoc = "Insomnia";
+            SceneManager.LoadScene("2D scene");
+        }
+        */
     }
     
     private IEnumerator UpdateChunksCoroutine()
@@ -109,11 +122,10 @@ public class WorldManager : MonoBehaviour
     public static void AddChunk(int x, int z, Chunk chunk)
     {
         var position = new Vector2Int(x, z);
-        if (!chunks.ContainsKey(position))
-        {
             chunks[position] = chunk;
-        }
-        else Debug.Log("wtf");
+        
+        //Debug.Log("wtf how did I manage to create a OneWay to destroy my pc?");
+        //also if you read this, I play chess very well :)
     }
     public static Chunk GetChunk(int x, int z)
     {
@@ -139,9 +151,8 @@ public class WorldManager : MonoBehaviour
             for (int j = -7; j <= 7; j++)
             {
             AddChunk(i,j, new Chunk(new ChunkCoord(i,j), this));
-            activechunks.Add(new ChunkCoord(i+100, j+100));
+            activechunks.Add(new ChunkCoord(i, j));
             GetChunk(i, j).MakeTerrain();
-        
             }
         }
         for (int i = -2; i <= 2; i++)
@@ -149,6 +160,24 @@ public class WorldManager : MonoBehaviour
             for (int j = -2; j <= 2; j++)
             {
                 GetChunk(i, j).Make3d();
+            }
+        }
+        for(int i=-4; i <= 4; i++)
+        {
+            for(int j=-2; j <= 2; j++)
+            {
+                if (!(MathF.Abs(i)==4 && MathF.Abs(j)==2))
+                {
+                    int k;
+                    for (k = 125; k >= 58; k--)
+                    {
+                        if (IsBlock(i, k, j))
+                            break;
+                    }
+                    SetTo(i, k, j, 49);
+                    if (UnityEngine.Random.Range(0, 2) == 1)
+                        SetTo(i, k + 1, j, 17);
+                }
             }
         }
         
@@ -182,15 +211,60 @@ public class WorldManager : MonoBehaviour
         }
 
     }
-    public static void UpdateMesh(int x,int y)
+    public static void UpdateMesh(int x,int z)
     {
-        GetChunk(x, y).CreateMesh();
+        int adjustedX = x < 0 ? (x / 16) - 1 : x / 16;
+        int adjustedZ = z < 0 ? (z / 16) - 1 : z / 16;
+
+        if (x < 0 && x % 16 == 0)
+            adjustedX++;
+        if (z < 0 && z % 16 == 0)
+            adjustedZ++;
+        int baseChunkX = adjustedX;
+        int baseChunkZ = adjustedZ;
+        GetChunk(baseChunkX, baseChunkZ).CreateMesh();
+
+        int localX = (x % 16 + 16) % 16;
+        int localZ = (z % 16 + 16) % 16;
+
+        bool onXEdge = localX == 0;
+        bool onZEdge = localZ == 0;
+        bool onPositiveXEdge = localX == 15;
+        bool onPositiveZEdge = localZ == 15;
+
+        if (onXEdge && onZEdge)
+        {
+            GetChunk(baseChunkX, baseChunkZ - 1).CreateMesh();
+            GetChunk(baseChunkX - 1, baseChunkZ).CreateMesh();
+            GetChunk(baseChunkX - 1, baseChunkZ - 1).CreateMesh();
+        }
+        else if (onXEdge)
+        {
+            GetChunk(baseChunkX - 1, baseChunkZ).CreateMesh();
+        }
+        else if (onZEdge)
+        {
+            GetChunk(baseChunkX, baseChunkZ - 1).CreateMesh();
+        }
+        else if (onPositiveXEdge && onPositiveZEdge)
+        {
+            GetChunk(baseChunkX + 1, baseChunkZ + 1).CreateMesh();
+        }
+        else if (onPositiveXEdge)
+        {
+            GetChunk(baseChunkX + 1, baseChunkZ).CreateMesh();
+        }
+        else if (onPositiveZEdge)
+        {
+            GetChunk(baseChunkX, baseChunkZ + 1).CreateMesh();
+        }
     }
     public static void SetTo(int x,int y, int z,byte id)
     {
-        if (x > 0 && z > 0)
+
+        if (x >= 0 && z >= 0)
             GetChunk((x / 16), (z / 16)).Voxels[x % 16, y, z % 16] = id;
-        else if (x > 0 && z < 0)
+        else if (x >= 0 && z < 0)
         {
             if (z % 16 == 0)
             {
@@ -212,7 +286,7 @@ public class WorldManager : MonoBehaviour
             else
                 GetChunk((x / 16 - 1), (z / 16 - 1)).Voxels[16 - (-x % 16), y , 16 - (-z % 16)] = id;
         }
-        else if (x < 0 && z > 0)
+        else if (x < 0 && z >= 0)
         {
             if (x % 16 == 0)
                 GetChunk((x / 16), (z / 16)).Voxels[0, y, z % 16] = id;
@@ -281,9 +355,12 @@ public class WorldManager : MonoBehaviour
         int adjustedX = x < 0 ? (x / 16) - 1 : x / 16;
         int adjustedZ = z < 0 ? (z / 16) - 1 : z / 16;
 
+        if(x<0 && x % 16 == 0)
+           adjustedX++;
+        if(z < 0 && z %16==0)
+            adjustedZ++;
         int baseChunkX = adjustedX;
         int baseChunkZ = adjustedZ;
-
         GetChunk(baseChunkX, baseChunkZ).CreateMesh();
 
         int localX = (x % 16 + 16) % 16;
@@ -465,9 +542,9 @@ public class WorldManager : MonoBehaviour
     {
         HashSet<ChunkCoord> chunksToDeactivate = new(activechunks);
         int X = playerPos.x, Z = playerPos.y;
-        for (int x =X - (Voxeldata.NumberOfChunks + 4); x <= X + (Voxeldata.NumberOfChunks + 4); x++)
+        for (int x =X - (Voxeldata.NumberOfChunks + 3); x <= X + (Voxeldata.NumberOfChunks + 3); x++)
         {
-            for (int z = Z - (Voxeldata.NumberOfChunks + 4); z <= Z + (Voxeldata.NumberOfChunks + 4); z++)
+            for (int z = Z - (Voxeldata.NumberOfChunks + 3); z <= Z + (Voxeldata.NumberOfChunks + 3); z++)
             {
                 ChunkCoord coord = new (x, z);
 
@@ -483,7 +560,6 @@ public class WorldManager : MonoBehaviour
                         if (!chunk.mademesh && !chunk.start && AreNeighborChunksReady(x, z))
                         {
                             NextChunk(x, z); 
-                            nextChunk.Enqueue(new ChunkCoord(x, z)); 
                             chunk.start = true; 
                         }
                         if (!chunk.chunkObject.activeSelf)
@@ -525,7 +601,7 @@ public class WorldManager : MonoBehaviour
                     chunk.CreateMesh();
                     nextChunk.Dequeue();
                 }
-                else
+                else if(!chunk.strstart)
                 {
                     Thread thread = new(() => chunk.Make3d());
                     thread.Start();
@@ -540,10 +616,14 @@ public class WorldManager : MonoBehaviour
 
     bool AreNeighborChunksReady(int x, int z)
     {
-        return (GetChunk(x - 1, z) != null && 
+        return (GetChunk(x - 1, z)!=null &&
+                GetChunk(x - 1, z-1)!=null &&
+                GetChunk(x + 1, z-1)!=null &&
+                GetChunk(x + 1, z + 1) != null &&
+                GetChunk(x - 1, z + 1) != null &&
                 GetChunk(x + 1, z) != null &&
                 GetChunk(x, z - 1) != null && 
-                GetChunk(x, z + 1 ) != null);  
+                GetChunk(x, z + 1) != null);  
     }
     public void ClearData()
     {

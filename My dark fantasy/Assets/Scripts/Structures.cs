@@ -24,9 +24,9 @@ public static class Structures
         for (int j =y+4; j<y+height; j++){
             for (int l = x - 2; l <= x + 2; l++) {
                 for (int k = z - 2; k <= z + 2; k++) {
-                    if(l>0 &&  k>0) 
+                    if(l>=0 &&  k>=0) 
                            WorldManager.GetChunk(l / 16, k / 16 ).Voxels[l % 16, j, k % 16] = 11;
-                    else if(l>0 && k < 0)
+                    else if(l>=0 && k < 0)
                     {
                         if(k%16==0)
                             WorldManager.GetChunk(l / 16, k / 16).Voxels[l % 16, j,0] = 11;
@@ -41,10 +41,10 @@ public static class Structures
                             WorldManager.GetChunk(l / 16-1, k / 16).Voxels[16 - (-l % 16), j, 0] = 11;
                         else if(l%16==0)
                             WorldManager.GetChunk(l / 16, k / 16-1).Voxels[0, j, 16 - (-k % 16)] = 11;
-                            else
+                        else
                             WorldManager.GetChunk(l / 16-1, k / 16-1).Voxels[16 - (-l % 16), j, 16 - (-k % 16)] = 11;
                     }
-                    else if (l < 0 && k > 0)
+                    else if (l < 0 && k >= 0)
                     {
                         if (l % 16 == 0)
                             WorldManager.GetChunk(l / 16, k / 16).Voxels[0, j, k%16] = 11;
@@ -79,6 +79,7 @@ public static class Structures
         WorldManager.SetTo(x , y + height + 1, z, 11);
         WorldManager.SetTo(x , y + height + 1, z +1, 11);
         WorldManager.SetTo(x + 1, y + height + 1, z, 11);
+
     }
     //pluralul de la cactus
     public static void MakeCacti(Vector3 pos,Vector2 offset)

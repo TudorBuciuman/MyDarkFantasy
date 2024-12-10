@@ -39,7 +39,7 @@ public class UiManager : MonoBehaviour
             LoadSettingsScene();
     }
 
-    public void ReadSet()
+    public static void ReadSet()
     {
         if (!File.Exists(Path.Combine(Application.persistentDataPath + "/Settings/settings.json")))
         {
@@ -150,11 +150,12 @@ public class UiManager : MonoBehaviour
 
         if (scene.Contains("World"))
         {
+            //SceneManager.UnloadSceneAsync("Settings");
             SceneManager.UnloadSceneAsync("Settings");
             ChunkSerializer.CloseSet();
         }
         else
-            SceneManager.LoadScene(0);
+            SceneManager.UnloadSceneAsync("Settings");
     }
     public void SoundSet()
     {

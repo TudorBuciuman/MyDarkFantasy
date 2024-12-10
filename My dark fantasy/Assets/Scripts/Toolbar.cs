@@ -9,9 +9,11 @@ public class Toolbar : MonoBehaviour
 {
     
     public WorldManager World;
+    public static Toolbar instance;
     public SoundsManager soundTrack;
     public NewControls inputActions;
     public ControllerImput control;
+    public HealthSistem healthSistem;
     public Crafting craft;
     public RectTransform highlight;
     public AllSlots[] itemSlots = new AllSlots[9];
@@ -41,6 +43,7 @@ public class Toolbar : MonoBehaviour
     public EventSystem eventSystem;
     void Start()
     {
+        instance = this;
         inputActions = new NewControls();
         inputActions.Android.Enable();
         for (int j=0; j<4; j++) {
@@ -389,6 +392,7 @@ public class Toolbar : MonoBehaviour
                 item[data.sloth/9, data.sloth%9]=data.itemID;
                 itemsize[data.sloth/9,data.sloth%9]=data.quantity;
             }
+            HealthSistem.health = playerData.health;
         }
         else
         {
@@ -415,7 +419,10 @@ public class Toolbar : MonoBehaviour
                 item[data.sloth/9, data.sloth%9]=data.itemID;
                 itemsize[data.sloth/9,data.sloth%9]=data.quantity;
             }
+            HealthSistem.health =playerData.health;
         }
+        healthSistem=HealthSistem.istance;
+        healthSistem.ReMakeHearts();
         highlight.position = itemSlots[slothIndex].image.transform.position;
 
     }
@@ -424,7 +431,7 @@ public class Toolbar : MonoBehaviour
         PlayerDataOpener playerData = new ()
         {
             playerName = "Steve",
-            health = 20,
+            health = HealthSistem.health,
             slothid =slothIndex,
             experienceLevel = 0,
             inventory = new ItemSave[36]
@@ -447,11 +454,12 @@ public class Toolbar : MonoBehaviour
         }
         string jsonString = JsonUtility.ToJson(playerData, true);
         string filePath = Path.Combine(ChunkSerializer.savePath, "playerData.json");
+
         File.WriteAllText(filePath, jsonString);
     }
     public void Escape()
     {
-        Application.targetFrameRate = 10;
+        UnityEngine.Application.targetFrameRate = 10;
         openedInv = true;
         escape = true;
         UIEscape.gameObject.SetActive(true);
@@ -460,7 +468,7 @@ public class Toolbar : MonoBehaviour
     }
     public void Again()
     {
-        Application.targetFrameRate = 60;
+        UnityEngine.Application.targetFrameRate = 60;
         
         control.Posi=Vector3.zero;
         UIEscape.gameObject.SetActive(false);
@@ -836,7 +844,7 @@ public class Toolbar : MonoBehaviour
     public class PlayerDataOpener
     {
         public string playerName;
-        public int health;
+        public float health;
         public int experienceLevel;
         public ItemSave[] inventory;
         public byte slothid;
