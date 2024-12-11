@@ -1,209 +1,401 @@
 { "cat":"", "pid":12345, "tid":0, "ts":0, "ph":"M", "name":"process_name", "args": { "name":"bee_backend" } }
-,{ "pid":12345, "tid":0, "ts":1733857604466453, "dur":26656, "ph":"X", "name": "DriverInitData",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":0, "ts":1733857604493117, "dur":8870, "ph":"X", "name": "RemoveStaleOutputs",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":0, "ts":1733857604502019, "dur":239, "ph":"X", "name": "BuildQueueInit",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":0, "ts":1733857604502273, "dur":2407, "ph":"X", "name": "EnqueueRequestedNodes",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":0, "ts":1733857604504681, "dur":477764, "ph":"X", "name": "WaitForBuildFinished", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":0, "ts":1733857604982445, "dur":265, "ph":"X", "name": "JoinBuildThread",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":0, "ts":1733857604982831, "dur":1772, "ph":"X", "name": "Tundra",  "args": { "detail":"Write AllBuiltNodes" }}
-,{ "pid":12345, "tid":1, "ts":1733857604502578, "dur":2134, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":1, "ts":1733857604504715, "dur":934, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":1, "ts":1733857604505649, "dur":712, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":1, "ts":1733857604506361, "dur":670, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":1, "ts":1733857604507031, "dur":468, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":1, "ts":1733857604507499, "dur":6898, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":1, "ts":1733857604514476, "dur":107, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/MonoBleedingEdge/etc/mono/4.5/Browsers/Compat.browser" }}
-,{ "pid":12345, "tid":1, "ts":1733857604514718, "dur":51, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/song3.ogg" }}
-,{ "pid":12345, "tid":1, "ts":1733857604521933, "dur":2866, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/tudor/Music/10dec/My dark fantasy_Data/sharedassets5.resource" }}
-,{ "pid":12345, "tid":1, "ts":1733857604524844, "dur":333626, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":1, "ts":1733857604858471, "dur":77, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.ScreenCaptureModule.dll" }}
-,{ "pid":12345, "tid":1, "ts":1733857604858548, "dur":74, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":1, "ts":1733857604858696, "dur":67952, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.VisualScripting.Flow.dll" }}
-,{ "pid":12345, "tid":1, "ts":1733857604858660, "dur":67989, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/Unity.VisualScripting.Flow.dll" }}
-,{ "pid":12345, "tid":1, "ts":1733857604926703, "dur":55781, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":2, "ts":1733857604502572, "dur":2132, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":2, "ts":1733857604504708, "dur":987, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":2, "ts":1733857604505696, "dur":633, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":2, "ts":1733857604506330, "dur":717, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":2, "ts":1733857604507047, "dur":7336, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":2, "ts":1733857604514441, "dur":78, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":2, "ts":1733857604514692, "dur":57, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":2, "ts":1733857604515623, "dur":2222, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/tudor/Music/10dec/My dark fantasy_Data/sharedassets7.resource" }}
-,{ "pid":12345, "tid":2, "ts":1733857604517872, "dur":340790, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":2, "ts":1733857604858779, "dur":122967, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Assembly-CSharp.dll" }}
-,{ "pid":12345, "tid":2, "ts":1733857604858742, "dur":123006, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/Assembly-CSharp.dll" }}
-,{ "pid":12345, "tid":2, "ts":1733857604981811, "dur":576, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/Assembly-CSharp.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604502525, "dur":2167, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":3, "ts":1733857604504695, "dur":9683, "ph":"X", "name": "CheckDagSignatures",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":3, "ts":1733857604514427, "dur":54, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":3, "ts":1733857604514701, "dur":153, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Assembly-CSharp.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604514859, "dur":717, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.InputSystem.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604515581, "dur":70, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.InputSystem.ForUI.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604515656, "dur":107, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.Timeline.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604515766, "dur":413, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.VisualScripting.Core.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604516187, "dur":265, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.VisualScripting.Flow.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604516454, "dur":76, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.VisualScripting.State.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604516532, "dur":195, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\UnityEngine.UI.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604517301, "dur":107, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\artifacts\\UnityLinkerInputs\\MethodsToPreserve.xml" }}
-,{ "pid":12345, "tid":3, "ts":1733857604517410, "dur":57, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\artifacts\\UnityLinkerInputs\\TypesInScenes.xml" }}
-,{ "pid":12345, "tid":3, "ts":1733857604517521, "dur":67, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Temp\\InputSystemLink.xml" }}
-,{ "pid":12345, "tid":3, "ts":1733857604517591, "dur":171, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\tudor\\OneDrive\\Imagini\\Documente\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\artifacts\\UnityLinkerInputs\\EditorToUnityLinkerData.json" }}
-,{ "pid":12345, "tid":3, "ts":1733857604514485, "dur":3530, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"UnityLinker C:/Users/tudor/OneDrive/Imagini/Documente/GitHub/MyDarkFantasy/My dark fantasy/Library/Bee/artifacts/unitylinker_dwek.traceevents" }}
-,{ "pid":12345, "tid":3, "ts":1733857604518538, "dur":99, "ph":"X", "name": "StoreTimestampsOfNonGeneratedInputFiles",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":3, "ts":1733857604535268, "dur":309116, "ph":"X", "name": "UnityLinker",  "args": { "detail":"C:/Users/tudor/OneDrive/Imagini/Documente/GitHub/MyDarkFantasy/My dark fantasy/Library/Bee/artifacts/unitylinker_dwek.traceevents" }}
-,{ "pid":12345, "tid":3, "ts":1733857604858768, "dur":61, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/System.Xml.Linq.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604858901, "dur":56, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":3, "ts":1733857604859213, "dur":198, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.UmbraModule.dll" }}
-,{ "pid":12345, "tid":3, "ts":1733857604860272, "dur":122218, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604502692, "dur":2102, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604504797, "dur":763, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604505561, "dur":755, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604506317, "dur":976, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604507293, "dur":7246, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604514653, "dur":595, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Temp\\StagingArea\\WindowsPlayer.exe" }}
-,{ "pid":12345, "tid":4, "ts":1733857604514616, "dur":633, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy.exe" }}
-,{ "pid":12345, "tid":4, "ts":1733857604515250, "dur":70, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604515326, "dur":343146, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604858473, "dur":68, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.VFXModule.dll" }}
-,{ "pid":12345, "tid":4, "ts":1733857604858872, "dur":89, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604859239, "dur":257, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604859500, "dur":51, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.ClusterRendererModule.dll" }}
-,{ "pid":12345, "tid":4, "ts":1733857604859814, "dur":71, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.ImageConversionModule.dll" }}
-,{ "pid":12345, "tid":4, "ts":1733857604860000, "dur":61, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":4, "ts":1733857604860125, "dur":73, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.HotReloadModule.dll" }}
-,{ "pid":12345, "tid":4, "ts":1733857604860230, "dur":122220, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":5, "ts":1733857604502562, "dur":2136, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":5, "ts":1733857604504701, "dur":898, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":5, "ts":1733857604505599, "dur":616, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":5, "ts":1733857604506215, "dur":754, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":5, "ts":1733857604506969, "dur":633, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":5, "ts":1733857604507602, "dur":6788, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":5, "ts":1733857604514394, "dur":112, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/MonoBleedingEdge/etc/mono/config" }}
-,{ "pid":12345, "tid":5, "ts":1733857604514507, "dur":56, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":5, "ts":1733857604514696, "dur":61, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/song5.ogg" }}
-,{ "pid":12345, "tid":5, "ts":1733857604529814, "dur":2113, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/tudor/Music/10dec/My dark fantasy_Data/sharedassets0.resource" }}
-,{ "pid":12345, "tid":5, "ts":1733857604531959, "dur":326570, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":5, "ts":1733857604859242, "dur":108, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.VideoModule.dll" }}
-,{ "pid":12345, "tid":5, "ts":1733857604859631, "dur":72832, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.VisualScripting.Core.dll" }}
-,{ "pid":12345, "tid":5, "ts":1733857604859592, "dur":72872, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/Unity.VisualScripting.Core.dll" }}
-,{ "pid":12345, "tid":5, "ts":1733857604932515, "dur":49958, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":6, "ts":1733857604502621, "dur":2107, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":6, "ts":1733857604504732, "dur":852, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":6, "ts":1733857604505584, "dur":746, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":6, "ts":1733857604506330, "dur":735, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":6, "ts":1733857604507065, "dur":7319, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":6, "ts":1733857604514687, "dur":63, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/song6.ogg" }}
-,{ "pid":12345, "tid":6, "ts":1733857604514887, "dur":1072, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\PlayerDataCache\\Win642\\Data\\RuntimeInitializeOnLoads.json" }}
-,{ "pid":12345, "tid":6, "ts":1733857604514884, "dur":1076, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/RuntimeInitializeOnLoads.json" }}
-,{ "pid":12345, "tid":6, "ts":1733857604516014, "dur":342460, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":6, "ts":1733857604858477, "dur":157, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.TLSModule.dll" }}
-,{ "pid":12345, "tid":6, "ts":1733857604858709, "dur":100, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":6, "ts":1733857604858813, "dur":65, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/System.Data.dll" }}
-,{ "pid":12345, "tid":6, "ts":1733857604858911, "dur":74, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.UIModule.dll" }}
-,{ "pid":12345, "tid":6, "ts":1733857604859164, "dur":67, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.InputModule.dll" }}
-,{ "pid":12345, "tid":6, "ts":1733857604859262, "dur":1225, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.ClothModule.dll" }}
-,{ "pid":12345, "tid":6, "ts":1733857604860487, "dur":305, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":6, "ts":1733857604860817, "dur":121627, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604502605, "dur":2114, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604504725, "dur":946, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604505672, "dur":840, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604506512, "dur":827, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604507339, "dur":7079, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604514424, "dur":64, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/MonoBleedingEdge/etc/mono/4.5/web.config" }}
-,{ "pid":12345, "tid":7, "ts":1733857604514656, "dur":72, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/song9.mp3" }}
-,{ "pid":12345, "tid":7, "ts":1733857604514761, "dur":57, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/song10.ogg" }}
-,{ "pid":12345, "tid":7, "ts":1733857604529434, "dur":1133, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/tudor/Music/10dec/My dark fantasy_Data/sharedassets10.resource" }}
-,{ "pid":12345, "tid":7, "ts":1733857604530595, "dur":327944, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604858543, "dur":60, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/System.Runtime.Serialization.dll" }}
-,{ "pid":12345, "tid":7, "ts":1733857604858635, "dur":79, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/System.ComponentModel.Composition.dll" }}
-,{ "pid":12345, "tid":7, "ts":1733857604858715, "dur":103, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604858821, "dur":95, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.dll" }}
-,{ "pid":12345, "tid":7, "ts":1733857604858955, "dur":306, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.ARModule.dll" }}
-,{ "pid":12345, "tid":7, "ts":1733857604859261, "dur":199, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604859601, "dur":369, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.UnityAnalyticsCommonModule.dll" }}
-,{ "pid":12345, "tid":7, "ts":1733857604859971, "dur":70, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604860045, "dur":62, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.StreamingModule.dll" }}
-,{ "pid":12345, "tid":7, "ts":1733857604860107, "dur":226, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":7, "ts":1733857604860376, "dur":122107, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604502656, "dur":2079, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604504737, "dur":889, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604505626, "dur":633, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604506259, "dur":836, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604507095, "dur":7325, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604514421, "dur":137, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/MonoBleedingEdge/etc/mono/4.5/settings.map" }}
-,{ "pid":12345, "tid":8, "ts":1733857604514559, "dur":81, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604514644, "dur":65, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/Undertale OST  - Bergentrckung (Intro) + ASGORE Extended.mp3" }}
-,{ "pid":12345, "tid":8, "ts":1733857604514710, "dur":60, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604514773, "dur":59, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/song1.ogg" }}
-,{ "pid":12345, "tid":8, "ts":1733857604514883, "dur":92, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\PlayerDataCache\\Win642\\Data\\ScriptingAssemblies.json" }}
-,{ "pid":12345, "tid":8, "ts":1733857604514875, "dur":100, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/ScriptingAssemblies.json" }}
-,{ "pid":12345, "tid":8, "ts":1733857604515003, "dur":343474, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604858477, "dur":104, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/System.Data.DataSetExtensions.dll" }}
-,{ "pid":12345, "tid":8, "ts":1733857604859085, "dur":60, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.ContentLoadModule.dll" }}
-,{ "pid":12345, "tid":8, "ts":1733857604859145, "dur":63, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":8, "ts":1733857604859244, "dur":1780, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.InputSystem.ForUI.dll" }}
-,{ "pid":12345, "tid":8, "ts":1733857604859210, "dur":1815, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/Unity.InputSystem.ForUI.dll" }}
-,{ "pid":12345, "tid":8, "ts":1733857604861081, "dur":121348, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":9, "ts":1733857604502684, "dur":2058, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":9, "ts":1733857604504747, "dur":890, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":9, "ts":1733857604505638, "dur":764, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":9, "ts":1733857604506402, "dur":668, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":9, "ts":1733857604507070, "dur":7351, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":9, "ts":1733857604514422, "dur":87, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/MonoBleedingEdge/etc/mono/4.5/machine.config" }}
-,{ "pid":12345, "tid":9, "ts":1733857604514510, "dur":110, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":9, "ts":1733857604514667, "dur":84, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/song7.ogg" }}
-,{ "pid":12345, "tid":9, "ts":1733857604514751, "dur":59, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":9, "ts":1733857604534843, "dur":1042, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/tudor/Music/10dec/My dark fantasy_Data/data.unity3d" }}
-,{ "pid":12345, "tid":9, "ts":1733857604535911, "dur":322568, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":9, "ts":1733857604858490, "dur":78, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.TerrainPhysicsModule.dll" }}
-,{ "pid":12345, "tid":9, "ts":1733857604858718, "dur":62493, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.Timeline.dll" }}
-,{ "pid":12345, "tid":9, "ts":1733857604858685, "dur":62527, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/Unity.Timeline.dll" }}
-,{ "pid":12345, "tid":9, "ts":1733857604921270, "dur":61202, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":10, "ts":1733857604502725, "dur":2102, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":10, "ts":1733857604504834, "dur":808, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":10, "ts":1733857604505642, "dur":733, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":10, "ts":1733857604506375, "dur":903, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":10, "ts":1733857604507278, "dur":7104, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":10, "ts":1733857604516307, "dur":507, "ph":"X", "name": "WriteText",  "args": { "detail":"Library/Bee/artifacts/csharpactions/boot.config_tyr4.info" }}
-,{ "pid":12345, "tid":10, "ts":1733857604516820, "dur":74, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\PlayerDataCache\\Win642\\Data\\boot.config" }}
-,{ "pid":12345, "tid":10, "ts":1733857604516816, "dur":795, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"AddBootConfigGUID Library/Bee/artifacts/WinPlayerBuildProgram/boot.config" }}
-,{ "pid":12345, "tid":10, "ts":1733857604518277, "dur":110, "ph":"X", "name": "StoreTimestampsOfNonGeneratedInputFiles",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":10, "ts":1733857604518878, "dur":86609, "ph":"X", "name": "AddBootConfigGUID",  "args": { "detail":"Library/Bee/artifacts/WinPlayerBuildProgram/boot.config" }}
-,{ "pid":12345, "tid":10, "ts":1733857604613064, "dur":64, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\boot.config" }}
-,{ "pid":12345, "tid":10, "ts":1733857604613041, "dur":88, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/boot.config" }}
-,{ "pid":12345, "tid":10, "ts":1733857604613146, "dur":662, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/tudor/Music/10dec/My dark fantasy_Data/boot.config" }}
-,{ "pid":12345, "tid":10, "ts":1733857604613810, "dur":244713, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":10, "ts":1733857604858750, "dur":46224, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.VisualScripting.State.dll" }}
-,{ "pid":12345, "tid":10, "ts":1733857604858606, "dur":46370, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/Unity.VisualScripting.State.dll" }}
-,{ "pid":12345, "tid":10, "ts":1733857604905034, "dur":77393, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":11, "ts":1733857604502752, "dur":2086, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":11, "ts":1733857604504840, "dur":867, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":11, "ts":1733857604505708, "dur":926, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":11, "ts":1733857604506634, "dur":805, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":11, "ts":1733857604507439, "dur":7034, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":11, "ts":1733857604514475, "dur":79, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx" }}
-,{ "pid":12345, "tid":11, "ts":1733857604514555, "dur":59, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":11, "ts":1733857604514702, "dur":69, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/song4.ogg" }}
-,{ "pid":12345, "tid":11, "ts":1733857604515371, "dur":2387, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/tudor/Music/10dec/My dark fantasy_Data/sharedassets8.resource" }}
-,{ "pid":12345, "tid":11, "ts":1733857604517817, "dur":340658, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":11, "ts":1733857604858476, "dur":70, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/System.IO.Compression.dll" }}
-,{ "pid":12345, "tid":11, "ts":1733857604858745, "dur":112725, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\UnityEngine.UI.dll" }}
-,{ "pid":12345, "tid":11, "ts":1733857604858696, "dur":112775, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.UI.dll" }}
-,{ "pid":12345, "tid":11, "ts":1733857604971521, "dur":10927, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":12, "ts":1733857604502781, "dur":2061, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":12, "ts":1733857604504842, "dur":967, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":12, "ts":1733857604505809, "dur":706, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":12, "ts":1733857604506515, "dur":813, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":12, "ts":1733857604507328, "dur":7190, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":12, "ts":1733857604514600, "dur":69, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/MonoBleedingEdge/EmbedRuntime/MonoPosixHelper.dll" }}
-,{ "pid":12345, "tid":12, "ts":1733857604514670, "dur":50, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":12, "ts":1733857604514736, "dur":78, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/StreamingAssets/Songs/song2.ogg" }}
-,{ "pid":12345, "tid":12, "ts":1733857604522264, "dur":2961, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/tudor/Music/10dec/My dark fantasy_Data/sharedassets2.resource" }}
-,{ "pid":12345, "tid":12, "ts":1733857604525256, "dur":333345, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":12, "ts":1733857604858602, "dur":141, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.ClusterInputModule.dll" }}
-,{ "pid":12345, "tid":12, "ts":1733857604858943, "dur":51, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/UnityEngine.AIModule.dll" }}
-,{ "pid":12345, "tid":12, "ts":1733857604859073, "dur":85618, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.InputSystem.dll" }}
-,{ "pid":12345, "tid":12, "ts":1733857604859040, "dur":85653, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/tudor/Music/10dec/My dark fantasy_Data/Managed/Unity.InputSystem.dll" }}
-,{ "pid":12345, "tid":12, "ts":1733857604944745, "dur":37709, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
-,{ "pid":12345, "tid":0, "ts":1733857604987177, "dur":868, "ph":"X", "name": "ProfilerWriteOutput" }
+,{ "pid":12345, "tid":0, "ts":1733941065274901, "dur":39439, "ph":"X", "name": "DriverInitData",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1733941065314347, "dur":70, "ph":"X", "name": "RemoveStaleOutputs",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1733941065314446, "dur":422, "ph":"X", "name": "BuildQueueInit",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1733941065315164, "dur":52, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/sharedassets10.resource" }}
+,{ "pid":12345, "tid":0, "ts":1733941065315239, "dur":121, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/sharedassets5.resource" }}
+,{ "pid":12345, "tid":0, "ts":1733941065316115, "dur":61, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song5.ogg" }}
+,{ "pid":12345, "tid":0, "ts":1733941065316192, "dur":153, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song7.ogg" }}
+,{ "pid":12345, "tid":0, "ts":1733941065316349, "dur":50, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song8.ogg" }}
+,{ "pid":12345, "tid":0, "ts":1733941065316441, "dur":156, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/Undertale OST  - Bergentrckung (Intro) + ASGORE Extended.mp3" }}
+,{ "pid":12345, "tid":0, "ts":1733941065317200, "dur":124, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Drawing.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065317399, "dur":66, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.IO.Compression.FileSystem.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065317470, "dur":50, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Net.Http.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065317579, "dur":174, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Xml.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065318160, "dur":139, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ClusterInputModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065318313, "dur":84, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.CommandStateObserverModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065318632, "dur":130, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.GraphToolsFoundationModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065318800, "dur":84, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.IMGUIModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065318898, "dur":279, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.InputModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065319192, "dur":61, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.LocalizationModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065319299, "dur":52, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ParticleSystemModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065319440, "dur":128, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065319608, "dur":79, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SpriteShapeModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065319700, "dur":156, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SubstanceModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065319871, "dur":78, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SubsystemsModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065320104, "dur":238, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TextCoreTextEngineModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065320390, "dur":58, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TilemapModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065320470, "dur":50, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UI.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065320567, "dur":214, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityAnalyticsModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065320942, "dur":233, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065321178, "dur":97, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VehiclesModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065321336, "dur":182, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VirtualTexturingModule.dll" }}
+,{ "pid":12345, "tid":0, "ts":1733941065321674, "dur":182, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/machine.config" }}
+,{ "pid":12345, "tid":0, "ts":1733941065322078, "dur":356, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx" }}
+,{ "pid":12345, "tid":0, "ts":1733941065322449, "dur":64, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/settings.map" }}
+,{ "pid":12345, "tid":0, "ts":1733941065322563, "dur":349, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx" }}
+,{ "pid":12345, "tid":0, "ts":1733941065322931, "dur":59, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/settings.map" }}
+,{ "pid":12345, "tid":0, "ts":1733941065323028, "dur":66, "ph":"X", "name": "EmitFirstTimeEnqueue",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/browscap.ini" }}
+,{ "pid":12345, "tid":0, "ts":1733941065314932, "dur":8207, "ph":"X", "name": "EnqueueRequestedNodes",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1733941065323140, "dur":4088262, "ph":"X", "name": "WaitForBuildFinished", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1733941069411412, "dur":117, "ph":"X", "name": "JoinBuildThread",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1733941069411529, "dur":230, "ph":"X", "name": "ThreadStateDestroy",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1733941069411872, "dur":57, "ph":"X", "name": "JoinBuildThread",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1733941069412025, "dur":2254, "ph":"X", "name": "Tundra",  "args": { "detail":"Write AllBuiltNodes" }}
+,{ "pid":12345, "tid":1, "ts":1733941065315376, "dur":7806, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":1, "ts":1733941065323184, "dur":13695, "ph":"X", "name": "CheckDagSignatures",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":1, "ts":1733941065336890, "dur":82, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"WriteResponseFile Library/Bee/artifacts/rsp/10171997498777696194.rsp" }}
+,{ "pid":12345, "tid":1, "ts":1733941065338173, "dur":623, "ph":"X", "name": "WriteResponseFile",  "args": { "detail":"Library/Bee/artifacts/rsp/10171997498777696194.rsp" }}
+,{ "pid":12345, "tid":1, "ts":1733941065339136, "dur":217, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Assembly-CSharp.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941065339356, "dur":1216, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.InputSystem.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941065340577, "dur":148, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.InputSystem.ForUI.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941065340729, "dur":189, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.Timeline.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941065340920, "dur":659, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.VisualScripting.Core.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941065341583, "dur":472, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.VisualScripting.Flow.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941065342059, "dur":120, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\Unity.VisualScripting.State.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941065342182, "dur":323, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\PlayerScriptAssemblies\\UnityEngine.UI.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941065342509, "dur":171, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\PackageCache\\com.unity.visualscripting@1.8.0\\Runtime\\VisualScripting.Flow\\Dependencies\\NCalc\\Unity.VisualScripting.Antlr3.Runtime.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941065343473, "dur":159, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\artifacts\\UnityLinkerInputs\\MethodsToPreserve.xml" }}
+,{ "pid":12345, "tid":1, "ts":1733941065343635, "dur":70, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\artifacts\\UnityLinkerInputs\\TypesInScenes.xml" }}
+,{ "pid":12345, "tid":1, "ts":1733941065343706, "dur":54, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\artifacts\\UnityLinkerInputs\\SerializedTypes.xml" }}
+,{ "pid":12345, "tid":1, "ts":1733941065343762, "dur":52, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Temp\\InputSystemLink.xml" }}
+,{ "pid":12345, "tid":1, "ts":1733941065343815, "dur":136, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"C:\\Users\\fam Buciuman\\Documents\\GitHub\\MyDarkFantasy\\My dark fantasy\\Library\\Bee\\artifacts\\UnityLinkerInputs\\EditorToUnityLinkerData.json" }}
+,{ "pid":12345, "tid":1, "ts":1733941065344564, "dur":14142, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\rsp\\10171997498777696194.rsp" }}
+,{ "pid":12345, "tid":1, "ts":1733941065338802, "dur":19907, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"UnityLinker C:/Users/fam Buciuman/Documents/GitHub/MyDarkFantasy/My dark fantasy/Library/Bee/artifacts/unitylinker_dwek.traceevents" }}
+,{ "pid":12345, "tid":1, "ts":1733941065358721, "dur":424, "ph":"X", "name": "StoreTimestampsOfNonGeneratedInputFiles",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":1, "ts":1733941065520809, "dur":3524181, "ph":"X", "name": "UnityLinker",  "args": { "detail":"C:/Users/fam Buciuman/Documents/GitHub/MyDarkFantasy/My dark fantasy/Library/Bee/artifacts/unitylinker_dwek.traceevents" }}
+,{ "pid":12345, "tid":1, "ts":1733941069060709, "dur":69, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.CommandStateObserverModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069062558, "dur":3317, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.CommandStateObserverModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069067987, "dur":2754, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityCurlModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069070840, "dur":2165, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.AssetBundleModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069073071, "dur":2647, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityWebRequestAssetBundleModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069075775, "dur":3170, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.PhysicsModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069078993, "dur":2226, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.InputSystem.ForUI.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069078948, "dur":2275, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.InputSystem.ForUI.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069081663, "dur":3426, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.InputSystem.ForUI.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069085093, "dur":53, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VRModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069085165, "dur":2035, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VRModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069087208, "dur":92, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.IMGUIModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069087320, "dur":3528, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.IMGUIModule.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069090884, "dur":318538, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Assembly-CSharp.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069090850, "dur":318583, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Assembly-CSharp.dll" }}
+,{ "pid":12345, "tid":1, "ts":1733941069409460, "dur":1791, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Assembly-CSharp.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941065315609, "dur":7598, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":2, "ts":1733941065323212, "dur":2021, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":2, "ts":1733941065326377, "dur":603, "ph":"X", "name": "File",  "args": { "detail":"C:\\Program Files\\Unity\\Hub\\Editor\\2023.1.20f1\\Editor\\Data\\il2cpp\\build\\deploy\\monolinker.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941065327160, "dur":3033, "ph":"X", "name": "File",  "args": { "detail":"C:\\Program Files\\Unity\\Hub\\Editor\\2023.1.20f1\\Editor\\Data\\il2cpp\\build\\deploy\\Mono.Cecil.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941065325234, "dur":5572, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":2, "ts":1733941065330807, "dur":6139, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":2, "ts":1733941065336947, "dur":301, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/mconfig/config.xml" }}
+,{ "pid":12345, "tid":2, "ts":1733941065351485, "dur":2148, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/mconfig/config.xml" }}
+,{ "pid":12345, "tid":2, "ts":1733941065353671, "dur":104, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/settings.map" }}
+,{ "pid":12345, "tid":2, "ts":1733941065353822, "dur":1296, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/settings.map" }}
+,{ "pid":12345, "tid":2, "ts":1733941065355163, "dur":95, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941065355349, "dur":25495, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941065380910, "dur":98, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song6.ogg" }}
+,{ "pid":12345, "tid":2, "ts":1733941065381033, "dur":23429, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song6.ogg" }}
+,{ "pid":12345, "tid":2, "ts":1733941065404513, "dur":105, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song4.ogg" }}
+,{ "pid":12345, "tid":2, "ts":1733941065404641, "dur":54304, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song4.ogg" }}
+,{ "pid":12345, "tid":2, "ts":1733941065458982, "dur":700, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/PrayerTime.mp3" }}
+,{ "pid":12345, "tid":2, "ts":1733941065459714, "dur":11692, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/PrayerTime.mp3" }}
+,{ "pid":12345, "tid":2, "ts":1733941065471587, "dur":21223, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/sharedassets2.resource" }}
+,{ "pid":12345, "tid":2, "ts":1733941065492875, "dur":3568004, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":2, "ts":1733941069060881, "dur":169, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.Physics2DModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069064052, "dur":5838, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.Physics2DModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069069970, "dur":3393, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.NVIDIAModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069073425, "dur":4875, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.AndroidJNIModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069078310, "dur":95, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VFXModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069079220, "dur":5038, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VFXModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069084325, "dur":3745, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.GIModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069088168, "dur":2292, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VideoModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069090537, "dur":3459, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.CrashReportingModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069094001, "dur":54, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Net.Http.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069094075, "dur":1304, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Net.Http.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069095383, "dur":95, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.AccessibilityModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069095503, "dur":5884, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.AccessibilityModule.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069101544, "dur":4914, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Runtime.Serialization.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069106515, "dur":152222, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.Timeline.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069106463, "dur":152277, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.Timeline.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069258767, "dur":1389, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.Timeline.dll" }}
+,{ "pid":12345, "tid":2, "ts":1733941069260161, "dur":151272, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941065315427, "dur":7762, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941065323194, "dur":1908, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941065325103, "dur":2193, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941065327296, "dur":628, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941065327925, "dur":568, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941065328493, "dur":566, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941065329059, "dur":1109, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941065330168, "dur":6792, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941065336960, "dur":148, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/settings.map" }}
+,{ "pid":12345, "tid":3, "ts":1733941065350499, "dur":2747, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/settings.map" }}
+,{ "pid":12345, "tid":3, "ts":1733941065353287, "dur":135, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/web.config" }}
+,{ "pid":12345, "tid":3, "ts":1733941065353602, "dur":3736, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/web.config" }}
+,{ "pid":12345, "tid":3, "ts":1733941065357393, "dur":457, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx" }}
+,{ "pid":12345, "tid":3, "ts":1733941065357895, "dur":5082, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx" }}
+,{ "pid":12345, "tid":3, "ts":1733941065363024, "dur":1864, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song8.ogg" }}
+,{ "pid":12345, "tid":3, "ts":1733941065370100, "dur":21383, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song8.ogg" }}
+,{ "pid":12345, "tid":3, "ts":1733941065391538, "dur":2377, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song5.ogg" }}
+,{ "pid":12345, "tid":3, "ts":1733941065402070, "dur":28562, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song5.ogg" }}
+,{ "pid":12345, "tid":3, "ts":1733941065430681, "dur":3666, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song11.ogg" }}
+,{ "pid":12345, "tid":3, "ts":1733941065434391, "dur":24538, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song11.ogg" }}
+,{ "pid":12345, "tid":3, "ts":1733941065458977, "dur":108, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song1.ogg" }}
+,{ "pid":12345, "tid":3, "ts":1733941065459181, "dur":11589, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song1.ogg" }}
+,{ "pid":12345, "tid":3, "ts":1733941065470843, "dur":19149, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/sharedassets5.resource" }}
+,{ "pid":12345, "tid":3, "ts":1733941065490064, "dur":6959, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/data.unity3d" }}
+,{ "pid":12345, "tid":3, "ts":1733941065497077, "dur":3563701, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1733941069060779, "dur":70, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SubsystemsModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069064195, "dur":6457, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SubsystemsModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069070656, "dur":57, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ContentLoadModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069070746, "dur":3212, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ContentLoadModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069074001, "dur":3296, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TextCoreFontEngineModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069077362, "dur":2646, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SpriteShapeModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069080078, "dur":3727, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SubstanceModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069083809, "dur":120, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ARModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069083950, "dur":2894, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ARModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069086850, "dur":55, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.AudioModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069086925, "dur":3814, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.AudioModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069090742, "dur":62, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.DSPGraphModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069090818, "dur":3435, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.DSPGraphModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069094313, "dur":4415, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityTestProtocolModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069098732, "dur":54, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Configuration.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069098805, "dur":4651, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Configuration.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069103464, "dur":58, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SharedInternalsModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069103542, "dur":4217, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SharedInternalsModule.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069107762, "dur":173, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069108009, "dur":5089, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069113154, "dur":208898, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.VisualScripting.Core.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069113112, "dur":208942, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.VisualScripting.Core.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069322086, "dur":8386, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.VisualScripting.Core.dll" }}
+,{ "pid":12345, "tid":3, "ts":1733941069330476, "dur":81016, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941065315470, "dur":7729, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941065323201, "dur":2232, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941065325434, "dur":1888, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941065327774, "dur":928, "ph":"X", "name": "File",  "args": { "detail":"C:\\Program Files\\Unity\\Hub\\Editor\\2023.1.20f1\\Editor\\Data\\MonoBleedingEdge\\lib\\mono\\unityjit-win32\\System.Reactive.PlatformServices.dll" }}
+,{ "pid":12345, "tid":4, "ts":1733941065327322, "dur":1498, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941065328820, "dur":596, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941065329417, "dur":886, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941065330304, "dur":6582, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941065336890, "dur":61, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"WriteText Library/Bee/artifacts/csharpactions/boot.config_tyr4.info" }}
+,{ "pid":12345, "tid":4, "ts":1733941065338075, "dur":729, "ph":"X", "name": "WriteText",  "args": { "detail":"Library/Bee/artifacts/csharpactions/boot.config_tyr4.info" }}
+,{ "pid":12345, "tid":4, "ts":1733941065338816, "dur":130, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\PlayerDataCache\\Win642\\Data\\boot.config" }}
+,{ "pid":12345, "tid":4, "ts":1733941065338954, "dur":8995, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\PlayerDataCache\\Win642\\Data\\RuntimeInitializeOnLoads.json" }}
+,{ "pid":12345, "tid":4, "ts":1733941065347954, "dur":93, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\PlayerDataCache\\Win642\\Data\\ScriptingAssemblies.json" }}
+,{ "pid":12345, "tid":4, "ts":1733941065348890, "dur":167, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\Player21b0f68a-inputdata.json" }}
+,{ "pid":12345, "tid":4, "ts":1733941065338808, "dur":10345, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"AddBootConfigGUID Library/Bee/artifacts/WinPlayerBuildProgram/boot.config" }}
+,{ "pid":12345, "tid":4, "ts":1733941065350081, "dur":231, "ph":"X", "name": "StoreTimestampsOfNonGeneratedInputFiles",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941065350675, "dur":219883, "ph":"X", "name": "AddBootConfigGUID",  "args": { "detail":"Library/Bee/artifacts/WinPlayerBuildProgram/boot.config" }}
+,{ "pid":12345, "tid":4, "ts":1733941065579601, "dur":110, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\boot.config" }}
+,{ "pid":12345, "tid":4, "ts":1733941065579572, "dur":140, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/boot.config" }}
+,{ "pid":12345, "tid":4, "ts":1733941065579744, "dur":1073, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/boot.config" }}
+,{ "pid":12345, "tid":4, "ts":1733941065580822, "dur":3479949, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1733941069060772, "dur":122, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityWebRequestAudioModule.dll" }}
+,{ "pid":12345, "tid":4, "ts":1733941069064118, "dur":6577, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityWebRequestAudioModule.dll" }}
+,{ "pid":12345, "tid":4, "ts":1733941069070755, "dur":1751, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityWebRequestTextureModule.dll" }}
+,{ "pid":12345, "tid":4, "ts":1733941069072510, "dur":54, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ScreenCaptureModule.dll" }}
+,{ "pid":12345, "tid":4, "ts":1733941069072583, "dur":1963, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ScreenCaptureModule.dll" }}
+,{ "pid":12345, "tid":4, "ts":1733941069074605, "dur":237808, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.InputSystem.dll" }}
+,{ "pid":12345, "tid":4, "ts":1733941069074548, "dur":237868, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.InputSystem.dll" }}
+,{ "pid":12345, "tid":4, "ts":1733941069312449, "dur":1750, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.InputSystem.dll" }}
+,{ "pid":12345, "tid":4, "ts":1733941069314203, "dur":97096, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941065315649, "dur":7564, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941065323217, "dur":2155, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941065325373, "dur":2227, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941065327601, "dur":610, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941065328212, "dur":588, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941065328800, "dur":579, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941065329379, "dur":1032, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941065330411, "dur":6544, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941065336956, "dur":125, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/config" }}
+,{ "pid":12345, "tid":5, "ts":1733941065348081, "dur":2347, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/config" }}
+,{ "pid":12345, "tid":5, "ts":1733941065350472, "dur":119, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/settings.map" }}
+,{ "pid":12345, "tid":5, "ts":1733941065350896, "dur":2062, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/settings.map" }}
+,{ "pid":12345, "tid":5, "ts":1733941065353007, "dur":134, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/Browsers/Compat.browser" }}
+,{ "pid":12345, "tid":5, "ts":1733941065353691, "dur":1313, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/Browsers/Compat.browser" }}
+,{ "pid":12345, "tid":5, "ts":1733941065355053, "dur":135, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/EmbedRuntime/MonoPosixHelper.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941065355332, "dur":4144, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/EmbedRuntime/MonoPosixHelper.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941065359533, "dur":133, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/UnityPlayer.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941065359812, "dur":114888, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/UnityPlayer.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941065474769, "dur":20206, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/ScriptingAssemblies.json" }}
+,{ "pid":12345, "tid":5, "ts":1733941065495022, "dur":3565758, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941069060780, "dur":72, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Data.DataSetExtensions.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069068974, "dur":59, "ph":"X", "name": "EmitNodeFinish",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1733941069064040, "dur":5007, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Data.DataSetExtensions.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069069180, "dur":91925, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.VisualScripting.State.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069069049, "dur":92057, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.VisualScripting.State.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069161129, "dur":1184, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.VisualScripting.State.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069162317, "dur":53, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.CoreModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069162385, "dur":2385, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.CoreModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069164834, "dur":1096, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.GridModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069165990, "dur":1041, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.WindModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069167112, "dur":999, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.HotReloadModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069168179, "dur":819, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TextRenderingModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069169050, "dur":1213, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ParticleSystemModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069170329, "dur":2565, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UIElementsModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069172964, "dur":1938, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.InputLegacyModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069174963, "dur":1239, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.MarshallingModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069176269, "dur":1157, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.IO.Compression.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069177483, "dur":1201, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Mono.Security.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069178747, "dur":1395, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.PropertiesModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069180207, "dur":1144, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069181414, "dur":1104, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.GraphToolsFoundationModule.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069182575, "dur":1199, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/netstandard.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069183835, "dur":1009, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069184902, "dur":53183, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Core.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069238091, "dur":51, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Data.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069238161, "dur":23037, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Data.dll" }}
+,{ "pid":12345, "tid":5, "ts":1733941069261203, "dur":150211, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065315681, "dur":7539, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065323223, "dur":1564, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065324788, "dur":1711, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065326500, "dur":548, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065327049, "dur":624, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065327709, "dur":514, "ph":"X", "name": "File",  "args": { "detail":"C:\\Program Files\\Unity\\Hub\\Editor\\2023.1.20f1\\Editor\\Data\\MonoBleedingEdge\\lib\\mono\\unityjit-win32\\System.DirectoryServices.Protocols.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941065327673, "dur":1078, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065328751, "dur":584, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065329336, "dur":1216, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065330552, "dur":6406, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941065336959, "dur":151, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/web.config" }}
+,{ "pid":12345, "tid":6, "ts":1733941065350826, "dur":12130, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/web.config" }}
+,{ "pid":12345, "tid":6, "ts":1733941065363006, "dur":1906, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song9.mp3" }}
+,{ "pid":12345, "tid":6, "ts":1733941065369813, "dur":40786, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song9.mp3" }}
+,{ "pid":12345, "tid":6, "ts":1733941065410645, "dur":112, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song2.ogg" }}
+,{ "pid":12345, "tid":6, "ts":1733941065410784, "dur":51976, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song2.ogg" }}
+,{ "pid":12345, "tid":6, "ts":1733941065462811, "dur":141, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/UnityCrashHandler64.exe" }}
+,{ "pid":12345, "tid":6, "ts":1733941065462975, "dur":10608, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/UnityCrashHandler64.exe" }}
+,{ "pid":12345, "tid":6, "ts":1733941065473679, "dur":19353, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/sharedassets10.resource" }}
+,{ "pid":12345, "tid":6, "ts":1733941065493077, "dur":3567741, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1733941069060818, "dur":54, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TerrainPhysicsModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069064053, "dur":4959, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TerrainPhysicsModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069069019, "dur":53, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.IO.Compression.FileSystem.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069069092, "dur":6292, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.IO.Compression.FileSystem.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069075436, "dur":1832, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TerrainModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069077337, "dur":2276, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityConnectModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069079617, "dur":78, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ClusterInputModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069079732, "dur":2330, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ClusterInputModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069082136, "dur":2340, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.ServiceModel.Internals.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069084571, "dur":5536, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.AIModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069090113, "dur":437, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UmbraModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069090566, "dur":2465, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UmbraModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069093037, "dur":61, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Numerics.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069093495, "dur":7871, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Numerics.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069101458, "dur":6016, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityAnalyticsModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069107547, "dur":4821, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Transactions.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069112373, "dur":50, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityAnalyticsCommonModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069112444, "dur":11817, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityAnalyticsCommonModule.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069124304, "dur":183166, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.VisualScripting.Flow.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069124264, "dur":183209, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.VisualScripting.Flow.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069307500, "dur":1713, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.VisualScripting.Flow.dll" }}
+,{ "pid":12345, "tid":6, "ts":1733941069309218, "dur":102162, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1733941065315718, "dur":7542, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1733941065324312, "dur":729, "ph":"X", "name": "File",  "args": { "detail":"C:\\Program Files\\Unity\\Hub\\Editor\\2023.1.20f1\\Editor\\Data\\il2cpp\\build\\deploy\\System.Numerics.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941065325042, "dur":728, "ph":"X", "name": "File",  "args": { "detail":"C:\\Program Files\\Unity\\Hub\\Editor\\2023.1.20f1\\Editor\\Data\\il2cpp\\build\\deploy\\System.Net.WebSockets.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941065323263, "dur":3061, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1733941065326899, "dur":903, "ph":"X", "name": "File",  "args": { "detail":"C:\\Program Files\\Unity\\Hub\\Editor\\2023.1.20f1\\Editor\\Data\\il2cpp\\build\\deploy\\Bee.BinLog.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941065326325, "dur":1965, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1733941065328672, "dur":965, "ph":"X", "name": "File",  "args": { "detail":"C:\\Program Files\\Unity\\Hub\\Editor\\2023.1.20f1\\Editor\\Data\\MonoBleedingEdge\\lib\\mono\\unityjit-win32\\Facades\\System.Security.Cryptography.Primitives.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941065328290, "dur":2013, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1733941065330303, "dur":6642, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1733941065336953, "dur":102, "ph":"X", "name": "OutputFilesMissingFor",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1733941065338983, "dur":2894, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/app.info" }}
+,{ "pid":12345, "tid":7, "ts":1733941065341882, "dur":185, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/machine.config" }}
+,{ "pid":12345, "tid":7, "ts":1733941065342873, "dur":1508, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/machine.config" }}
+,{ "pid":12345, "tid":7, "ts":1733941065344422, "dur":143, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx" }}
+,{ "pid":12345, "tid":7, "ts":1733941065344732, "dur":1580, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx" }}
+,{ "pid":12345, "tid":7, "ts":1733941065346361, "dur":144, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/Browsers/Compat.browser" }}
+,{ "pid":12345, "tid":7, "ts":1733941065346790, "dur":1380, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.5/Browsers/Compat.browser" }}
+,{ "pid":12345, "tid":7, "ts":1733941065348216, "dur":154, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/web.config" }}
+,{ "pid":12345, "tid":7, "ts":1733941065349040, "dur":1640, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/web.config" }}
+,{ "pid":12345, "tid":7, "ts":1733941065350736, "dur":815, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/machine.config" }}
+,{ "pid":12345, "tid":7, "ts":1733941065351581, "dur":2393, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/machine.config" }}
+,{ "pid":12345, "tid":7, "ts":1733941065354013, "dur":95, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/machine.config" }}
+,{ "pid":12345, "tid":7, "ts":1733941065354125, "dur":1431, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/machine.config" }}
+,{ "pid":12345, "tid":7, "ts":1733941065355635, "dur":623, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Temp\\StagingArea\\WindowsPlayer.exe" }}
+,{ "pid":12345, "tid":7, "ts":1733941065355598, "dur":663, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy.exe" }}
+,{ "pid":12345, "tid":7, "ts":1733941065356283, "dur":3750, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy.exe" }}
+,{ "pid":12345, "tid":7, "ts":1733941065360105, "dur":450, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/Undertale OST  - Bergentrckung (Intro) + ASGORE Extended.mp3" }}
+,{ "pid":12345, "tid":7, "ts":1733941065369803, "dur":90000, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/Undertale OST  - Bergentrckung (Intro) + ASGORE Extended.mp3" }}
+,{ "pid":12345, "tid":7, "ts":1733941065459879, "dur":5676, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Assets\\StreamingAssets\\everyitem.json" }}
+,{ "pid":12345, "tid":7, "ts":1733941065459845, "dur":5712, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/everyitem.json" }}
+,{ "pid":12345, "tid":7, "ts":1733941065465595, "dur":3414, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/everyitem.json" }}
+,{ "pid":12345, "tid":7, "ts":1733941065469088, "dur":5126, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/sharedassets7.resource" }}
+,{ "pid":12345, "tid":7, "ts":1733941065474277, "dur":21853, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/sharedassets0.resource" }}
+,{ "pid":12345, "tid":7, "ts":1733941065496252, "dur":3564518, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1733941069060771, "dur":71, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069064029, "dur":7252, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069071285, "dur":60, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.PerformanceReportingModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069071364, "dur":2661, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.PerformanceReportingModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069074082, "dur":2399, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ProfilerModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069076486, "dur":53, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TilemapModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069076560, "dur":3040, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TilemapModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069079607, "dur":50, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ClusterRendererModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069079676, "dur":3014, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ClusterRendererModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069082694, "dur":55, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VehiclesModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069082774, "dur":2574, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VehiclesModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069085357, "dur":85, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.XRModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069085451, "dur":205, "ph":"X", "name": "EmitNodeStart",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1733941069085662, "dur":2405, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.XRModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069088211, "dur":3296, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.InputModule.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069091575, "dur":3573, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Security.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069095254, "dur":4925, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.ComponentModel.Composition.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069100243, "dur":4574, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Xml.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069104880, "dur":230328, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\UnityEngine.UI.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069104824, "dur":230385, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UI.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069335235, "dur":3310, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UI.dll" }}
+,{ "pid":12345, "tid":7, "ts":1733941069338549, "dur":72820, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941065315984, "dur":7281, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941065323265, "dur":1680, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941065325179, "dur":563, "ph":"X", "name": "File",  "args": { "detail":"C:\\Program Files\\Unity\\Hub\\Editor\\2023.1.20f1\\Editor\\Data\\il2cpp\\build\\deploy\\System.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941065324946, "dur":2334, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941065327280, "dur":579, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941065327860, "dur":551, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941065328411, "dur":588, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941065328999, "dur":617, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941065329617, "dur":7339, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941065336957, "dur":124, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/browscap.ini" }}
+,{ "pid":12345, "tid":8, "ts":1733941065350205, "dur":2387, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/browscap.ini" }}
+,{ "pid":12345, "tid":8, "ts":1733941065352641, "dur":153, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx" }}
+,{ "pid":12345, "tid":8, "ts":1733941065352865, "dur":1955, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx" }}
+,{ "pid":12345, "tid":8, "ts":1733941065354866, "dur":126, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/Browsers/Compat.browser" }}
+,{ "pid":12345, "tid":8, "ts":1733941065355197, "dur":1266, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/MonoBleedingEdge/etc/mono/2.0/Browsers/Compat.browser" }}
+,{ "pid":12345, "tid":8, "ts":1733941065356508, "dur":139, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Resources/unity default resources" }}
+,{ "pid":12345, "tid":8, "ts":1733941065357409, "dur":19006, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Resources/unity default resources" }}
+,{ "pid":12345, "tid":8, "ts":1733941065376477, "dur":1416, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song7.ogg" }}
+,{ "pid":12345, "tid":8, "ts":1733941065378076, "dur":28014, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song7.ogg" }}
+,{ "pid":12345, "tid":8, "ts":1733941065406136, "dur":3608, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song3.ogg" }}
+,{ "pid":12345, "tid":8, "ts":1733941065409787, "dur":45059, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song3.ogg" }}
+,{ "pid":12345, "tid":8, "ts":1733941065454897, "dur":113, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song10.ogg" }}
+,{ "pid":12345, "tid":8, "ts":1733941065455035, "dur":10954, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/StreamingAssets/Songs/song10.ogg" }}
+,{ "pid":12345, "tid":8, "ts":1733941065466049, "dur":8831, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/sharedassets8.resource" }}
+,{ "pid":12345, "tid":8, "ts":1733941065474940, "dur":20028, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/RuntimeInitializeOnLoads.json" }}
+,{ "pid":12345, "tid":8, "ts":1733941065495059, "dur":3565651, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941069060712, "dur":74, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/mscorlib.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069070763, "dur":100, "ph":"X", "name": "EmitNodeFinish",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1733941069064034, "dur":6841, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/mscorlib.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069070936, "dur":3493, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TextCoreTextEngineModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069074488, "dur":3860, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.DirectorModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069078351, "dur":63, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TLSModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069078593, "dur":1477, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.TLSModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069080131, "dur":3155, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.StreamingModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069083354, "dur":2563, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UnityWebRequestModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069085922, "dur":56, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UIModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069085996, "dur":2683, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.UIModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069088739, "dur":2120, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ClothModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069090861, "dur":61, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Xml.Linq.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069090967, "dur":3280, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Xml.Linq.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069094251, "dur":50, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.AnimationModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069094315, "dur":3808, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.AnimationModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069098128, "dur":51, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SpriteMaskModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069098197, "dur":3199, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.SpriteMaskModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069101457, "dur":4551, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.EnterpriseServices.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069106071, "dur":2936, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/System.Drawing.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069109071, "dur":15031, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.VirtualTexturingModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069124172, "dur":930, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.LocalizationModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069125157, "dur":1308, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.GameCenterModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069126557, "dur":1279, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.ImageConversionModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069127906, "dur":1120, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/UnityEngine.JSONSerializeModule.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069129073, "dur":121570, "ph":"X", "name": "ComputeFileSignatureSha1",  "args": { "detail":"Library\\Bee\\artifacts\\WinPlayerBuildProgram\\ManagedStripped\\Unity.VisualScripting.Antlr3.Runtime.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069129031, "dur":121615, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"CopyFiles C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.VisualScripting.Antlr3.Runtime.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069250673, "dur":1678, "ph":"X", "name": "CopyFiles",  "args": { "detail":"C:/Users/fam Buciuman/Music/MDF/My dark fantasy_Data/Managed/Unity.VisualScripting.Antlr3.Runtime.dll" }}
+,{ "pid":12345, "tid":8, "ts":1733941069252356, "dur":159095, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1733941069417942, "dur":1694, "ph":"X", "name": "ProfilerWriteOutput" }
 ,

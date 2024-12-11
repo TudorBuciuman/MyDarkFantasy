@@ -32,6 +32,10 @@ public class NewWorld : MonoBehaviour
     public void Start()
     {
         Application.targetFrameRate = 20;
+        ReadFiles();
+    }
+    public void ReadFiles()
+    {
         if (worldParent != null)
         {
             string directoryPath = Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds");
@@ -42,14 +46,16 @@ public class NewWorld : MonoBehaviour
                 .AsParallel() // Parallel LINQ pentru multi-threading si performanta sporita
                 .OrderByDescending(dir => dir.LastWriteTime)
                 .ToArray();
+
                 string[] files = Directory.GetDirectories(directoryPath);
-                foreach (DirectoryInfo dir in directories){
+                foreach (DirectoryInfo dir in directories)
+                {
 
                     string[] smlfiles = Directory.GetFiles(dir.FullName, "*.info");
 
-                    if (smlfiles.Length > 0) 
+                    if (smlfiles.Length > 0)
                     {
-                        string content = File.ReadAllText(smlfiles[0]); 
+                        string content = File.ReadAllText(smlfiles[0]);
                         string[] words = content.Split(new char[] { ' ', '\n', '\r', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
 
                         GameObject go = Instantiate(world, worldParent.transform);
@@ -59,8 +65,10 @@ public class NewWorld : MonoBehaviour
                         {
                             a += " " + words[j];
                         }
-
-                        go.GetComponentInChildren<Text>().text = a?.ToString();
+                        go.GetComponent<worldsmanager>().seed = int.Parse(words[words.Length - 1]);
+                        go.GetComponent<worldsmanager>().Name = a;
+                        go.GetComponent<worldsmanager>().location = dir.FullName;
+                        go.GetComponentInChildren<Text>().text = a.ToString();
                     }
                     nr++;
                 }
@@ -108,11 +116,13 @@ public class NewWorld : MonoBehaviour
                     Wname.text = ("MyWorld" + p.ToString()).ToString();
                 }
             }
+            string h;
             if (seed.Equals(""))
                 seed.text = random.ToString();
             string savePath = Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds", Wname.text);
             if (!Directory.Exists(savePath))
             {
+                h=Wname.text;
                 Directory.CreateDirectory(savePath);
             }
             else
@@ -124,12 +134,13 @@ public class NewWorld : MonoBehaviour
                     p++;
                     savePath = Path.Combine(savePath, p.ToString()).ToString();
                 }
+                h=Wname.text+p;
                 Directory.CreateDirectory(savePath);
             }
             BinaryFormatter formatter = new BinaryFormatter();
             using (StreamWriter writer = new StreamWriter(savePath + "/world.info"))
             {
-                writer.WriteLine("Name: " + a);
+                writer.WriteLine("Name: " + h);
                 writer.WriteLine("Seed: " + seed.text);
             }
             serializer = new();
@@ -139,66 +150,40 @@ public class NewWorld : MonoBehaviour
     }
     public void EnterWorld()
     {
-        GameObject[] gm = GameObject.FindGameObjectsWithTag("open");
-        for(int i = 0; i<nr; i++)
-        {
-            if (gm[i].gameObject == this.gameObject)
-            {
-                string directoryPath = Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds");
-                DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-                var directories = directoryInfo.GetDirectories()
-                .AsParallel() // Parallel LINQ pentru multi-threading si performanta sporita
-                .OrderByDescending(dir => dir.LastWriteTime)
-                .ToArray();
-                string[] files = Directory.GetDirectories(directoryPath);
-                string[] smlfiles = Directory.GetFiles(files[i], "*.info");
-                string content = File.ReadAllText(smlfiles[0]);
-                string[] words = content.Split(new char[] { ' ', '\n', '\r', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
-                serializer = new();
-                serializer.Sync(Path.Combine(Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds"),files[i]), int.Parse(words[words.Length - 1]));
-                break;
-            } 
-        }
+        serializer = new();
+        serializer.Sync(this.GetComponent<worldsmanager>().location, this.GetComponent<worldsmanager>().seed);
         SceneManager.LoadScene("World");
     }
     public void TryEditWorld() {
         GameObject a = GameObject.FindGameObjectWithTag("manager");
         a.GetComponent<NewWorld>().EditWorld(this.gameObject);    
     }
+    public string worldLocation;
+    public int SEED;
     public void EditWorld(GameObject c)
     {
         wset.gameObject.SetActive(true);
         backup.gameObject.SetActive(true);
         deleteqm.gameObject.SetActive(true);
         save.gameObject.SetActive(true);
-        GameObject[] gm = GameObject.FindGameObjectsWithTag("open");
-        for (int i = 0; i < nr; i++)
-        {
-            if (gm[i].gameObject == c)
-            {
-                string[] files = Directory.GetDirectories(Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds"));
-                string[] smlfiles = Directory.GetFiles(files[i], "*.info");
-                string content = File.ReadAllText(smlfiles[0]);
-                worldlocation = files[i];
-                string[] words = content.Split(new char[] { ' ', '\n', '\r', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
-                serializer = new();
-                copywseed.gameObject.SetActive(true);
-                changewname.gameObject.SetActive(true);
-                copywseed.GetComponentInChildren<Text>().text = words[words.Length-1].ToString();
-                string a = null;
-                for (int j = 1; j < words.Length - 2; j++)
-                {
-                    a += " " + words[j];
-                }
-                changewname.text = a.ToString();
-                
-                break;
-            }
-        }
-        
+        serializer = new();
+        copywseed.gameObject.SetActive(true);
+        changewname.gameObject.SetActive(true);
+        copywseed.GetComponentInChildren<Text>().text = c.GetComponent<worldsmanager>().seed.ToString();
+        string a = c.GetComponent<worldsmanager>().Name;
+        worldLocation = c.GetComponent<worldsmanager>().location.ToString();
+        SEED = c.GetComponent<worldsmanager>().seed;
+        changewname.text = a.ToString();        
     }
     public void CloseEdit()
     {
+        Debug.Log(changewname.text);
+        BinaryFormatter formatter = new BinaryFormatter();
+        using (StreamWriter writer = new StreamWriter(worldLocation + "/world.info"))
+        {
+            writer.WriteLine("Name: " + changewname.text);
+            writer.WriteLine("Seed: " + SEED.ToString());
+        }
         backup.gameObject.SetActive(false);
         deleteornot.gameObject.SetActive(false);
         deleteqm.gameObject.SetActive(false);
@@ -206,6 +191,9 @@ public class NewWorld : MonoBehaviour
         changewname.gameObject.SetActive(false);
         copywseed.gameObject.SetActive(false);
         wset.gameObject.SetActive(false);
+        foreach(GameObject a in GameObject.FindGameObjectsWithTag("open"))
+            Destroy(a);
+        ReadFiles();
 
     }
     public void TryDelete()

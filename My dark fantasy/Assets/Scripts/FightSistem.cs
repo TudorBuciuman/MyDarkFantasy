@@ -167,7 +167,7 @@ public class FightSistem : MonoBehaviour
         {
             case 0:
                 {
-                    yield return StartCoroutine(Attack1());
+                    yield return StartCoroutine(SpawnBones());
                     break;
                 }
             case 1:

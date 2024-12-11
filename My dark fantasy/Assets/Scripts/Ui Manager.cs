@@ -18,7 +18,7 @@ public class UiManager : MonoBehaviour
     public Slider disSlider;
     public Toggle hudqm;
     public Toggle showfps;
-    public static bool hud=true;
+    public static bool hud=true,fps=false;
 
     public Text sensiv;
     public Slider sensivslid;
@@ -53,6 +53,7 @@ public class UiManager : MonoBehaviour
                 showfps = false
             };
             hud = true;
+
             string json = JsonUtility.ToJson(data);
             File.WriteAllText(Path.Combine(Application.persistentDataPath + "/Settings/settings.json"), json);
         }
@@ -64,6 +65,7 @@ public class UiManager : MonoBehaviour
             MouseController.sensivity = data.sens*10;
             Voxeldata.NumberOfChunks = data.render;
                 hud = data.hud;
+            fps = data.showfps;
         }
     }
     public void LoadScene(string sceneName)
@@ -145,14 +147,16 @@ public class UiManager : MonoBehaviour
             movementlevel = (byte)soundsSlider.value,
             musiclevel = (byte)musicSlider.value
         };
+        hud=hudqm.isOn;
+        fps=showfps.isOn;
         string json = JsonUtility.ToJson(data);
         File.WriteAllText(Path.Combine(Application.persistentDataPath + "/Settings/settings.json"), json);
 
         if (scene.Contains("World"))
         {
-            //SceneManager.UnloadSceneAsync("Settings");
             SceneManager.UnloadSceneAsync("Settings");
             ChunkSerializer.CloseSet();
+
         }
         else
             SceneManager.UnloadSceneAsync("Settings");

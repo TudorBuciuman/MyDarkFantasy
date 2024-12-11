@@ -213,14 +213,6 @@ public class ChunkSerializer
     }
     public static void CloseSet()
     {
-        pret = false;
-        string json = File.ReadAllText(savePath + "/playerprefab.json");
-        PlayerData data = JsonUtility.FromJson<PlayerData>(json);
-        pos = data.position;
-        rot = data.rotation;
-        MouseController.xrot = data.mx;
-        MouseController.yrot = data.my;
-        pret = true;
         ControllerImput.Instance.ReRead();
     }
     public void Sync(string sv,int Seed)

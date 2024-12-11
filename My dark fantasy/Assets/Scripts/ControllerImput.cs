@@ -51,6 +51,8 @@ public class ControllerImput : MonoBehaviour
     private readonly InputAction ANDRmoveact;
     private InputAction middleAction;
 
+    private Coroutine showfps, pos;
+
     private bool grounded=false;
     private bool shift=false;
     private Vector3 moveDirection = Vector3.zero;
@@ -152,9 +154,7 @@ public class ControllerImput : MonoBehaviour
 
         ItemsFunctions.ItemsStart(wmanager,itemsManager,itemimg,mapImg,mapImg2);
         if(Voxeldata.showfps)
-        InvokeRepeating(nameof(GetFps), 0, 0.3f);
         InvokeRepeating(nameof(PlayScary), 20f, 45f);
-        InvokeRepeating(nameof(PosOut), 0, 0.05f);
         toolbar.openedInv = false;
         controller.enabled = true;
         //soundTrack.PlaySong((byte)Random.Range(0, 6));
@@ -176,14 +176,23 @@ public class ControllerImput : MonoBehaviour
             Hud2.SetActive(false);
             Pos.gameObject.SetActive(false);
             Hud3.GetComponent<Image>().gameObject.SetActive(false);
+            CancelInvoke(nameof(PosOut));
         }
         else
         {
+            InvokeRepeating(nameof(PosOut), 0, 0.05f);
             Hud1.SetActive(true);
             Hud2.SetActive(true);
             Pos.gameObject.SetActive(true);
             Hud3.GetComponent<Image>().gameObject.SetActive(true);
         }
+        if(UiManager.fps)
+        InvokeRepeating(nameof(GetFps), 0, 0.3f);
+        else
+        {
+            CancelInvoke(nameof(GetFps));
+        }
+
     }
     public void PlayScary()
     {

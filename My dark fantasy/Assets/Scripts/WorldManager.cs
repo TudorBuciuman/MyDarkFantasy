@@ -628,6 +628,7 @@ public class WorldManager : MonoBehaviour
     public void ClearData()
     {
         chunks.Clear();
+        ChunkSerializer.loadedChunks.Clear();
         chunkstosave.Clear();
         activechunks.Clear();
         unmeshedchk.Clear();
