@@ -79,7 +79,10 @@ public static class Structures
         WorldManager.SetTo(x , y + height + 1, z, 11);
         WorldManager.SetTo(x , y + height + 1, z +1, 11);
         WorldManager.SetTo(x + 1, y + height + 1, z, 11);
-
+        WorldManager.UpdateMesh(x - 2, z - 2);
+        WorldManager.UpdateMesh(x - 2, z + 2);
+        WorldManager.UpdateMesh(x + 2, z + 2);
+        WorldManager.UpdateMesh(x + 2, z - 2);
     }
     //pluralul de la cactus
     public static void MakeCacti(Vector3 pos,Vector2 offset)

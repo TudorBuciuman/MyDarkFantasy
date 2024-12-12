@@ -796,6 +796,8 @@ public class Toolbar : MonoBehaviour
                     itemsize[i, j] = a;
                     item[0, slothIndex] = id;
                     item[i, j] = b;
+                    if (World.blockTypes[item[0, slothIndex]].Items.tool.type != 5)
+                        holdingItem.sprite = World.blockTypes[item[0, slothIndex]].itemSprite;
                     return;
                 }
             }

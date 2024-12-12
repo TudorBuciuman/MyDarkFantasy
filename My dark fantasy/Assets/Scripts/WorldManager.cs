@@ -222,7 +222,8 @@ public class WorldManager : MonoBehaviour
             adjustedZ++;
         int baseChunkX = adjustedX;
         int baseChunkZ = adjustedZ;
-        GetChunk(baseChunkX, baseChunkZ).CreateMesh();
+        if(GetChunk(baseChunkX,baseChunkZ).mademesh)
+        NextChunk(baseChunkX, baseChunkZ);
 
         int localX = (x % 16 + 16) % 16;
         int localZ = (z % 16 + 16) % 16;
@@ -234,29 +235,37 @@ public class WorldManager : MonoBehaviour
 
         if (onXEdge && onZEdge)
         {
-            GetChunk(baseChunkX, baseChunkZ - 1).CreateMesh();
-            GetChunk(baseChunkX - 1, baseChunkZ).CreateMesh();
-            GetChunk(baseChunkX - 1, baseChunkZ - 1).CreateMesh();
+            if (GetChunk(baseChunkX, baseChunkZ-1).mademesh)
+                NextChunk(baseChunkX, baseChunkZ - 1);
+            if (GetChunk(baseChunkX-1, baseChunkZ).mademesh)
+                NextChunk(baseChunkX - 1, baseChunkZ);
+            if (GetChunk(baseChunkX-1, baseChunkZ-1).mademesh)
+                NextChunk(baseChunkX - 1, baseChunkZ - 1);
         }
         else if (onXEdge)
         {
-            GetChunk(baseChunkX - 1, baseChunkZ).CreateMesh();
+            if (GetChunk(baseChunkX-1, baseChunkZ).mademesh)
+                NextChunk(baseChunkX - 1, baseChunkZ);
         }
         else if (onZEdge)
         {
-            GetChunk(baseChunkX, baseChunkZ - 1).CreateMesh();
+            if (GetChunk(baseChunkX, baseChunkZ-1).mademesh)
+                NextChunk(baseChunkX, baseChunkZ - 1);
         }
         else if (onPositiveXEdge && onPositiveZEdge)
         {
-            GetChunk(baseChunkX + 1, baseChunkZ + 1).CreateMesh();
+            if (GetChunk(baseChunkX + 1, baseChunkZ + 1).mademesh)
+                NextChunk(baseChunkX + 1, baseChunkZ + 1);
         }
         else if (onPositiveXEdge)
         {
-            GetChunk(baseChunkX + 1, baseChunkZ).CreateMesh();
+            if (GetChunk(baseChunkX+1, baseChunkZ).mademesh)
+                NextChunk(baseChunkX + 1, baseChunkZ);
         }
         else if (onPositiveZEdge)
         {
-            GetChunk(baseChunkX, baseChunkZ + 1).CreateMesh();
+            if (GetChunk(baseChunkX, baseChunkZ+1).mademesh)
+                NextChunk(baseChunkX, baseChunkZ + 1);
         }
     }
     public static void SetTo(int x,int y, int z,byte id)
@@ -294,6 +303,7 @@ public class WorldManager : MonoBehaviour
                 GetChunk((x / 16 - 1), (z / 16 )).Voxels[16 - (-x % 16), y, z % 16] = id;
         }
     }
+
     public void SaveChunk(int x, int y)
     {
         foreach(ChunkCoord a in chunkstosave)

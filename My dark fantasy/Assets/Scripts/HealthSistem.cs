@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class HealthSistem : MonoBehaviour
 {
     public static float health;
     public static HealthSistem istance;
-    public GameObject hearts;
-    public GameObject semihearts;
-    public Transform heartParent;
     private float maxHealth=20;
     private float love;
+    public Slider healthslider;
+    public Text healthLabel;  
     public SoundsManager soundsManager;
     //love= level of violence
     private float regeneration;
@@ -49,17 +49,12 @@ public class HealthSistem : MonoBehaviour
     }
     public void ReMakeHearts()
     {
-        foreach (Transform child in heartParent)  
-            Destroy(child.gameObject);
-        for (int i = 1; i <= health; i++) 
-            Instantiate(hearts, heartParent);
-        if (Mathf.RoundToInt(health) > health)
+        int hlt = Mathf.RoundToInt( (float)(health / maxHealth)*20);
+        if(hlt==0 && health > 0)
         {
-            Instantiate(semihearts, heartParent);
+            hlt = 1;
         }
-        if((int)health==0 && health > 0)
-        {
-            Instantiate(semihearts, heartParent);
-        }
+        healthslider.value = hlt;
+        healthLabel.text=$"{hlt}/{maxHealth}".ToString();
     }
 }
