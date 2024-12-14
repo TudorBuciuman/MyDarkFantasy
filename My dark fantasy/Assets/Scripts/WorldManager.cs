@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System.Drawing;
 
 
 public class WorldManager : MonoBehaviour
@@ -28,8 +29,8 @@ public class WorldManager : MonoBehaviour
     public Material material;
     public Material waterMat;
     public BlockProprieties[] blockTypes;
-    readonly HashSet<ChunkCoord> activechunks = new();
-    public Queue<ChunkCoord> unmeshedchk = new ();
+    public readonly HashSet<ChunkCoord> activechunks = new();
+    public static Queue<ChunkCoord> unmeshedchk = new ();
     public static List<ChunkCoord> chunkstosave = new ();
     public static Queue<ChunkCoord> nextChunk = new ();
     public static Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
@@ -141,7 +142,7 @@ public class WorldManager : MonoBehaviour
         if (GetChunk(coord.x,coord.y)!= null)
         {
             return true;
-        }       
+        }
         return false;
     }
     public void BakeNewWorld()
@@ -603,6 +604,11 @@ public class WorldManager : MonoBehaviour
         for (int i = 0; i < nextChunk.Count && i < maxChunksPerFrame; i++)
         {
             ChunkCoord coord = nextChunk.Peek();
+            if (coord == null)
+            {
+                Debug.LogError("nextChunk contains null!");
+                continue;
+            }
             Chunk chunk = GetChunk(coord.x, coord.y);
             if (chunk != null)
             {

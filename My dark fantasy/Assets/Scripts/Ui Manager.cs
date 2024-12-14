@@ -154,6 +154,7 @@ public class UiManager : MonoBehaviour
 
         if (scene.Contains("World"))
         {
+            SoundsManager.instance.UpdateSounds();
             SceneManager.UnloadSceneAsync("Settings");
             ChunkSerializer.CloseSet();
 

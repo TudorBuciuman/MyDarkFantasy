@@ -61,9 +61,12 @@ public class NewWorld : MonoBehaviour
                         GameObject go = Instantiate(world, worldParent.transform);
 
                         string a = null;
+                        if(words.Length==4)
+                            a=words[1];
+                        else
                         for (int j = 1; j < words.Length - 2; j++)
                         {
-                            a += " " + words[j];
+                            a +=words[j]+" ";
                         }
                         go.GetComponent<worldsmanager>().seed = int.Parse(words[words.Length - 1]);
                         go.GetComponent<worldsmanager>().Name = a;
@@ -177,7 +180,6 @@ public class NewWorld : MonoBehaviour
     }
     public void CloseEdit()
     {
-        Debug.Log(changewname.text);
         BinaryFormatter formatter = new BinaryFormatter();
         using (StreamWriter writer = new StreamWriter(worldLocation + "/world.info"))
         {

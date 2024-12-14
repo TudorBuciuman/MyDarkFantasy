@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 
 public class SoundsManager : MonoBehaviour
 {
+    public static SoundsManager instance;
     public AudioSource moveSource;
     public AudioMixer soundsMixer;
     public AudioMixer musicMixer;
@@ -19,6 +20,11 @@ public class SoundsManager : MonoBehaviour
     public byte nrsongs=10;
     public void Start()
     {
+        instance = this;
+        UpdateSounds();
+    }
+    public void UpdateSounds()
+    {
         string settingsPath = Path.Combine(Application.persistentDataPath, "Settings/settings.json");
         string json = File.ReadAllText(settingsPath);
         SettingsData data = JsonUtility.FromJson<SettingsData>(json);
@@ -29,8 +35,8 @@ public class SoundsManager : MonoBehaviour
         }
         else
         {
-            float musicVolume = Mathf.Lerp(-80f, 0f, data.musiclevel / 100f); 
-            float soundsVolume = Mathf.Lerp(-80f, 0f, data.movementlevel / 100f); 
+            float musicVolume = Mathf.Lerp(-80f, 0f, data.musiclevel / 100f);
+            float soundsVolume = Mathf.Lerp(-80f, 0f, data.movementlevel / 100f);
 
             musicMixer.SetFloat(Music, musicVolume);
             soundsMixer.SetFloat(Master, soundsVolume);
