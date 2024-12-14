@@ -55,7 +55,7 @@ public class WorldManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-/*
+
         if (!Toolbar.openedInv)
         {
             //CheckViewDistance();

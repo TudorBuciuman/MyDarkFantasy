@@ -9,15 +9,16 @@ public class DeathScreen : MonoBehaviour
 {
     public Text writing;
     public Text Logo;
-    public SoundsManager SoundsManager;
+    public AudioSource audioSource;
+    public AudioClip staydetermined, getDunkedOn;
 
     public void Start()
     {
+        audioSource.loop = true;
         StartCoroutine(TheWorldNeedsYou());
     }
-    private string GetMessage()
+    private string GetMessage(int r)
     {
-        int r = Random.Range(0, 9);
         switch (r)
         {
             case 0:return "Don't lose your determination";
@@ -28,16 +29,29 @@ public class DeathScreen : MonoBehaviour
             case 5:return "Don't sob, there is always tomorrow";
             case 6:return "Don't lose hope";
             case 7:return "*you're filled with COURAGE";
+            case 10: return "Looser!";
+            case 11: return "Imagine losing!";
             default:return "determination";
         }
     } 
     private IEnumerator TheWorldNeedsYou()
     {
+        int r = Random.Range(0, 11);
+        if (r > 9)
+        {
+            audioSource.clip = getDunkedOn;
+            audioSource.Play();
+        }
+        else
+        {
+            audioSource.clip = staydetermined;
+            audioSource.Play();
+        }
         Toolbar.instance.openedInv = true;
         yield return new WaitForSeconds(3);
         Logo.gameObject.SetActive(true);
         yield return new WaitForSeconds(1.4f);
-        writing.text = GetMessage();
+        writing.text = GetMessage(r);
         writing.gameObject.SetActive(true);
         yield return new WaitForSeconds(1.8f);
         yield return StartCoroutine(WaitingForYou());

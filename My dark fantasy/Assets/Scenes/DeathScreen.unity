@@ -541,7 +541,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 72d5b1b9bbad997409576237758d0f77, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0.92
   m_Pitch: 1
@@ -641,7 +641,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   writing: {fileID: 1286972516}
   Logo: {fileID: 1899289021}
-  SoundsManager: {fileID: 0}
+  audioSource: {fileID: 1360843362}
+  staydetermined: {fileID: 8300000, guid: 72d5b1b9bbad997409576237758d0f77, type: 3}
+  getDunkedOn: {fileID: 8300000, guid: 32ebad16408e8d547b11e5699b32c014, type: 3}
 --- !u!4 &1360843365
 Transform:
   m_ObjectHideFlags: 0

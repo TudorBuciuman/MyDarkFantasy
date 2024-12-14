@@ -564,17 +564,20 @@
       }
     },
     {
-      "Name": "chest",
+      "Name": "barrel",
       "place": 36,
       "itemtexture": 0,
-      "isblock": false,
-      "tool": {
-        "type": 6,
-        "id": 0,
-        "damage": 0
-      },
-      "item": {
-        "coolfunction": 0
+      "isblock": true,
+      "blocks": {
+        "type": 0,
+        "backfacetexture": 28,
+        "frontfacetexture": 28,
+        "topfacetexture": 44,
+        "bottomfacetexture": 60,
+        "leftfacetexture": 28,
+        "rightfacetexture": 28,
+        "breakTime": 1.2999999523162842,
+        "special": 4
       }
     },
     {

@@ -2067,7 +2067,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 454.0996, y: -542.41}
+  m_AnchoredPosition: {x: 449.59, y: -543.26}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &477846048
@@ -4498,9 +4498,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Pos
-
-'
+  m_Text: 
 --- !u!222 &782628377
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8261,7 +8259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5660378, g: 0.5633678, b: 0.5633678, a: 1}
+  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9163,13 +9161,34 @@ MonoBehaviour:
     size: 1
     Recipe:
     - id: 14
-      size: 25
+      size: 20
   - Name: furnace
     id: 16
     type: 1
     size: 1
     Recipe:
     - id: 4
+      size: 30
+  - Name: barrel
+    id: 36
+    type: 1
+    size: 1
+    Recipe:
+    - id: 14
+      size: 20
+  - Name: mapMaker
+    id: 22
+    type: 1
+    size: 1
+    Recipe:
+    - id: 14
+      size: 20
+  - Name: book
+    id: 22
+    type: 1
+    size: 1
+    Recipe:
+    - id: 14
       size: 30
   ind: 00000000000000000000
   sz: 00000000000000000000000000000000000000000000000000000000000000000000000000000000

@@ -34,7 +34,10 @@ public class Chunk
     readonly List<Vector2> uv = new(20000);
     readonly List<Vector2> uw = new(20000);
     readonly Dictionary<Vector3, int> vertexDict = new();
-
+    public float CalculateWomanSalary(float salary)
+    {
+        return salary * 0.8f;
+    }
     public Chunk(ChunkCoord coord, WorldManager wmanager)
     {
         Coord = coord;
@@ -67,6 +70,8 @@ public class Chunk
         world = wmanager;
         biome = new BiomeAttributes[16, 16];
     }
+
+
     public void MakeTerrain()
     {
         float[,] heightm = generateHeightMap();
@@ -89,8 +94,6 @@ public class Chunk
                     SetBlock(x, i, z, 21);
             }
         }
-        //SetBlock(0, (byte)heightm[0,2]+1, 2, 17);
-        //SetBlock(5, (byte)heightm[5,3]+1, 3, 18);
         lock(listLock){
             ChunkSerializer.loadedChunks.Add((Coord.x, Coord.y), Voxels);
         }
