@@ -750,6 +750,8 @@ public class Toolbar : MonoBehaviour
             {
                 slothIndex = i;
                 highlight.position = itemSlots[slothIndex].image.transform.position;
+                if (World.blockTypes[item[0, slothIndex]].Items.tool.type != 5)
+                    holdingItem.sprite = World.blockTypes[item[0, slothIndex]].itemSprite;
                 return;
             }
         }

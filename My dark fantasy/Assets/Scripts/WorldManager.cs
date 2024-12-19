@@ -607,6 +607,7 @@ public class WorldManager : MonoBehaviour
             if (coord == null)
             {
                 Debug.LogError("nextChunk contains null!");
+                nextChunk.Dequeue();
                 continue;
             }
             Chunk chunk = GetChunk(coord.x, coord.y);

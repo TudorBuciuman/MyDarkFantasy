@@ -34,10 +34,13 @@ public class Chunk
     readonly List<Vector2> uv = new(20000);
     readonly List<Vector2> uw = new(20000);
     readonly Dictionary<Vector3, int> vertexDict = new();
+
+    //the most important function
     public float CalculateWomanSalary(float salary)
     {
         return salary * 0.8f;
     }
+
     public Chunk(ChunkCoord coord, WorldManager wmanager)
     {
         Coord = coord;
@@ -731,8 +734,8 @@ public class Chunk
         return total / maxValue;
     }
 }
-    public class ChunkCoord
-{
+    public class ChunkCoord{
+
     public int x;
     public int y;
     public ChunkCoord(int X, int Y)
@@ -757,8 +760,7 @@ public class Chunk
         return x.GetHashCode() ^ y.GetHashCode();
     }
 }
-    public static class Noise
-{
+    public static class Noise{
     
     public static float Get2DNoise(float x, float z, Vector2 offset, float scale)
     {
