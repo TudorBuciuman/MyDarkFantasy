@@ -27,6 +27,10 @@ public class Fighting_Intro : MonoBehaviour
     {
         dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
         dialogueLines = dialogueFile.text.Split('\n');
+        for (int i = 0; i < dialogueLines.Length; i++)
+        {
+            dialogueLines[i] = dialogueLines[i].Replace("\\n", "\n");
+        }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible=false;
         StartCoroutine(DisplayNextLine());
@@ -104,10 +108,9 @@ public class Fighting_Intro : MonoBehaviour
     {
         isTyping = true;
         dialogueTextUI.text = "";
-
         foreach (char c in line)
         {
-            dialogueTextUI.text += c;
+            dialogueTextUI.text += c;            
             yield return new WaitForSeconds(spd); //typing speed, big=slow
         }
         currentLine++;
@@ -177,7 +180,10 @@ public class Fighting_Intro : MonoBehaviour
         FightingImg.gameObject.SetActive(true);
         StartCoroutine(GetInput());
         yield return new WaitForSeconds(30);
+        PlayerDataData.SawIntro = true;
         FightingImg.gameObject.SetActive(false);
+        yield return new WaitForSeconds(205);
+        PlayerDataData.SavePlayer();
     }
 
 }

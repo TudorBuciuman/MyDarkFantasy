@@ -16,12 +16,12 @@ public class Intro : MonoBehaviour
     }
     void Start()
     {
-        Debug.Log("start");
         PlayOnSight();
     }
     public void PlayOnSight()
     {
         StartCoroutine(PlayOnSightCoroutine());
+
     }
 
     private IEnumerator PlayOnSightCoroutine()
@@ -49,9 +49,8 @@ public class Intro : MonoBehaviour
         yield return Waiting(2.5f);
         Text.gameObject.SetActive(false);
         PlaySound();
-        yield return Waiting(10f);
-        PlayWarSound();
-        SceneManager.LoadScene("2D scene");
+        yield return Waiting(6f);
+        PlayerDataData.Intro_Fighting();
     }
 
     private IEnumerator Waiting(float n)
