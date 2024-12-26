@@ -9,6 +9,7 @@ public class DeathScreen : MonoBehaviour
 {
     public Text writing;
     public Text Logo;
+    public Font comicSans;
     public AudioSource audioSource;
     public AudioClip staydetermined, getDunkedOn;
 
@@ -29,16 +30,17 @@ public class DeathScreen : MonoBehaviour
             case 5:return "Don't sob, there is always tomorrow";
             case 6:return "Don't lose hope";
             case 7:return "*you're filled with COURAGE";
-            case 10: return "Looser!";
-            case 11: return "Imagine losing!";
+            case 9: return "Looser!";
+            case 10: return "Imagine losing!";
             default:return "determination";
         }
     } 
     private IEnumerator TheWorldNeedsYou()
     {
-        int r = Random.Range(0, 11);
-        if (r > 9)
+        int r = Random.Range(0, 15);
+        if (r >= 9)
         {
+            writing.font = comicSans;
             audioSource.clip = getDunkedOn;
             audioSource.Play();
         }

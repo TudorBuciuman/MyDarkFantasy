@@ -19,7 +19,7 @@ public class HealthSistem : MonoBehaviour
     {
         istance = this;
     }
-    public void Update()
+    public void FixedUpdate()
     {
         if(Input.GetKeyUp(KeyCode.K))
         {
@@ -36,10 +36,20 @@ public class HealthSistem : MonoBehaviour
 
     private IEnumerator TheWorldNeedsYou()
     {
-        Toolbar.escape = true;
-        SceneManager.LoadScene("DeathScreen", LoadSceneMode.Additive);
-        yield return new WaitForSeconds(1);
-
+        if (Voxeldata.PlayerData.deaths == 0)
+        {
+            Toolbar.instance.SaveProgress();
+            Voxeldata.PlayerData.deaths++;
+            SceneManager.LoadScene("Blood");
+        }
+        else
+        {
+            Voxeldata.PlayerData.deaths++;
+            PlayerDataData.SavePlayerFile();
+            Toolbar.escape = true;
+            SceneManager.LoadScene("DeathScreen", LoadSceneMode.Additive);
+            yield return new WaitForSeconds(1);
+        }
     }
     public void UpdateHealth(float amount)
     {

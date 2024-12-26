@@ -678,7 +678,22 @@ public class Toolbar : MonoBehaviour
         World.ClearData();
         inputActions.Android.Disable();
         ChunkSerializer.loadedChunks.Clear();
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Worlds");
+        escape = false;
+        openedInv = false;
+    }
+    public void SaveProgress()
+    {
+        SaveInventory();
+        ChunkSerializer.savePlayerData(control.PlayerPos(), control.PlayerRot());
+        for (int i = 0; i < WorldManager.chunkstosave.Count; i++)
+        {
+            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.GetChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y).Voxels;
+            ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
+        }
+        World.ClearData();
+        inputActions.Android.Disable();
+        ChunkSerializer.loadedChunks.Clear();
         escape = false;
         openedInv = false;
     }
@@ -691,20 +706,8 @@ public class Toolbar : MonoBehaviour
         //sunt obosit si plictisit ;<
         SaveInventory();
         ChunkSerializer.savePlayerData(control.PlayerPos(), control.PlayerRot());
-        /*
-        for (int i = 0; i < WorldManager.chunkstosave.Count; i++)
-        {
-            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.GetChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y).Voxels;
-            ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
-        }
-        ChunkSerializer.loadedChunks.Clear();
-        World.ClearData();
-        inputActions.Android.Disable();
-        */
         UiManager e = new();
         e.OpenSet("World");
-        //escape = false;
-        //openedInv = false;
     }
     public void UpdateAnItem(byte id)
     {

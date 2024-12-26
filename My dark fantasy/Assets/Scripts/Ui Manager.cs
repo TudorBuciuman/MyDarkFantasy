@@ -30,15 +30,17 @@ public class UiManager : MonoBehaviour
     public Slider soundsSlider;
     public Text soundtext;
 
+    public GameObject MDF;
     public void Start()
     {
         Application.targetFrameRate = 30;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         if (SceneManager.GetActiveScene().name == "Settings")
             LoadSettingsScene();
         else if (SceneManager.loadedSceneCount == 2)
             LoadSettingsScene();
     }
-
     public static void ReadSet()
     {
         if (!File.Exists(Path.Combine(Application.persistentDataPath + "/Settings/settings.json")))

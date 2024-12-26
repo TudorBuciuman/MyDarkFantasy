@@ -28,7 +28,7 @@ public class Intro : MonoBehaviour
     {
         yield return Waiting(2.5f);
         TTG.gameObject.SetActive(true);
-        yield return Waiting(4f);
+        yield return Waiting(2f);
         TTG.gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

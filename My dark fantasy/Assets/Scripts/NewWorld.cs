@@ -6,22 +6,25 @@ using UnityEngine.SceneManagement;
 using System.Windows;
 using Unity.VisualScripting;
 using System.Linq;
+using System.Collections;
 
 public class NewWorld : MonoBehaviour
 {
     public int random;
+    public Image lightingImg;
+    public AudioClip clip;
+    public AudioSource AudioSource;
     public static byte nr = 0;
     public ChunkSerializer serializer;
     public string worldlocation;
     public InputField Wname;
     public Image img;
-    public Text Text;
     public Button create;
     public Button later;
     public InputField seed;
     public GameObject world;
     public GameObject worldParent;
-
+    public static NewWorld instance;
     public Image wset;
     public Button backup;
     public Button deleteqm;
@@ -31,6 +34,13 @@ public class NewWorld : MonoBehaviour
     public Button save;
     public void Start()
     {
+        if(instance == null)
+            instance = this;
+        if (!OnAppOpened.readytogo)
+        {
+            GameObject a = new GameObject();
+            a.AddComponent<OnAppOpened>().ReadWhatNeedsTo();
+        }
         Application.targetFrameRate = 20;
         ReadFiles();
     }
@@ -84,7 +94,6 @@ public class NewWorld : MonoBehaviour
     }
     public void TryNewWorld()
     {
-        Text.gameObject.SetActive(true);
         Wname.gameObject.SetActive(true);
         img.gameObject.SetActive(true);
         create.gameObject.SetActive(true);
@@ -95,7 +104,6 @@ public class NewWorld : MonoBehaviour
     }
     public void Later()
     {
-        Text.gameObject.SetActive(false);
         Wname.text = "MyWorld";
         Wname.gameObject.SetActive(false);
         img.gameObject.SetActive(false);
@@ -148,14 +156,40 @@ public class NewWorld : MonoBehaviour
             }
             serializer = new();
             serializer.Sync((savePath), int.Parse(seed.text));
-            SceneManager.LoadScene("World");
+            EnterFaster();
         }
+    }
+    public IEnumerator MakeLight(float time)
+    {
+
+        Color startColor = new Color(0f, 0f, 0f, 0f);
+
+        Color targetColor = Color.white;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < time)
+        {
+            lightingImg.color = Color.Lerp(startColor, targetColor, elapsedTime / time);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        lightingImg.color = targetColor;
+        SceneManager.LoadScene("World");
     }
     public void EnterWorld()
     {
+        instance.EnterFaster();
         serializer = new();
         serializer.Sync(this.GetComponent<worldsmanager>().location, this.GetComponent<worldsmanager>().seed);
-        SceneManager.LoadScene("World");
+    }
+    public void EnterFaster()
+    {
+        AudioSource.clip = clip;
+        AudioSource.Play();
+        lightingImg.gameObject.SetActive(true);
+        StartCoroutine(MakeLight(2.5f));
     }
     public void TryEditWorld() {
         GameObject a = GameObject.FindGameObjectWithTag("manager");

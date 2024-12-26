@@ -155,14 +155,12 @@ public class Fighting_Intro : MonoBehaviour
 
         lightingImg.color = targetColor;
     }
-    bool okey = false;
     public IEnumerator GetInput()
     {
         while (true)
         {
             if(Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
             {
-                okey = true;
                 break;
             }
             yield return new WaitForSeconds(0.1f);
