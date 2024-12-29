@@ -51,6 +51,7 @@ And if you have ideas contact me on IG;
     Highlevel-efficient-perfected algorithms: Youtube <br>
     The rest of the logic: Me
     Textures, Assets, Sprites: all handmade by me
+  <br>
     Soundtrack:
     <li>Kanye West (if you read this please don't sue)</li>
     <li>Kendrick Lamar (I used some of your lyrics, please don't sue, or diss)</li>
