@@ -33,7 +33,7 @@ public class ItemsFunctions : MonoBehaviour
             size++;
         }
         item.SetItem(wman.Block(x,y,z), size, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
-        wman.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), 0);
+        wman.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), new Chunk.VoxelStruct(0, 0));
     }
     public static void MakeMap()
     {

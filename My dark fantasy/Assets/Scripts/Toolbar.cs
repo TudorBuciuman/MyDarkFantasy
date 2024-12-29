@@ -816,7 +816,7 @@ public class Toolbar : MonoBehaviour
     public byte id;
     public Image image;
     public Text num;
-}
+    }
     [System.Serializable]
     public class AllSlots
     {

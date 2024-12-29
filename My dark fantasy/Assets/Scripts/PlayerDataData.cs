@@ -35,6 +35,7 @@ public class PlayerDataData : MonoBehaviour
                 sawIntro = false,
                 deaths = 0,
                 typeofrun = 0,
+                SawEnding = false,
             };
             Voxeldata.PlayerData = playerData;
             string jsonString = JsonUtility.ToJson(playerData, true);
@@ -52,9 +53,11 @@ public class PlayerDataData : MonoBehaviour
     {
         DontForget playerData = new()
         {
-           scene=0,
-           sawIntro = false,
-           typeofrun=0,
+            scene = 0,
+            sawIntro = false,
+            deaths = 0,
+            typeofrun = 0,
+            SawEnding = false
         };
 
         string jsonString = JsonUtility.ToJson(playerData, true);
@@ -70,6 +73,7 @@ public class PlayerDataData : MonoBehaviour
             sawIntro = true,
             deaths=0,
             typeofrun = 0,
+            SawEnding=false
         };
 
         string jsonString = JsonUtility.ToJson(playerData, true);
@@ -91,4 +95,5 @@ public class DontForget
     public bool sawIntro;
     public byte typeofrun;
     public byte[] action;
+    public bool SawEnding;
 }

@@ -16,7 +16,6 @@ public class WorldManager : MonoBehaviour
 {
     public ControllerImput CImp;
     public SceneReader SceneReader;
-    public Time time;
     public static bool ready = false;
     public static float currenttime;
     public BiomeAttributes[] Biome;
@@ -56,23 +55,12 @@ public class WorldManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-
         if (!Toolbar.openedInv)
         {
             //CheckViewDistance();
            CalculateTime();
             //Shader.SetGlobalFloat("globallight", GlobalLight);
         }
-     /*
-        if (Input.GetKeyUp(KeyCode.UpArrow))
-        {
-            SceneReader.gameObject.SetActive(true);
-            Toolbar.openedInv = true;
-            Toolbar.escape = true;
-            SceneReader.SceneLoc = "Insomnia";
-            SceneManager.LoadScene("2D scene");
-        }
-        */
     }
     
     private IEnumerator UpdateChunksCoroutine()
@@ -273,35 +261,35 @@ public class WorldManager : MonoBehaviour
     {
 
         if (x >= 0 && z >= 0)
-            GetChunk((x / 16), (z / 16)).Voxels[x % 16, y, z % 16] = id;
+            GetChunk((x / 16), (z / 16)).Voxels[x % 16, y, z % 16].Value1 = id;
         else if (x >= 0 && z < 0)
         {
             if (z % 16 == 0)
             {
-                GetChunk((x / 16 ), (z / 16)).Voxels[x % 16, y, 0] = id;
+                GetChunk((x / 16), (z / 16)).Voxels[x % 16, y, 0].Value1 = id;
             }
             else
             {
-                GetChunk((x / 16 ), (z / 16 -1)).Voxels[x % 16, y, 16 - (-z % 16)] = id;
+                GetChunk((x / 16), (z / 16 - 1)).Voxels[x % 16, y, 16 - (-z % 16)].Value1 = id;
             }
         }
         else if (x < 0 && z < 0)
         {
             if (z % 16 == 0 && x % 16 == 0)
-                GetChunk((x / 16), (z / 16)).Voxels[0, y , 0] = id;
+                GetChunk((x / 16), (z / 16)).Voxels[0, y, 0].Value1 = id;
             else if (z % 16 == 0)
-                GetChunk((x / 16 - 1), (z / 16)).Voxels[16 - (-x % 16), y , 0] = id;
+                GetChunk((x / 16 - 1), (z / 16)).Voxels[16 - (-x % 16), y, 0].Value1 = id;
             else if (x % 16 == 0)
-                GetChunk((x / 16), (z / 16 -1)).Voxels[0, y , 16 - (-z    % 16)] = id;
+                GetChunk((x / 16), (z / 16 - 1)).Voxels[0, y, 16 - (-z % 16)].Value1 = id;
             else
-                GetChunk((x / 16 - 1), (z / 16 - 1)).Voxels[16 - (-x % 16), y , 16 - (-z % 16)] = id;
+                GetChunk((x / 16 - 1), (z / 16 - 1)).Voxels[16 - (-x % 16), y, 16 - (-z % 16)].Value1 = id;
         }
         else if (x < 0 && z >= 0)
         {
             if (x % 16 == 0)
-                GetChunk((x / 16), (z / 16)).Voxels[0, y, z % 16] = id;
+                GetChunk((x / 16), (z / 16)).Voxels[0, y, z % 16].Value1 = id;
             else
-                GetChunk((x / 16 - 1), (z / 16 )).Voxels[16 - (-x % 16), y, z % 16] = id;
+                GetChunk((x / 16 - 1), (z / 16)).Voxels[16 - (-x % 16), y, z % 16].Value1 = id;
         }
     }
 
@@ -324,16 +312,16 @@ public class WorldManager : MonoBehaviour
     {
         nextChunk.Enqueue(new ChunkCoord(x,y));
     }
-    public void ModifyMesh(int x, int y, int z,byte id)
+    public void ModifyMesh(int x, int y, int z,Chunk.VoxelStruct id)
     {
         if (x < 0 && z > -1)
         {
             if (x % 16 == 0)
             {
-                GetChunk(x / 16 , z / 16 ).Voxels[0, y, z % 16] = id;
+                GetChunk(x / 16, z / 16).Voxels[0, y, z % 16] = id;
             }
             else
-            GetChunk(x / 16 -1, z / 16).Voxels[(16-(-x % 16)), y, z % 16] = id;
+            GetChunk(x / 16 - 1, z / 16).Voxels[(16 - (-x % 16)), y, z % 16] = id;
         }
         else if (x >= 0 && z >= 0)
             GetChunk(x / 16, z / 16).Voxels[x % 16, y, z % 16] = id;
@@ -341,10 +329,10 @@ public class WorldManager : MonoBehaviour
         {
             if (z % 16 == 0)
             {
-                GetChunk(x / 16, z / 16).Voxels[x%16, y, 0] = id;
+                GetChunk(x / 16, z / 16).Voxels[x % 16, y, 0] = id;
             }
             else
-            GetChunk(x / 16 , z / 16 -1).Voxels[x % 16, y, (16 - (-z % 16))] = id;
+            GetChunk(x / 16, z / 16 - 1).Voxels[x % 16, y, (16 - (-z % 16))] = id;
         }
         else
         {
@@ -354,11 +342,11 @@ public class WorldManager : MonoBehaviour
             } 
             if (z % 16 == 0)
             {
-                GetChunk(x / 16 - 1, z / 16 ).Voxels[(16 - (-x % 16)), y, 0] = id;
+                GetChunk(x / 16 - 1, z / 16).Voxels[(16 - (-x % 16)), y, 0] = id;
             }
             else if (x % 16 == 0)
             {
-                GetChunk(x / 16 , z / 16 - 1).Voxels[0, y, (16 - (-z % 16))] = id;
+                GetChunk(x / 16, z / 16 - 1).Voxels[0, y, (16 - (-z % 16))] = id;
             }
             else
             GetChunk(x / 16 - 1, z / 16 - 1).Voxels[(16 - (-x % 16)), y, (16 - (-z % 16))] = id;
@@ -451,37 +439,37 @@ public class WorldManager : MonoBehaviour
         {
             if (a % 16 == 0)
             {
-                return GetChunk(a / 16, c / 16).Voxels[0, b, c % 16];
+                return GetChunk(a / 16, c / 16).Voxels[0, b, c % 16].Value1;
             }
-            return GetChunk(a / 16-1, c / 16).Voxels[16 - (g % 16), b, h % 16];
+            return GetChunk(a / 16 - 1, c / 16).Voxels[16 - (g % 16), b, h % 16].Value1;
         }
         else if (a >= 0 && c >= 0)
         {
-            return GetChunk(a / 16, c / 16).Voxels[g % 16, b, h % 16];
+            return GetChunk(a / 16, c / 16).Voxels[g % 16, b, h % 16].Value1;
         }
         else if (a >= 0 && c < 0)
         {
             if (c % 16 == 0)
             {
-                return GetChunk(a / 16, c / 16).Voxels[a % 16, b, 0] ;
+                return GetChunk(a / 16, c / 16).Voxels[a % 16, b, 0].Value1 ;
             }
-            return GetChunk(a / 16, c / 16-1).Voxels[a % 16, b, (16 - (-c % 16))];
+            return GetChunk(a / 16, c / 16 - 1).Voxels[a % 16, b, (16 - (-c % 16))].Value1;
         }
         else if (a < 0 && c < 0)
         {
             if (a % 16 == 0 && c % 16 == 0)
             {
-                return GetChunk(a / 16, c / 16).Voxels[0, b, 0];
+                return GetChunk(a / 16, c / 16).Voxels[0, b, 0].Value1;
             }
             if (a % 16 == 0)
             {
-                return GetChunk(a / 16, c / 16-1).Voxels[0, b, (16 - (-c % 16))];
+                return GetChunk(a / 16, c / 16 - 1).Voxels[0, b, (16 - (-c % 16))].Value1;
             }
             if (c % 16 == 0)
             {
-                return GetChunk(a / 16-1, c / 16).Voxels[(16 - (-a % 16)), b, 0] ;
+                return GetChunk(a / 16 - 1, c / 16).Voxels[(16 - (-a % 16)), b, 0].Value1 ;
             }
-            return GetChunk(a / 16-1, c / 16 - 1).Voxels[(16 - (-a % 16)), b, (16 - (-c % 16))];
+            return GetChunk(a / 16 - 1, c / 16 - 1).Voxels[(16 - (-a % 16)), b, (16 - (-c % 16))].Value1;
         }
         else
         {
@@ -500,37 +488,37 @@ public class WorldManager : MonoBehaviour
         {
             if (a % 16 == 0)
             {
-            return GetChunk(a / 16, c / 16).Voxels[0, b, c % 16]!=0;
+            return GetChunk(a / 16, c / 16).Voxels[0, b, c % 16].Value1 !=0;
             }
-            return GetChunk(a / 16-1, c / 16).Voxels[16-(g% 16), b, h % 16] != 0;
+            return GetChunk(a / 16 - 1, c / 16).Voxels[16 - (g % 16), b, h % 16].Value1 != 0;
         }
         else if (a >= 0 && c >= 0)
         {
-            return GetChunk(a/16,c/16).Voxels[g % 16, b, h % 16] != 0;
+            return GetChunk(a / 16, c / 16).Voxels[g % 16, b, h % 16].Value1 != 0;
         }
         else if (a >= 0 && c < 0)
         {
             if (c % 16 == 0)
             {
-                return GetChunk(a / 16, c / 16).Voxels[a%16, b,0] != 0;
+                return GetChunk(a / 16, c / 16).Voxels[a % 16, b, 0].Value1 != 0;
             }
-            return GetChunk(a / 16, c / 16-1).Voxels[a % 16, b, (16 - (-c % 16))] != 0;
+            return GetChunk(a / 16, c / 16 - 1).Voxels[a % 16, b, (16 - (-c % 16))].Value1 != 0;
         }
         else if (a < 0 && c < 0)
         {
             if (a % 16 == 0 && c%16==0)
             {
-                return GetChunk(a / 16, c / 16).Voxels[0, b, 0] != 0;
+                return GetChunk(a / 16, c / 16).Voxels[0, b, 0].Value1 != 0;
             }
             if (a % 16 == 0)
             {
-                return GetChunk(a / 16, c / 16-1).Voxels[0, b, (16 - (-c % 16))] != 0;
+                return GetChunk(a / 16, c / 16 - 1).Voxels[0, b, (16 - (-c % 16))].Value1 != 0;
             }
             if (c % 16 == 0)
             {
-                return GetChunk(a / 16-1, c / 16).Voxels[(16 - (-a % 16)), b, 0] != 0;
+                return GetChunk(a / 16-1, c / 16).Voxels[(16 - (-a % 16)), b, 0].Value1 != 0;
             }
-            return GetChunk(a / 16-1, c / 16-1).Voxels[(16 - (-a % 16)), b, (16 - (-c % 16))] != 0;
+            return GetChunk(a / 16-1, c / 16-1).Voxels[(16 - (-a % 16)), b, (16 - (-c % 16))].Value1 != 0;
         }
         else
         {
@@ -606,7 +594,6 @@ public class WorldManager : MonoBehaviour
             ChunkCoord coord = nextChunk.Peek();
             if (coord == null)
             {
-                Debug.LogError("nextChunk contains null!");
                 nextChunk.Dequeue();
                 continue;
             }
@@ -688,6 +675,7 @@ public class Blocks
     public float breakTime;
     public byte durability;
     public byte special;
+    public byte positionType;
 
     public byte GetTextureID(byte face)
     {

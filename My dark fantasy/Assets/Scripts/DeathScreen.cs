@@ -53,18 +53,23 @@ public class DeathScreen : MonoBehaviour
         yield return new WaitForSeconds(3);
         Logo.gameObject.SetActive(true);
         yield return new WaitForSeconds(1.4f);
-        writing.text = GetMessage(r);
         writing.gameObject.SetActive(true);
+        foreach (char c in GetMessage(r))
+        {
+            writing.text += c;
+            yield return new WaitForSeconds(0.1f);
+        }
         yield return new WaitForSeconds(1.8f);
         yield return StartCoroutine(WaitingForYou());
         writing.gameObject.SetActive(false);
         yield return new WaitForSeconds(1.4f);
         Logo.gameObject.SetActive(false);
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(2f);
         Toolbar.escape = false;
         Toolbar.instance.openedInv = false;
         HealthSistem.health = 20;
         HealthSistem.istance.ReMakeHearts();
+        ControllerImput.Instance.currentVelocity=Vector3.zero;
         SceneManager.UnloadSceneAsync("DeathScreen");
         }
     private IEnumerator WaitingForYou()

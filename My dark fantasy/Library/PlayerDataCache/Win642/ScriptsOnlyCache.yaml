@@ -5,6 +5,7 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - AndroidInv
     - BiomeAttributes
+    - BloodOnTheLeaves
     - ControllerImput
     - Crafting
     - DeathScreen
@@ -15,7 +16,6 @@ ScriptsOnlyBuild:
     - FixedTouchField
     - HealthSistem
     - Intro
-    - ItemAtlas
     - ItemsFunctions
     - MouseController
     - NewWorld
@@ -114,12 +114,6 @@ ScriptsOnlyBuild:
     methodName: OpenSet
   - assembly: Assembly-CSharp
     fullTypeName: NewWorld
-    methodName: TryEditWorld
-  - assembly: Assembly-CSharp
-    fullTypeName: NewWorld
-    methodName: EnterWorld
-  - assembly: Assembly-CSharp
-    fullTypeName: NewWorld
     methodName: canceldel
   - assembly: Assembly-CSharp
     fullTypeName: NewWorld
@@ -148,6 +142,12 @@ ScriptsOnlyBuild:
   - assembly: Assembly-CSharp
     fullTypeName: NewWorld
     methodName: TryNewWorld
+  - assembly: Assembly-CSharp
+    fullTypeName: NewWorld
+    methodName: TryEditWorld
+  - assembly: Assembly-CSharp
+    fullTypeName: NewWorld
+    methodName: EnterWorld
   - assembly: Assembly-CSharp
     fullTypeName: SoundsManager
     methodName: PlayRandom
@@ -237,7 +237,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -259,6 +259,55 @@ ScriptsOnlyBuild:
     - Class: 243
       Script: {instanceID: 0}
     - Class: 245
+      Script: {instanceID: 0}
+    Assets/Scenes/Blood.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 108
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 17144}
+    - Class: 114
+      Script: {instanceID: 17148}
+    - Class: 114
+      Script: {instanceID: 18512}
+    - Class: 114
+      Script: {instanceID: 21578}
+    - Class: 114
+      Script: {instanceID: 23436}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
       Script: {instanceID: 0}
     Assets/Scenes/DeathScreen.unity:
     - Class: 1
@@ -294,7 +343,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -349,9 +398,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 22098}
+      Script: {instanceID: 22102}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -410,13 +459,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 19650}
+      Script: {instanceID: 19652}
     - Class: 114
-      Script: {instanceID: 20706}
+      Script: {instanceID: 20708}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 21818}
+      Script: {instanceID: 21822}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -467,9 +516,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18598}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 22098}
+      Script: {instanceID: 22102}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -518,13 +567,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 19256}
+      Script: {instanceID: 19258}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21360}
     - Class: 114
-      Script: {instanceID: 23484}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 54020}
+      Script: {instanceID: 23490}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -567,9 +616,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 22098}
+      Script: {instanceID: 22102}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -616,13 +665,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 22098}
+      Script: {instanceID: 22102}
     - Class: 114
-      Script: {instanceID: 23128}
+      Script: {instanceID: 23132}
     - Class: 114
-      Script: {instanceID: 23278}
+      Script: {instanceID: 23282}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -667,15 +716,15 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 19016}
     - Class: 114
-      Script: {instanceID: 20824}
+      Script: {instanceID: 20826}
     - Class: 114
-      Script: {instanceID: 20882}
+      Script: {instanceID: 20884}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 22556}
+      Script: {instanceID: 22560}
     - Class: 114
-      Script: {instanceID: 23128}
+      Script: {instanceID: 23132}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -728,13 +777,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 22098}
+      Script: {instanceID: 22102}
     - Class: 114
-      Script: {instanceID: 23128}
+      Script: {instanceID: 23132}
     - Class: 114
-      Script: {instanceID: 23774}
+      Script: {instanceID: 23780}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -809,39 +858,39 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 19484}
+      Script: {instanceID: 19486}
     - Class: 114
-      Script: {instanceID: 19506}
+      Script: {instanceID: 19508}
     - Class: 114
-      Script: {instanceID: 19720}
+      Script: {instanceID: 19722}
     - Class: 114
-      Script: {instanceID: 19882}
+      Script: {instanceID: 19884}
     - Class: 114
-      Script: {instanceID: 20090}
+      Script: {instanceID: 20092}
     - Class: 114
-      Script: {instanceID: 20486}
+      Script: {instanceID: 20488}
     - Class: 114
-      Script: {instanceID: 20600}
+      Script: {instanceID: 20602}
     - Class: 114
-      Script: {instanceID: 20882}
+      Script: {instanceID: 20884}
     - Class: 114
-      Script: {instanceID: 21204}
+      Script: {instanceID: 21206}
     - Class: 114
-      Script: {instanceID: 21426}
+      Script: {instanceID: 21430}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 21724}
+      Script: {instanceID: 21728}
     - Class: 114
-      Script: {instanceID: 22378}
+      Script: {instanceID: 22382}
     - Class: 114
-      Script: {instanceID: 22976}
+      Script: {instanceID: 22980}
     - Class: 114
-      Script: {instanceID: 23128}
+      Script: {instanceID: 23132}
     - Class: 114
-      Script: {instanceID: 23152}
+      Script: {instanceID: 23156}
     - Class: 114
-      Script: {instanceID: 23256}
+      Script: {instanceID: 23260}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -885,6 +934,10 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 108
@@ -904,25 +957,25 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 19016}
     - Class: 114
-      Script: {instanceID: 19484}
+      Script: {instanceID: 19486}
     - Class: 114
-      Script: {instanceID: 19650}
+      Script: {instanceID: 19652}
     - Class: 114
-      Script: {instanceID: 20314}
+      Script: {instanceID: 20316}
     - Class: 114
-      Script: {instanceID: 20620}
+      Script: {instanceID: 20622}
     - Class: 114
-      Script: {instanceID: 21574}
+      Script: {instanceID: 21578}
     - Class: 114
-      Script: {instanceID: 22488}
+      Script: {instanceID: 22492}
     - Class: 114
-      Script: {instanceID: 22556}
+      Script: {instanceID: 22560}
     - Class: 114
-      Script: {instanceID: 23128}
+      Script: {instanceID: 23132}
     - Class: 114
-      Script: {instanceID: 23256}
+      Script: {instanceID: 23260}
     - Class: 114
-      Script: {instanceID: 23278}
+      Script: {instanceID: 23282}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -1026,7 +1079,7 @@ ScriptsOnlyBuild:
     className: UnityOnCollisionStayMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 7e5a44c4cd2f77efbfcc623dafb90b04
+      Hash: 4e73aef8a3b1c3dc4154abfdfda11aaf
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: DeathScreen
@@ -1228,6 +1281,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI
     namespaceName: UnityEngine.UI
     className: ContentSizeFitter
+  - hash:
+      serializedVersion: 2
+      Hash: bf92b5a43a941b772c2f3e8d1d1a0f86
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: BookManager
   - hash:
       serializedVersion: 2
       Hash: 751e5bae2a317288c2ab58d66687092b
@@ -1494,7 +1553,7 @@ ScriptsOnlyBuild:
     className: RemoteInputPlayerConnection
   - hash:
       serializedVersion: 2
-      Hash: 1b6ed82b0940f573330461e6723a7c8b
+      Hash: fc3de74cd124bb9ac297389b5ea268a1
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: NewWorld
@@ -1624,6 +1683,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: Quests
+  - hash:
+      serializedVersion: 2
+      Hash: 82f4ff0d15b5df04bb9de41183313bfd
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: ItemAtlas
   - hash:
       serializedVersion: 2
       Hash: 12ff18a8e1a2b68a6ff917dab478fa7e
@@ -1908,6 +1973,12 @@ ScriptsOnlyBuild:
     className: ScrollRect
   - hash:
       serializedVersion: 2
+      Hash: c551e7c497f8bda581c3348482794692
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: BloodOnTheLeaves
+  - hash:
+      serializedVersion: 2
       Hash: 751e5bae2a317288c2ab58d66687092b
     assemblyName: Assembly-CSharp
     namespaceName: 
@@ -2008,12 +2079,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
     className: UnityOnSliderValueChangedMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: 82f4ff0d15b5df04bb9de41183313bfd
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: ItemAtlas
   platform: 19
   scenePathNames:
   - Assets/Scenes/Intro.unity
@@ -2028,4 +2093,5 @@ ScriptsOnlyBuild:
   - Assets/Scenes/OverlyDedicated.unity
   - Assets/Scenes/Fight.unity
   - Assets/Scenes/Fighting.unity
-  playerPath: C:/Users/tudor/Music/20dec/My dark fantasy.exe
+  - Assets/Scenes/Blood.unity
+  playerPath: C:/Users/tudor/Music/26dec/My dark fantasy.exe

@@ -38,6 +38,7 @@ public class HealthSistem : MonoBehaviour
     {
         if (Voxeldata.PlayerData.deaths == 0)
         {
+            health=maxHealth;
             Toolbar.instance.SaveProgress();
             Voxeldata.PlayerData.deaths++;
             SceneManager.LoadScene("Blood");

@@ -5,7 +5,8 @@ using UnityEngine;
 public class Chunk
 {
     private readonly object listLock = new object();
-    public byte[,,] Voxels = new byte[16, 160, 16];
+    //public byte[,,] Voxels = new byte[16, 160, 16];
+    public VoxelStruct[,,] Voxels = new VoxelStruct[16, 160, 16];
     public ChunkCoord Coord;
     public BiomeAttributes[,] biome;
     public Material waterMat;
@@ -34,11 +35,20 @@ public class Chunk
     readonly List<Vector2> uv = new(20000);
     readonly List<Vector2> uw = new(20000);
     readonly Dictionary<Vector3, int> vertexDict = new();
-
     //the most important function
     public float CalculateWomanSalary(float salary)
     {
         return salary * 0.8f;
+    }
+    public struct VoxelStruct
+    {
+        public byte Value1;
+        public byte Value2;
+        public VoxelStruct(byte value1, byte value2)
+        {
+            Value1 = value1;
+            Value2 = value2;
+        }
     }
 
     public Chunk(ChunkCoord coord, WorldManager wmanager)
@@ -73,7 +83,6 @@ public class Chunk
         world = wmanager;
         biome = new BiomeAttributes[16, 16];
     }
-
 
     public void MakeTerrain()
     {
@@ -334,7 +343,7 @@ public class Chunk
     }
     public void SetBlock(int x, int y, int z, byte id)
     {
-        Voxels[x, y, z] = id;
+        Voxels[x, y, z].Value1 = id;
     }
     public void Make3d()
     {
@@ -351,7 +360,7 @@ public class Chunk
                     float n = noise(e * 0.1f, y * 0.1f, r * 0.1f);
                     if (n > 0.3 && n < 0.6f)
                     {
-                        Voxels[x, y, z] = 0;
+                        Voxels[x, y, z].Value1 = 0;
                     }
 
                     else if (n > 0.03 && n < 0.27f)
@@ -380,7 +389,7 @@ public class Chunk
             {
                 int e = x + Coord.x * 16;
                 int r = z + Coord.y * 16;
-                if ((biom[x, z] == 1) || (height[x, z] > 30 && Noise.GetThe2DPerlin(new Vector2(e, r), Offset, biome[x, z].treesize, biome[x, z].treethreshold)))
+                if ((biom[x, z] == 1) || (height[x, z] > 64 && Noise.GetThe2DPerlin(new Vector2(e, r), Offset, biome[x, z].treesize, biome[x, z].treethreshold)))
                 {
                     Structures.MakeStructures(biom[x, z], new Vector3(e, (height[x, z] + 1), r), Offset);
                 }
@@ -419,8 +428,8 @@ public class Chunk
                     for (int z = 0; z < 16; z++)
                     {
 
-                        byte voxel = Voxels[x, y, z];
-
+                        byte voxel = Voxels[x, y, z].Value1;
+                        byte pos = Voxels[x, y, z].Value2;
                         if (voxel == 0)
                         {
                             continue;
@@ -429,12 +438,12 @@ public class Chunk
                         {
                             case 0:
                                 {
-                                    if (IsVoxelAir(x, y, z + 1)) AddFace(vertices, 0, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.forward);
-                                    if (IsVoxelAir(x, y, z - 1)) AddFace(vertices, 1, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.back);
-                                    if (IsVoxelAir(x + 1, y, z)) AddFace(vertices, 2, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.right);
-                                    if (IsVoxelAir(x - 1, y, z)) AddFace(vertices, 3, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.left);
-                                    if (IsVoxelAir(x, y + 1, z)) AddFace(vertices, 4, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.up);
-                                    if (IsVoxelAir(x, y - 1, z)) AddFace(vertices, 5, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.down);
+                                    if (IsVoxelAir(x, y, z + 1)) AddFace(vertices, 0, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.forward, pos);
+                                    if (IsVoxelAir(x, y, z - 1)) AddFace(vertices, 1, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.back, pos);
+                                    if (IsVoxelAir(x + 1, y, z)) AddFace(vertices, 2, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.right, pos);
+                                    if (IsVoxelAir(x - 1, y, z)) AddFace(vertices, 3, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.left, pos);
+                                    if (IsVoxelAir(x, y + 1, z)) AddFace(vertices, 4, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.up, pos);
+                                    if (IsVoxelAir(x, y - 1, z)) AddFace(vertices, 5, triangles, uv, vertexDict, voxel, new Vector3(x, y, z), Vector3.down, pos);
                                     break;
                                 }
                             case 2:
@@ -549,7 +558,7 @@ public class Chunk
             }
         }
     }
-    void AddFace(List<Vector3> vertices, byte face, List<int> triangles, List<Vector2> uv, Dictionary<Vector3, int> vertexDict, byte voxel, Vector3 position, Vector3 direction)
+    void AddFace(List<Vector3> vertices, byte face, List<int> triangles, List<Vector2> uv, Dictionary<Vector3, int> vertexDict, byte voxel, Vector3 position, Vector3 direction, byte pos)
     {
         Vector3 right;
         Vector3 up;
@@ -579,7 +588,7 @@ public class Chunk
         triangles.Add(vertexIndex + 3);
 
         float uvSize = 0.0625f;
-        byte bid = (byte)world.blockTypes[voxel].Items.blocks.GetTextureID(face);
+        byte bid = (byte)world.blockTypes[voxel].Items.blocks.GetTextureID(GetActualFace(face,voxel,pos));
         Vector2 uvBase = GetUVForVoxelType(bid);
         uv.Add(uvBase + new Vector2(0, 0) * uvSize);
         uv.Add(uvBase + new Vector2(1, 0) * uvSize);
@@ -620,41 +629,82 @@ public class Chunk
         uv.Add(new Vector2(0, 1));
 
     }
+    byte GetActualFace(byte face, byte id, byte pos)
+    {
+        switch (world.blockTypes[id].Items.blocks.positionType)
+        {
+            case 0: 
+                return face;
+            case 1: 
+                return TurnedFace(face,id,pos);
+            case 2:
+                return face;
+        }
+        return face;
+    }
+    byte TurnedFace(byte face,byte id, byte pos)
+    {
+        switch (pos)
+        {
+            case 0:
+                return face;
+            case 1:
+                {
+                    if (face >= 0 && face < 4)
+                        return (byte)((face + 2) % 4);
+                    else
+                        return face;
+                }
+        }
+        return face;
+    }
+    byte AllFaces(byte face, byte id, byte pos)
+    {
+        switch (world.blockTypes[id].Items.blocks.positionType)
+        {
+            case 0:
+                return 0;
+            case 1:
+                return 1;
+
+        }
+        return face;
+    }
     bool IsVoxelAir(int x, int y, int z)
     {
         if (y < 0 ||y >=159 )
             return false;
         //performanta
         if (x == 16 && z >= 0 && z < 16)
-            return !world.blockTypes[WorldManager.GetChunk(Coord.x+1,Coord.y).Voxels[0, y, z]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x+1,Coord.y).Voxels[0, y, z].Value1].Items.isblock;
         if (x == 16 && z == 16)
-            return !world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y+1).Voxels[0, y, 0]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y + 1).Voxels[0, y, 0].Value1].Items.isblock;
         if ((x>=0 && x<16) && z==16)
         {
-            return !world.blockTypes[WorldManager.GetChunk(Coord.x, Coord.y + 1).Voxels[x,y,0]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x, Coord.y + 1).Voxels[x, y, 0].Value1].Items.isblock;
         }
         if(x==16 && z < 0)
         {
-            return !world.blockTypes[WorldManager.GetChunk(Coord.x +1,Coord.y-1).Voxels[0, y, 15]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y - 1).Voxels[0, y, 15].Value1].Items.isblock;
         }
         if (x<0 && z < 0)
         {
-            return !world.blockTypes[WorldManager.GetChunk(Coord.x-1, Coord.y-1).Voxels[15, y, 15]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y - 1).Voxels[15, y, 15].Value1].Items.isblock;
         }
         if ((x >= 0 && x<16) && z < 0)
         {
-            return !world.blockTypes[WorldManager.GetChunk(Coord.x , Coord.y-1).Voxels[x, y, 15]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x, Coord.y - 1).Voxels[x, y, 15].Value1].Items.isblock;
         }
         if (x < 0 && (z >= 0 && z<16))
         {
-            return !world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y).Voxels[15, y, z]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y).Voxels[15, y, z].Value1].Items.isblock;
         }
         if (x < 0 && z==16)
         {
-            return !world.blockTypes[WorldManager.GetChunk(Coord.x-1, Coord.y + 1).Voxels[15, y, 0]].Items.isblock;
+            return !world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y + 1).Voxels[15, y, 0].Value1].Items.isblock;
         }
         
-        return (!world.blockTypes[Voxels[x, y, z]].Items.isblock);
+        return (!world.blockTypes[Voxels[x, y, z].Value1].Items.isblock);
     }
     bool IsntWater(int x, int y, int z)
     {
@@ -662,36 +712,36 @@ public class Chunk
             return false;
         //performanta
         if (x == 16 && z >= 0 && z < 16)
-            return !(world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y).Voxels[0, y, z]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y).Voxels[0, y, z].Value1].Items.blocks.type==5);
         if (x == 16 && z == 16)
-            return !(world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y+1).Voxels[0, y, 0]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y + 1).Voxels[0, y, 0].Value1].Items.blocks.type==5);
         if ((x >= 0 && x < 16) && z == 16)
         {
-            return !(world.blockTypes[WorldManager.GetChunk(Coord.x , Coord.y+1).Voxels[x, y, 0]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x, Coord.y + 1).Voxels[x, y, 0].Value1].Items.blocks.type==5);
         }
         if (x == 16 && z < 0)
         {
-            return !(world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y-1).Voxels[0, y, 15]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x + 1, Coord.y - 1).Voxels[0, y, 15].Value1].Items.blocks.type==5);
         }
         if (x < 0 && z < 0)
         {
-            return !(world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y-1).Voxels[15, y, 15]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y - 1).Voxels[15, y, 15].Value1].Items.blocks.type==5);
         }
         if ((x >= 0 && x < 16) && z < 0)
         {
 
-            return !(world.blockTypes[WorldManager.GetChunk(Coord.x , Coord.y-1).Voxels[x, y, 15]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x, Coord.y - 1).Voxels[x, y, 15].Value1].Items.blocks.type==5);
         }
         if (x < 0 && (z >= 0 && z < 16))
         {
-            return !(world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y).Voxels[15, y, z]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y).Voxels[15, y, z].Value1].Items.blocks.type==5);
         }
         if (x < 0 && z == 16)
         {
-            return !(world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y+1).Voxels[15, y, 0]].Items.blocks.type==5);
+            return !(world.blockTypes[WorldManager.GetChunk(Coord.x - 1, Coord.y + 1).Voxels[15, y, 0].Value1].Items.blocks.type==5);
         }
 
-        return !(world.blockTypes[Voxels[x, y, z]].Items.blocks.type==5);
+        return !(world.blockTypes[Voxels[x, y, z].Value1].Items.blocks.type==5);
     }
     Vector2 GetUVForVoxelType(byte id)
     {

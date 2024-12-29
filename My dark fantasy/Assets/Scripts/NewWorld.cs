@@ -1,4 +1,5 @@
 using System.IO;
+using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,8 +12,9 @@ using System.Collections;
 public class NewWorld : MonoBehaviour
 {
     public int random;
+    public Button NewWorldButton;
     public Image lightingImg;
-    public AudioClip clip;
+    public AudioClip clip,normalclip;
     public AudioSource AudioSource;
     public static byte nr = 0;
     public ChunkSerializer serializer;
@@ -34,8 +36,10 @@ public class NewWorld : MonoBehaviour
     public Button save;
     public void Start()
     {
-        if(instance == null)
+        if (instance == null)
+        {
             instance = this;
+        }
         if (!OnAppOpened.readytogo)
         {
             GameObject a = new GameObject();
@@ -54,8 +58,22 @@ public class NewWorld : MonoBehaviour
                 DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
                 var directories = directoryInfo.GetDirectories()
                 .AsParallel() // Parallel LINQ pentru multi-threading si performanta sporita
-                .OrderByDescending(dir => dir.LastWriteTime)
+                .OrderBy(dir => dir.LastAccessTime)
                 .ToArray();
+
+                int w = directories.Length;
+                if (w >= 1 && !Voxeldata.PlayerData.SawEnding)
+                {
+                    NewWorldButton.GetComponent<Button>().enabled = false;
+                    NewWorldButton.GetComponentInChildren<Text>().text = "Worlds";
+                }
+                else if (w == 0)
+                {
+                    NewWorldButton.GetComponent<Image>().rectTransform.localScale = new Vector3(5.5f, 5.5f, 0);
+                    AudioSource.clip = normalclip;
+                    AudioSource.Play();
+                    AudioSource.loop = true;
+                }
 
                 string[] files = Directory.GetDirectories(directoryPath);
                 foreach (DirectoryInfo dir in directories)
@@ -99,7 +117,7 @@ public class NewWorld : MonoBehaviour
         create.gameObject.SetActive(true);
         later.gameObject.SetActive(true);
         seed.gameObject.SetActive(true);
-        random = Random.Range(0, 1000000000);
+        random = UnityEngine.Random.Range(0, 1000000000);
         seed.text = random.ToString();
     }
     public void Later()
@@ -115,7 +133,7 @@ public class NewWorld : MonoBehaviour
     {
         if (!Wname.text.Equals(""))
         {
-            random = Random.Range(0, 1000000000);
+            random = UnityEngine.Random.Range(0, 1000000000);
             string a=Wname.text;
             if (Wname.text.Equals("MyWorld"))
             {
@@ -183,9 +201,11 @@ public class NewWorld : MonoBehaviour
         instance.EnterFaster();
         serializer = new();
         serializer.Sync(this.GetComponent<worldsmanager>().location, this.GetComponent<worldsmanager>().seed);
+        Directory.SetLastAccessTime(this.GetComponent<worldsmanager>().location, DateTime.Now);
     }
     public void EnterFaster()
     {
+
         AudioSource.clip = clip;
         AudioSource.Play();
         lightingImg.gameObject.SetActive(true);
@@ -242,10 +262,17 @@ public class NewWorld : MonoBehaviour
     }
     public void Deleteworld()
     {
-        Directory.Delete(worldlocation, true);
-
-        CloseEdit();
-        SceneManager.LoadScene(1);
+        Directory.Delete(worldLocation, true);
+        backup.gameObject.SetActive(false);
+        deleteornot.gameObject.SetActive(false);
+        deleteqm.gameObject.SetActive(false);
+        save.gameObject.SetActive(false);
+        changewname.gameObject.SetActive(false);
+        copywseed.gameObject.SetActive(false);
+        wset.gameObject.SetActive(false);
+        foreach (GameObject a in GameObject.FindGameObjectsWithTag("open"))
+            Destroy(a);
+        ReadFiles();
     }
     public void BackUpWorld()
     {

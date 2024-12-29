@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -7,6 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 public class ControllerImput : MonoBehaviour
 {
 
@@ -27,7 +29,7 @@ public class ControllerImput : MonoBehaviour
     public const float normalSpeed= 5f;
     public float movementAcceleration = 4f;
     public float sprintAcceleration = 5f;
-    private Vector3 currentVelocity = Vector3.zero;
+    public Vector3 currentVelocity = Vector3.zero;
     private float verticalMomentum = 0f;
     public static float lookSpeed = 400f;
     public static float smoothSpeed = 100.0f;
@@ -134,7 +136,7 @@ public class ControllerImput : MonoBehaviour
         {
             for(int i=120; i>50; i--)
             {
-                if (WorldManager.GetChunk(0,0).Voxels[0, i, 0] != 0)
+                if (WorldManager.GetChunk(0, 0).Voxels[0, i, 0].Value1 != 0)
                 {
                     transform.position=new Vector3(0,i+2,0);
                     break;
@@ -383,6 +385,7 @@ public class ControllerImput : MonoBehaviour
 
         shiftAction.performed += OnShift;
         shiftAction.canceled -= OnShift;
+
         middleAction.performed += OnMiddleClicking;
         middleAction.canceled += OnMiddleClicking;
         sprintAction.performed += OnSprint;
@@ -411,6 +414,8 @@ public class ControllerImput : MonoBehaviour
     }
     void OnDisable()
     {
+        shiftAction.performed -= OnShift;
+        shiftAction.canceled -= OnShift;
         middleAction.performed -= OnMiddleClicking;
         middleAction.canceled -= OnMiddleClicking;
         sprintAction.performed -= OnSprint;
@@ -419,7 +424,6 @@ public class ControllerImput : MonoBehaviour
         escapeAction.canceled -= OnEscape;
         moveAction.performed -= OnMovement;
         moveAction.canceled -= OnMovement;
-        shiftAction.canceled -= OnShift;
 
         shiftAction.Disable();
         moveAction.Disable();
@@ -502,7 +506,7 @@ public class ControllerImput : MonoBehaviour
                         if (CanPlace(lastPos))
                         {
                             time = 0.2f;
-                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), toolbar.item[0, Toolbar.slothIndex]);
+                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z),new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex],(byte)Random.Range(0,2)));
                             toolbar.UpdateAnItem(Toolbar.slothIndex);
                         }
                         break;
@@ -734,11 +738,11 @@ public class ControllerImput : MonoBehaviour
                                 box.transform.position = new Vector3(a, b, c);
                                 holdtme = 0;
                             }
-                            if (holdtme >= wmanager.blockTypes[WorldManager.GetChunk(s/16,k/16).Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16]].Items.blocks.breakTime)
+                            if (holdtme >= wmanager.blockTypes[WorldManager.GetChunk(s/16,k/16).Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16].Value1].Items.blocks.breakTime)
                             {
                                 box.SetActive(false);
                                 itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
-                                wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), 0);
+                                wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), new Chunk.VoxelStruct(0,0));
 
                                 breac = false;
                                 holdtme = 0;
@@ -835,7 +839,7 @@ public class ControllerImput : MonoBehaviour
                         if (CanPlace(lastPos))
                         {
                             time = 0.2f;
-                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), toolbar.item[0, Toolbar.slothIndex]);
+                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z),new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex],(byte)(Random.Range(0,2))));
                             toolbar.UpdateAnItem(Toolbar.slothIndex);
                         }
                         break;

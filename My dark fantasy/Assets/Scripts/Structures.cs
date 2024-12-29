@@ -25,31 +25,31 @@ public static class Structures
             for (int l = x - 2; l <= x + 2; l++) {
                 for (int k = z - 2; k <= z + 2; k++) {
                     if(l>=0 &&  k>=0) 
-                           WorldManager.GetChunk(l / 16, k / 16 ).Voxels[l % 16, j, k % 16] = 11;
+                           WorldManager.GetChunk(l / 16, k / 16 ).Voxels[l % 16, j, k % 16].Value1 = 11;
                     else if(l>=0 && k < 0)
                     {
                         if(k%16==0)
-                            WorldManager.GetChunk(l / 16, k / 16).Voxels[l % 16, j,0] = 11;
+                            WorldManager.GetChunk(l / 16, k / 16).Voxels[l % 16, j, 0].Value1 = 11;
                         else
-                            WorldManager.GetChunk(l / 16, k / 16-1).Voxels[l % 16, j, 16 - (-k % 16)] = 11;
+                            WorldManager.GetChunk(l / 16, k / 16 - 1).Voxels[l % 16, j, 16 - (-k % 16)].Value1 = 11;
                     }
                     else if(l<0 && k < 0)
                     {
                         if (k % 16 == 0 && l%16==0)
-                            WorldManager.GetChunk(l / 16, k / 16).Voxels[0, j, 0] = 11;
+                            WorldManager.GetChunk(l / 16, k / 16).Voxels[0, j, 0].Value1 = 11;
                         else if(k%16==0)
-                            WorldManager.GetChunk(l / 16-1, k / 16).Voxels[16 - (-l % 16), j, 0] = 11;
+                            WorldManager.GetChunk(l / 16 - 1, k / 16).Voxels[16 - (-l % 16), j, 0].Value1 = 11;
                         else if(l%16==0)
-                            WorldManager.GetChunk(l / 16, k / 16-1).Voxels[0, j, 16 - (-k % 16)] = 11;
+                            WorldManager.GetChunk(l / 16, k / 16 - 1).Voxels[0, j, 16 - (-k % 16)].Value1 = 11;
                         else
-                            WorldManager.GetChunk(l / 16-1, k / 16-1).Voxels[16 - (-l % 16), j, 16 - (-k % 16)] = 11;
+                            WorldManager.GetChunk(l / 16 - 1, k / 16 - 1).Voxels[16 - (-l % 16), j, 16 - (-k % 16)].Value1 = 11;
                     }
                     else if (l < 0 && k >= 0)
                     {
                         if (l % 16 == 0)
-                            WorldManager.GetChunk(l / 16, k / 16).Voxels[0, j, k%16] = 11;
+                            WorldManager.GetChunk(l / 16, k / 16).Voxels[0, j, k % 16].Value1 = 11;
                         else
-                            WorldManager.GetChunk(l / 16-1, k / 16).Voxels[16 - (-l % 16), j, k%16] = 11;
+                            WorldManager.GetChunk(l / 16 - 1, k / 16).Voxels[16 - (-l % 16), j, k % 16].Value1 = 11;
                     }
                 }
             }
@@ -105,7 +105,7 @@ public static class Structures
             
         for (int i = (int)pos.y; i <= (int)pos.y + a; i++)
         {
-            WorldManager.GetChunk((int)pos.x / 16, (int)pos.z / 16).Voxels[b%16, i, c%16] = 12;
+            WorldManager.GetChunk((int)pos.x / 16, (int)pos.z / 16).Voxels[b % 16, i, c % 16].Value1 = 12;
         }
         
     }

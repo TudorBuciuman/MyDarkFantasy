@@ -24,7 +24,7 @@ public class BloodOnTheLeaves : MonoBehaviour
         Application.targetFrameRate = 60;
         audioSource.clip = clip;
         audioSource.Play();
-        t=Time.time;
+        t=0;
         Read(SceneLoc);
     }
     public void Read(string s)
@@ -71,6 +71,7 @@ public class BloodOnTheLeaves : MonoBehaviour
             {
                 float f = (float)(dialogueLines[currentLine][1] - '0') + (float)((dialogueLines[currentLine][2] - '0') / 10.0f);
                 yield return new WaitForSeconds(f);
+                t += f;
                 currentLine++;
                 StartCoroutine(DisplayNextLine());
                 yield return null;
@@ -113,6 +114,7 @@ public class BloodOnTheLeaves : MonoBehaviour
         {
             dialogueTextUI.text += c;
             yield return new WaitForSeconds(spd); //typing speed, big=slow
+            t += spd;
         }
         currentLine++;
         yield return new WaitForSeconds(1.4f);
@@ -121,7 +123,6 @@ public class BloodOnTheLeaves : MonoBehaviour
     }
     public IEnumerator MakeLight(float time)
     {
-
         Color startColor = Color.black;
 
         Color targetColor = Color.white;

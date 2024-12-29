@@ -29,7 +29,7 @@ public class Fighting_Intro : MonoBehaviour
         dialogueLines = dialogueFile.text.Split('\n');
         for (int i = 0; i < dialogueLines.Length; i++)
         {
-            dialogueLines[i] = dialogueLines[i].Replace("\\n", "\n");
+            dialogueLines[i] = dialogueLines[i].Replace("\\n ", "\n");
         }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible=false;
@@ -51,28 +51,12 @@ public class Fighting_Intro : MonoBehaviour
     }
     public IEnumerator DisplayNextLine()
     {
-        while (string.IsNullOrWhiteSpace(dialogueLines[currentLine]))
-        {
-            currentLine++;
-            slow = false;
-        }
-        while (dialogueLines[currentLine][0] == '[')
-        {
-            slow = true;
-            currentLine++;
-        }
+
         while (dialogueLines[currentLine][0] == '(')
         {
             currentLine++;
-            //StartCoroutine(DisplayNextLine());
         }
-        /*
-        while (string.IsNullOrWhiteSpace(dialogueLines[currentLine]))
-        {
-            currentLine++;
-            slow = false;
-        }
-        */
+
         if (dialogueLines[currentLine][0] == '>')
         {
             float f = (float)(dialogueLines[currentLine][1]-'0')+(float)((dialogueLines[currentLine][2]-'0')/10.0f);
