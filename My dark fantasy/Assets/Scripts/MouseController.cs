@@ -24,7 +24,7 @@ public class MouseController : MonoBehaviour
     }
     void AndroidMovement()
     {
-        Vector2 a = (Time.fixedDeltaTime * sensivity*0.1f) * _FixedTouchField.TouchDist;
+        Vector2 a = (Time.smoothDeltaTime * sensivity*0.1f) * _FixedTouchField.TouchDist;
         xrot -= a.y;
         yrot += a.x;
         xrot = Mathf.Clamp(xrot, -90f, 90f);
@@ -34,8 +34,8 @@ public class MouseController : MonoBehaviour
 
     void Manage()
     {
-        float x = Input.GetAxis("Mouse X") * Time.fixedDeltaTime * sensivity;
-        float y = Input.GetAxis("Mouse Y") * Time.fixedDeltaTime * sensivity;
+        float x = Input.GetAxis("Mouse X") * Time.smoothDeltaTime * sensivity;
+        float y = Input.GetAxis("Mouse Y") * Time.smoothDeltaTime * sensivity;
         xrot -= y;
         yrot += x;
 

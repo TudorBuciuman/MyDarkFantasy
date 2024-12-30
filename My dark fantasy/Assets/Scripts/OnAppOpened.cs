@@ -69,11 +69,13 @@ public class OnAppOpened : MonoBehaviour
             itemsnum = (byte)data.items.Length;
             readytogo = true;
             byte w = 0;
+            itemsAtlas = InitializeAtlas();
             foreach (var item in data.items)
             {
                 blockTypes[w] = new();
                 blockTypes[w].Items = item;
-                blockTypes[w].itemSprite = itemsAtlas[w];
+                if (itemsAtlas.Length > w)
+                    blockTypes[w].itemSprite = itemsAtlas[w];
                 w++;
             }
         }
@@ -114,8 +116,17 @@ public class OnAppOpened : MonoBehaviour
     }
     public IEnumerator Waiting()
     {
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
         while (true)
         {
+            //*android
+            if (Input.touchCount > 0)
+            {
+                MDF.SetActive(false);
+                pressed = true;
+                break;
+            }
+            
             if (Input.GetKey(KeyCode.KeypadEnter) || Input.GetKey(KeyCode.Return))
             {
                 MDF.SetActive(false);
