@@ -1,44 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class Quests : MonoBehaviour
 {
-    public string FileLocation = Path.Combine(Application.dataPath + "Assets/Data/ImportantFiles/Quests.json");
-    public string PlayerData = Path.Combine(Application.dataPath + "Assets/Data/ImportantFiles/QuestsCompleted.json");
+    public GameObject[] quest;
+    public GameObject slider;
     public void Start()
     {
-        StartCoroutine(Read());
-    }
-
-    IEnumerator Read()
-    {
-        UnityWebRequest request = UnityWebRequest.Get(PlayerData);
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            string json = request.downloadHandler.text;
+        int y = Voxeldata.PlayerData.scene;
+        for (int i=0; i<=y; i++){
+            quest[i].gameObject.SetActive(true);
         }
-
+        Vector3 a = quest[y].transform.localPosition;
+        a.y = 0;
+        a.x = -a.x;
+        a.z = 0;
+        slider.transform.localPosition = a;
     }
-}
 
-[System.Serializable]
-public class Achievement
-{
-    public int ID { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public bool IsUnlocked { get; set; }
 
-    public Achievement(int id, string name, string description)
-    {
-        ID = id;
-        Name = name;
-        Description = description;
-        IsUnlocked = false;
-    }
 }

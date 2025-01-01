@@ -25,6 +25,8 @@ public class Fighting_Intro : MonoBehaviour
     }
     public void Read(string s)
     {
+        Screen.sleepTimeout = SleepTimeout.SystemSetting;
+
         dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
         dialogueLines = dialogueFile.text.Split('\n');
         for (int i = 0; i < dialogueLines.Length; i++)
