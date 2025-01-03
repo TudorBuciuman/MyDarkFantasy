@@ -44,6 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
+  include("C:/Users/tudor/OneDrive/Imagini/Documente/GitHub/MyDarkFantasy/My dark fantasy/.utmp/RelWithDebInfo/53654vx3/x86/GameActivity/cmake_install.cmake")
   include("C:/Users/tudor/OneDrive/Imagini/Documente/GitHub/MyDarkFantasy/My dark fantasy/.utmp/RelWithDebInfo/53654vx3/x86/FramePacing/cmake_install.cmake")
 
 endif()

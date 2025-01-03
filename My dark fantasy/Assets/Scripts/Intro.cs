@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Intro : MonoBehaviour
 {
     public Image logo,TTG;
+    public Sprite logoBlackndWhite;
     public Text Text;
     public AudioClip boomsound,fightsound;
     public AudioSource AudioSource;
@@ -14,19 +15,16 @@ public class Intro : MonoBehaviour
     {
         Application.targetFrameRate = 30;
     }
-    void Start()
+    public void Starting()
     {
-        PlayOnSight();
-    }
-    public void PlayOnSight()
-    {
-        StartCoroutine(PlayOnSightCoroutine());
-
+        if(Voxeldata.PlayerData.scene==2)
+            TTG.sprite = logoBlackndWhite;
+        StartCoroutine(PlayOnSight());
     }
 
-    private IEnumerator PlayOnSightCoroutine()
+    private IEnumerator PlayOnSight()
     {
-        yield return Waiting(2.5f);
+        yield return Waiting(2.3f);
         TTG.gameObject.SetActive(true);
         yield return Waiting(2f);
         TTG.gameObject.SetActive(false);

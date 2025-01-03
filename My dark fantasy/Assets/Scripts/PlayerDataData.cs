@@ -8,6 +8,7 @@ public class PlayerDataData : MonoBehaviour
 {
     public static string location = "PlayerSave.json";
     public static bool SawIntro=false;
+    public Intro intro;
     public void Start()
     {
         ReadFile();
@@ -42,7 +43,7 @@ public class PlayerDataData : MonoBehaviour
             string filePath = Path.Combine(Application.persistentDataPath, location);
             File.WriteAllText(filePath, jsonString);
         }
-
+        intro.Starting();
     }
     public static IEnumerator Play()
     {

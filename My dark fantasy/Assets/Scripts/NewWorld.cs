@@ -58,7 +58,7 @@ public class NewWorld : MonoBehaviour
                 DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
                 var directories = directoryInfo.GetDirectories()
                 .AsParallel() // Parallel LINQ pentru multi-threading si performanta sporita
-                .OrderBy(dir => dir.LastAccessTime)
+                .OrderByDescending(dir => dir.LastAccessTime)
                 .ToArray();
 
                 int w = directories.Length;

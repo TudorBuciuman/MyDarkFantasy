@@ -25,7 +25,7 @@ public class SoundsManager : MonoBehaviour
     }
     public void UpdateSounds()
     {
-        string settingsPath = Path.Combine(Application.persistentDataPath, "Settings/settings.json");
+        string settingsPath = Path.Combine(Application.persistentDataPath+ "/settings.json");
         string json = File.ReadAllText(settingsPath);
         SettingsData data = JsonUtility.FromJson<SettingsData>(json);
         if (!data.totalsound)
@@ -111,13 +111,17 @@ public class SoundsManager : MonoBehaviour
     {
         string musicFilePath;
 
-    #if UNITY_STANDALONE_WIN
-        string[] musicFiles = Directory.GetFiles(path, "*.ogg");
-        musicFilePath = System.IO.Path.Combine(Application.streamingAssetsPath, $"Songs/song{id}.ogg");
+#if UNITY_STANDALONE_WIN
+    string[] musicFiles = Directory.GetFiles(path, "*.ogg");
+    musicFilePath = Path.Combine(Application.streamingAssetsPath, $"Songs/song{id}.ogg");
 #elif UNITY_ANDROID
-        musicFilePath = Path.Combine(Application.streamingAssetsPath, $"song{id}.ogg");
-        Debug.Log(musicFilePath);
+        musicFilePath = Application.streamingAssetsPath + $"/Songs/song{id}.ogg";
+        if (!musicFilePath.StartsWith("jar:file://"))
+        {
+            musicFilePath = "jar:file://" + musicFilePath;
+        }
 #endif
+
         using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
         yield return www.SendWebRequest();
 
@@ -134,6 +138,7 @@ public class SoundsManager : MonoBehaviour
                 songs.Play();
             }
         }
+
     }
 
 }

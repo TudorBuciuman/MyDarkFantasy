@@ -17,6 +17,10 @@ public class OnAppOpened : MonoBehaviour
     public static byte itemsnum;
     public static BlockProprieties[] blockTypes=new BlockProprieties[51];
     public GameObject MDF;
+    public GameObject fallingGObj;
+    public AudioClip[] clips = new AudioClip[5];
+    public AudioSource audioSource;
+    public GameObject falling;
 
     public static bool pressed=false;
     
@@ -33,11 +37,22 @@ public class OnAppOpened : MonoBehaviour
         if (currentTime.Hour > 18 || currentTime.Hour<6)
         {
             screenn.GetComponent<RawImage>().texture=moon.texture;
-            but1.GetComponent<Image>().color=Color.white;
+            but1.GetComponent<Image>().color = Color.white;
             but2.GetComponent<Image>().color = Color.white;
             but3.GetComponent<Image>().color = Color.white;
         }
-        
+        if (Voxeldata.PlayerData.scene == 2)
+        {
+            audioSource.clip = clips[2];
+            audioSource.loop = false;
+            falling.gameObject.SetActive(true);
+        }
+        else
+        {
+            audioSource.loop = true;
+            audioSource.clip = clips[0];
+        }
+        audioSource.Play();
         SetFunnyText();
         if (!pressed)
         {

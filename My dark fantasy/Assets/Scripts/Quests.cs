@@ -4,6 +4,7 @@ using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Quests : MonoBehaviour
@@ -22,6 +23,12 @@ public class Quests : MonoBehaviour
         a.z = 0;
         slider.transform.localPosition = a;
     }
-
+    public void FixedUpdate()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.UnloadSceneAsync("Quests");
+        }
+    }
 
 }

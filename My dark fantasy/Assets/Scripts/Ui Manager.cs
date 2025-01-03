@@ -10,10 +10,12 @@ public class UiManager : MonoBehaviour
     public static string scene=null;
     public GameObject a;
     public GameObject b;
+    public static UiManager c;
 
     public Button gameset;
     public Button soundset;
     [Header("Basic Functions")]
+    public Image backGround;
     public Text renderdis;
     public Slider disSlider;
     public Toggle hudqm;
@@ -36,17 +38,54 @@ public class UiManager : MonoBehaviour
         Application.targetFrameRate = 30;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if (SceneManager.GetActiveScene().name == "Settings")
+        if(c==null)
+        {
+            c = this;
+            StartCoroutine(Close());
+        }
+        else if (SceneManager.GetSceneByName("Settings").isLoaded)
+        {
             LoadSettingsScene();
-        else if (SceneManager.loadedSceneCount == 2)
-            LoadSettingsScene();
+        }
+    }
+    public void FixedUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (SceneManager.loadedSceneCount == 2)
+            {
+                if (SceneManager.GetSceneByName("Settings").isLoaded)
+                {
+                    LeaveSettings();
+                }
+            }
+        }
+    }
+    public IEnumerator Close()
+    {
+        while (true)
+        {
+            if (Input.GetKeyUp(KeyCode.Escape))
+            {
+                if (SceneManager.loadedSceneCount == 1)
+                {
+                    Application.Quit();
+                }
+            }
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+    public void LeaveSettings()
+    {
+        //F Unity
+        c.GetComponent<UiManager>().SaveSettings();
     }
     public static void ReadSet()
     {
-        if (!File.Exists(Path.Combine(Application.persistentDataPath + "/Settings/settings.json")))
+        if (!File.Exists(Path.Combine(Application.persistentDataPath + "/settings.json")))
         {
             MouseController.sensivity = 400;
-            Directory.CreateDirectory(Path.GetDirectoryName(Application.persistentDataPath + "/Settings/settings.json"));
+            Directory.CreateDirectory(Path.GetDirectoryName(Application.persistentDataPath + "/settings.json"));
             SettingsData data = new()
             {
                 render = 2,
@@ -57,11 +96,11 @@ public class UiManager : MonoBehaviour
             hud = true;
 
             string json = JsonUtility.ToJson(data);
-            File.WriteAllText(Path.Combine(Application.persistentDataPath + "/Settings/settings.json"), json);
+            File.WriteAllText(Path.Combine(Application.persistentDataPath + "/settings.json"), json);
         }
         else
         {
-            string json = File.ReadAllText(Path.Combine(Application.persistentDataPath + "/Settings/settings.json"));
+            string json = File.ReadAllText(Path.Combine(Application.persistentDataPath + "/settings.json"));
             SettingsData data = JsonUtility.FromJson<SettingsData>(json);
             Voxeldata.showfps = data.showfps;
             MouseController.sensivity = data.sens*10;
@@ -74,16 +113,26 @@ public class UiManager : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
+    public void LoadPartiallyScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName,LoadSceneMode.Additive);
+    }
+    public void EnterUIScene()
+    {
+        SceneManager.UnloadSceneAsync("Quests");
+    }
     public void OpenSet(string sceneName)
     {
         scene = sceneName;
         SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
-
     }
     private void LoadSettingsScene()
     {
-        // Now the scene is loaded, proceed with your logic
-        string settingsPath = Path.Combine(Application.persistentDataPath, "Settings/settings.json");
+        string settingsPath = Path.Combine(Application.persistentDataPath + "/settings.json");
+        if (Voxeldata.PlayerData.scene == 2)
+        {
+            backGround.color = Color.black;
+        }
         if (!File.Exists(settingsPath))
         {
             MouseController.sensivity = 400;
@@ -152,7 +201,7 @@ public class UiManager : MonoBehaviour
         hud=hudqm.isOn;
         fps=showfps.isOn;
         string json = JsonUtility.ToJson(data);
-        File.WriteAllText(Path.Combine(Application.persistentDataPath + "/Settings/settings.json"), json);
+        File.WriteAllText(Path.Combine(Application.persistentDataPath + "/settings.json"), json);
 
         if (scene.Contains("World"))
         {
