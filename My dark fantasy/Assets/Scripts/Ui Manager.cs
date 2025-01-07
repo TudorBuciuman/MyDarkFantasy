@@ -8,8 +8,8 @@ using UnityEngine.UI;
 public class UiManager : MonoBehaviour
 {
     public static string scene=null;
-    public GameObject a;
-    public GameObject b;
+    public GameObject a,b,d,e;
+    public GameObject D, E;
     public static UiManager c;
 
     public Button gameset;
@@ -38,14 +38,16 @@ public class UiManager : MonoBehaviour
         Application.targetFrameRate = 30;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if(c==null)
-        {
-            c = this;
+        if(SceneManager.sceneCount==1)
             StartCoroutine(Close());
-        }
-        else if (SceneManager.GetSceneByName("Settings").isLoaded)
+        
+        if (SceneManager.GetSceneByName("Settings").isLoaded)
         {
             LoadSettingsScene();
+            if (c == null)
+            {
+                c = this;
+            }
         }
     }
     public void FixedUpdate()
@@ -61,18 +63,56 @@ public class UiManager : MonoBehaviour
             }
         }
     }
+    int numOfClicks = 0;
+    public void PressDestroy()
+    {
+        numOfClicks++;
+        if (numOfClicks == 5)
+        {
+            BurnTheWorld();
+        }
+    }
+    public void BurnTheWorld()
+    {
+        string location1 = Application.persistentDataPath;
+        File.Delete(Path.Combine(location1+"/PlayerSave.json"));
+        //Directory.Delete(Path.Combine(location1+"/MyDarkFantasy"));
+        foreach(string f in Directory.GetFiles(Path.Combine(location1 + "/MyDarkFantasy")))
+            File.Delete(f);
+        SceneManager.LoadScene("Intro");
+    }
     public IEnumerator Close()
     {
         while (true)
         {
-            if (Input.GetKeyUp(KeyCode.Escape))
+            if (Input.GetKey(KeyCode.Escape))
             {
                 if (SceneManager.loadedSceneCount == 1)
                 {
-                    Application.Quit();
+                    yield return StartCoroutine(StartCountNClose());
                 }
             }
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForNextFrameUnit();
+        }
+    }
+    public IEnumerator StartCountNClose()
+    {
+        float tme = 0;
+        bool cnt = true;
+        while(tme<3 && SceneManager.loadedSceneCount == 1)
+        {
+            if (!Input.GetKey(KeyCode.Escape))
+            {
+                cnt = false;
+                break;
+            }
+            yield return new WaitForSeconds(0.1f);
+            tme += 0.1f;
+        }
+        if (cnt)
+        {
+            Debug.Log("quit");
+            Application.Quit();
         }
     }
     public void LeaveSettings()
@@ -132,6 +172,12 @@ public class UiManager : MonoBehaviour
         if (Voxeldata.PlayerData.scene == 2)
         {
             backGround.color = Color.black;
+        }
+        if (SceneManager.GetActiveScene().name == "UIScene")
+        {
+            numOfClicks = 0;
+            D.gameObject.SetActive(true);
+            E.gameObject.SetActive(true);
         }
         if (!File.Exists(settingsPath))
         {
@@ -218,6 +264,20 @@ public class UiManager : MonoBehaviour
         a.gameObject.SetActive(false);
         b.gameObject.SetActive(true);
     }
+    public void TotalSettings()
+    {
+        a.gameObject.SetActive(false);
+        b.gameObject.SetActive(false);
+        d.gameObject.SetActive(true);
+        e.gameObject.SetActive(false);
+    }
+    public void SmallSett()
+    {
+        a.gameObject.SetActive(false);
+        b.gameObject.SetActive(false);
+        d.gameObject.SetActive(false);
+        e.gameObject.SetActive(true);
+    }
     public void NormalSet()
     {
         a.gameObject.SetActive(true);
@@ -238,14 +298,6 @@ public class UiManager : MonoBehaviour
     public void UpdateAudio()
     {
         soundtext.text = "Audio   volume  " + soundsSlider.value.ToString();
-    }
-    public void Quit()
-    {
-        Application.Quit();
-    }
-    public void OpenSettings()
-    {
-        ;
     }
 }
 

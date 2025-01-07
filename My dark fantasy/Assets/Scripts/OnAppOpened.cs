@@ -21,7 +21,7 @@ public class OnAppOpened : MonoBehaviour
     public AudioClip[] clips = new AudioClip[5];
     public AudioSource audioSource;
     public GameObject falling;
-
+    public GameObject flowers;
     public static bool pressed=false;
     
     public static Sprite[] itemsAtlas;
@@ -34,12 +34,16 @@ public class OnAppOpened : MonoBehaviour
         }
         dialogueFile = Resources.Load<TextAsset>($"UIMessage");
         DateTime currentTime = DateTime.Now;
-        if (currentTime.Hour > 18 || currentTime.Hour<6)
+        if (currentTime.Hour > 18 || currentTime.Hour<8)
         {
             screenn.GetComponent<RawImage>().texture=moon.texture;
             but1.GetComponent<Image>().color = Color.white;
             but2.GetComponent<Image>().color = Color.white;
             but3.GetComponent<Image>().color = Color.white;
+        }
+        if(Voxeldata.PlayerData.scene == 1 && currentTime.Hour < 18 && currentTime.Hour > 8)
+        {
+            flowers.gameObject.SetActive(true);
         }
         if (Voxeldata.PlayerData.scene == 2)
         {

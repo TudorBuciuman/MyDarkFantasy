@@ -193,6 +193,7 @@ public class ControllerImput : MonoBehaviour
         else
         {
             CancelInvoke(nameof(GetFps));
+            framerate.text=null;
         }
 
     }

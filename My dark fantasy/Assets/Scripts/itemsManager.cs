@@ -50,6 +50,9 @@ public class Item : MonoBehaviour
                 {
                     manager.tool.PickUp(id, size,this);
                 } 
+                else if(Vector3.Distance(this.transform.position, this.manager.plpos.position)>50){
+                    Destroy(gameObject);
+                }
             }
             timeSLU += Time.deltaTime;
         }

@@ -27,6 +27,10 @@ public class PlayerDataData : MonoBehaviour
             {
                 StartCoroutine(Play());
             }
+            else
+            {
+                StartCoroutine(OtherScenes());
+            }
         }
         else
         {
@@ -66,16 +70,29 @@ public class PlayerDataData : MonoBehaviour
         File.WriteAllText(filePath, jsonString);
         SceneManager.LoadScene("Fighting");
     }
+    public static IEnumerator OtherScenes()
+    {
+        //only applies before beating the game(last scene)
+        DontForget playerData=Voxeldata.PlayerData;
+        if (playerData.scene < 4)
+        {
+            playerData.sawIntro = false;
+            playerData.scene++;
+            string jsonString = JsonUtility.ToJson(playerData, true);
+            string filePath = Path.Combine(Application.persistentDataPath, location);
+            File.WriteAllText(filePath, jsonString);
+            yield return new WaitForSeconds(6);
+            SceneManager.LoadScene("Fighting");
+
+        }
+        //else
+        //something
+
+    }
     public static void SavePlayer()
     {
-        DontForget playerData = new()
-        {
-            scene = 0,
-            sawIntro = true,
-            deaths=0,
-            typeofrun = 0,
-            SawEnding=false
-        };
+        Voxeldata.PlayerData.sawIntro = true;
+        DontForget playerData = Voxeldata.PlayerData;
 
         string jsonString = JsonUtility.ToJson(playerData, true);
         string filePath = Path.Combine(Application.persistentDataPath, location);
@@ -97,4 +114,6 @@ public class DontForget
     public byte typeofrun;
     public byte[] action;
     public bool SawEnding;
+    public byte timesSlept;
+    public byte currentSeparateScene;
 }

@@ -9,8 +9,6 @@ ScriptsOnlyBuild:
     - ControllerImput
     - Crafting
     - DeathScreen
-    - FightSistem
-    - FightingHealth
     - Fighting_Intro
     - FixedJoystick
     - FixedTouchField
@@ -21,7 +19,7 @@ ScriptsOnlyBuild:
     - NewWorld
     - OnAppOpened
     - PlayerDataData
-    - ProjectilesManager
+    - Quests
     - SceneReader
     - SoundsManager
     - Toolbar
@@ -102,16 +100,28 @@ ScriptsOnlyBuild:
   methodsToPreserve:
   - assembly: Assembly-CSharp
     fullTypeName: UiManager
-    methodName: LoadScene
+    methodName: LoadPartiallyScene
   - assembly: Assembly-CSharp
     fullTypeName: UiManager
-    methodName: Quit
+    methodName: OpenSet
+  - assembly: Assembly-CSharp
+    fullTypeName: UiManager
+    methodName: LoadPartiallyScene
+  - assembly: Assembly-CSharp
+    fullTypeName: UiManager
+    methodName: LoadScene
   - assembly: Assembly-CSharp
     fullTypeName: UiManager
     methodName: LoadScene
   - assembly: Assembly-CSharp
     fullTypeName: UiManager
     methodName: OpenSet
+  - assembly: Assembly-CSharp
+    fullTypeName: NewWorld
+    methodName: TryEditWorld
+  - assembly: Assembly-CSharp
+    fullTypeName: NewWorld
+    methodName: EnterWorld
   - assembly: Assembly-CSharp
     fullTypeName: NewWorld
     methodName: canceldel
@@ -142,12 +152,6 @@ ScriptsOnlyBuild:
   - assembly: Assembly-CSharp
     fullTypeName: NewWorld
     methodName: TryNewWorld
-  - assembly: Assembly-CSharp
-    fullTypeName: NewWorld
-    methodName: TryEditWorld
-  - assembly: Assembly-CSharp
-    fullTypeName: NewWorld
-    methodName: EnterWorld
   - assembly: Assembly-CSharp
     fullTypeName: SoundsManager
     methodName: PlayRandom
@@ -186,13 +190,22 @@ ScriptsOnlyBuild:
     methodName: SaveSettings
   - assembly: Assembly-CSharp
     fullTypeName: UiManager
+    methodName: SmallSett
+  - assembly: Assembly-CSharp
+    fullTypeName: UiManager
     methodName: UpdateMusic
   - assembly: Assembly-CSharp
     fullTypeName: UiManager
     methodName: UpdateSpd
   - assembly: Assembly-CSharp
     fullTypeName: UiManager
+    methodName: PressDestroy
+  - assembly: Assembly-CSharp
+    fullTypeName: UiManager
     methodName: UpdateAudio
+  - assembly: Assembly-CSharp
+    fullTypeName: UiManager
+    methodName: TotalSettings
   - assembly: Assembly-CSharp
     fullTypeName: UiManager
     methodName: SoundSet
@@ -201,7 +214,7 @@ ScriptsOnlyBuild:
     methodName: UpdateRend
   - assembly: Assembly-CSharp
     fullTypeName: UiManager
-    methodName: LoadScene
+    methodName: EnterUIScene
   sceneClasses:
     Assets/Scenes/2D scene.unity:
     - Class: 1
@@ -423,65 +436,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 245
       Script: {instanceID: 0}
-    Assets/Scenes/Fight.unity:
-    - Class: 1
-      Script: {instanceID: 0}
-    - Class: 4
-      Script: {instanceID: 0}
-    - Class: 20
-      Script: {instanceID: 0}
-    - Class: 21
-      Script: {instanceID: 0}
-    - Class: 28
-      Script: {instanceID: 0}
-    - Class: 48
-      Script: {instanceID: 0}
-    - Class: 50
-      Script: {instanceID: 0}
-    - Class: 61
-      Script: {instanceID: 0}
-    - Class: 81
-      Script: {instanceID: 0}
-    - Class: 82
-      Script: {instanceID: 0}
-    - Class: 83
-      Script: {instanceID: 0}
-    - Class: 104
-      Script: {instanceID: 0}
-    - Class: 108
-      Script: {instanceID: 0}
-    - Class: 114
-      Script: {instanceID: 17144}
-    - Class: 114
-      Script: {instanceID: 17148}
-    - Class: 114
-      Script: {instanceID: 18254}
-    - Class: 114
-      Script: {instanceID: 18512}
-    - Class: 114
-      Script: {instanceID: 19652}
-    - Class: 114
-      Script: {instanceID: 20708}
-    - Class: 114
-      Script: {instanceID: 21578}
-    - Class: 114
-      Script: {instanceID: 21822}
-    - Class: 115
-      Script: {instanceID: 0}
-    - Class: 128
-      Script: {instanceID: 0}
-    - Class: 157
-      Script: {instanceID: 0}
-    - Class: 196
-      Script: {instanceID: 0}
-    - Class: 213
-      Script: {instanceID: 0}
-    - Class: 222
-      Script: {instanceID: 0}
-    - Class: 223
-      Script: {instanceID: 0}
-    - Class: 224
-      Script: {instanceID: 0}
     Assets/Scenes/Fighting.unity:
     - Class: 1
       Script: {instanceID: 0}
@@ -590,49 +544,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 224
       Script: {instanceID: 0}
-    Assets/Scenes/OverlyDedicated.unity:
-    - Class: 1
-      Script: {instanceID: 0}
-    - Class: 4
-      Script: {instanceID: 0}
-    - Class: 20
-      Script: {instanceID: 0}
-    - Class: 21
-      Script: {instanceID: 0}
-    - Class: 28
-      Script: {instanceID: 0}
-    - Class: 48
-      Script: {instanceID: 0}
-    - Class: 81
-      Script: {instanceID: 0}
-    - Class: 104
-      Script: {instanceID: 0}
-    - Class: 108
-      Script: {instanceID: 0}
-    - Class: 114
-      Script: {instanceID: 17144}
-    - Class: 114
-      Script: {instanceID: 18304}
-    - Class: 114
-      Script: {instanceID: 18512}
-    - Class: 114
-      Script: {instanceID: 21578}
-    - Class: 114
-      Script: {instanceID: 22102}
-    - Class: 115
-      Script: {instanceID: 0}
-    - Class: 157
-      Script: {instanceID: 0}
-    - Class: 196
-      Script: {instanceID: 0}
-    - Class: 213
-      Script: {instanceID: 0}
-    - Class: 222
-      Script: {instanceID: 0}
-    - Class: 223
-      Script: {instanceID: 0}
-    - Class: 224
-      Script: {instanceID: 0}
     Assets/Scenes/Quests.unity:
     - Class: 1
       Script: {instanceID: 0}
@@ -645,8 +556,6 @@ ScriptsOnlyBuild:
     - Class: 28
       Script: {instanceID: 0}
     - Class: 48
-      Script: {instanceID: 0}
-    - Class: 81
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
@@ -661,13 +570,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 17150}
     - Class: 114
-      Script: {instanceID: 18304}
-    - Class: 114
       Script: {instanceID: 18512}
     - Class: 114
-      Script: {instanceID: 21578}
+      Script: {instanceID: 19652}
     - Class: 114
-      Script: {instanceID: 22102}
+      Script: {instanceID: 21332}
+    - Class: 114
+      Script: {instanceID: 21578}
     - Class: 114
       Script: {instanceID: 23132}
     - Class: 114
@@ -754,11 +663,17 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 82
       Script: {instanceID: 0}
     - Class: 83
+      Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
@@ -1217,7 +1132,7 @@ ScriptsOnlyBuild:
     className: UnityOnButtonClickMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 6395e505c14801c228e6944ebb70c5f0
+      Hash: 380221d0e95e34c58c1ea9f416b65ba6
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: Fighting_Intro
@@ -1325,7 +1240,7 @@ ScriptsOnlyBuild:
     className: UnityOnControllerColliderHitMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 831a54b4d20973e00c0c56eb4ea49fc3
+      Hash: e248928c5c20ea28c2399b42f5fbbb28
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: Intro
@@ -1679,7 +1594,7 @@ ScriptsOnlyBuild:
     className: UnityOnDeselectMessageListener
   - hash:
       serializedVersion: 2
-      Hash: daf071cb929d8bb3f24cca5a6ea8d274
+      Hash: 6ed7a41cfc60bbceea3a0a19d1f29183
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: Quests
@@ -1937,7 +1852,7 @@ ScriptsOnlyBuild:
     className: SignalTrack
   - hash:
       serializedVersion: 2
-      Hash: 4ab30c13c2da92318f03fa35c2303b65
+      Hash: a1665893144c72da6c9fcd4ba31ce34f
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: UiManager
@@ -1985,7 +1900,7 @@ ScriptsOnlyBuild:
     className: HighlyEfficientEntitiesManager
   - hash:
       serializedVersion: 2
-      Hash: 751e5bae2a317288c2ab58d66687092b
+      Hash: ff16a07c21d7305f636ee1194cf3185b
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: PlayerDataData
@@ -2033,7 +1948,7 @@ ScriptsOnlyBuild:
     className: UnityOnMouseUpMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 1b98f005a064b519f44eb920ed303eef
+      Hash: af6050225a163f632ea92880110c3975
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: OnAppOpened
@@ -2090,8 +2005,6 @@ ScriptsOnlyBuild:
   - Assets/Scenes/EndCredits.unity
   - Assets/Scenes/2D scene.unity
   - Assets/Scenes/DeathScreen.unity
-  - Assets/Scenes/OverlyDedicated.unity
-  - Assets/Scenes/Fight.unity
   - Assets/Scenes/Fighting.unity
   - Assets/Scenes/Blood.unity
-  playerPath: C:/Users/tudor/Music/29dec/My dark fantasy.exe
+  playerPath: C:/Users/tudor/Music/30dec/My dark fantasy.exe

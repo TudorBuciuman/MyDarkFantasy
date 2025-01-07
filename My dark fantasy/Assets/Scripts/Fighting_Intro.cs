@@ -7,6 +7,7 @@ public class Fighting_Intro : MonoBehaviour
 {
     public Image lightingImg;
     public AudioClip[] clip = new AudioClip[6];
+    public AudioClip[] startingclip=new AudioClip[5];
     public Image FightingImg;
     public Sprite[] sprites = new Sprite[5];
     public AudioSource audioSource;
@@ -21,12 +22,32 @@ public class Fighting_Intro : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
+        switch (Voxeldata.PlayerData.scene)
+        {
+            case 0:
+                SceneLoc = "Fighting";
+                break;
+            case 1:
+                SceneLoc = "Rising";
+                break;
+            case 2:
+                SceneLoc = "Falling";
+                break;
+            case 3:
+                SceneLoc = "Searching";
+                break;
+            case 4:
+                SceneLoc = "Finding";
+                break;
+        }
         Read(SceneLoc);
     }
     public void Read(string s)
     {
         Screen.sleepTimeout = SleepTimeout.SystemSetting;
-
+        audioSource.clip = startingclip[Voxeldata.PlayerData.scene];
+        audioSource.Play();
+        audioSource.loop = false;
         dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
         dialogueLines = dialogueFile.text.Split('\n');
         for (int i = 0; i < dialogueLines.Length; i++)
@@ -58,7 +79,11 @@ public class Fighting_Intro : MonoBehaviour
         {
             currentLine++;
         }
-
+        if (dialogueLines[currentLine][0] == '~')
+        {
+            currentLine++;
+            slow = !slow;
+        }
         if (dialogueLines[currentLine][0] == '>')
         {
             float f = (float)(dialogueLines[currentLine][1]-'0')+(float)((dialogueLines[currentLine][2]-'0')/10.0f);
@@ -81,8 +106,8 @@ public class Fighting_Intro : MonoBehaviour
         }
         else if (currentLine < dialogueLines.Length)
         {
-            if (slow)
-                yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.05f));
+            if (!slow)
+                yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.07f));
             else
             {
                 yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.1f));

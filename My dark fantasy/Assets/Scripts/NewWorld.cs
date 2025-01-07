@@ -69,6 +69,7 @@ public class NewWorld : MonoBehaviour
                 }
                 else if (w == 0)
                 {
+                    NewWorldButton.GetComponentInChildren<Text>().text = "New World";
                     NewWorldButton.GetComponent<Image>().rectTransform.localScale = new Vector3(5.5f, 5.5f, 0);
                     AudioSource.clip = normalclip;
                     AudioSource.Play();
