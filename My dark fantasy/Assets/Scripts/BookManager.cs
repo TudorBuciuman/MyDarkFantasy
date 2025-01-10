@@ -7,16 +7,19 @@ using UnityEngine.UI;
 
 public class BookManager : MonoBehaviour
 {
-    public Button nextPageButton;
-    public Button previousPageButton;
     public Text Title;
     public Text pagenr;
     public Text Page1;
     public Text Page2;
-
+    public GameObject BookObj;
     private Book currentBook;
     private int currentPageIndex;
-
+    public void FixedUpdate()
+    {
+        if(Input.GetKeyUp(KeyCode.V)) { 
+        OpenABook();
+        }
+    }
     public void InteractWithBook(Book book)
     {
         OpenBook(book);
@@ -27,20 +30,51 @@ public class BookManager : MonoBehaviour
         currentPageIndex = 0;
 
         // Optional: Display title and author
-        Title.text = book.title;
+        //Title.text = book.title;
         //authorText.text = "by " + book.author;
+        BookObj.gameObject.SetActive(true);
 
         UpdatePage();
     }
+    public void OpenABook()
+    {
+        string name = "Book1";
+        currentBook=LoadBook(name);
+    }
+    public IEnumerator GetInput()
+    {
+        while (currentBook != null)
+        {
+            if(Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                PreviousPage();
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                NextPage();
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                CloseBook();
+            }
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+    public void CloseBook()
+    {
+        BookObj.gameObject.SetActive(false);
+        currentBook = null;
+    }
     public Book LoadBook(string fileName)
     {
-        string path = Path.Combine(Application.streamingAssetsPath, fileName);
+        string path = Path.Combine(Application.dataPath+"/Data/Books/" ,fileName);
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
+            Debug.Log(path);
             return JsonUtility.FromJson<Book>(json);
         }
-        Debug.LogError("Book file not found: " + fileName);
+        Debug.LogError("Book file not found: " + path);
         return null;
     }
     public EditableBook CreateNewBook(string title, string author)
@@ -72,8 +106,6 @@ public class BookManager : MonoBehaviour
     private void UpdatePage()
     {
         pagenr.text = currentBook.pages[currentPageIndex];
-        previousPageButton.interactable = currentPageIndex > 0;
-        nextPageButton.interactable = currentPageIndex < currentBook.pages.Count - 1;
     }
 
 }

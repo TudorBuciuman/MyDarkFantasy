@@ -63,7 +63,6 @@
     <Compile Include="Assets\Joystick Pack\Scripts\Joysticks\FixedJoystick.cs" />
     <Compile Include="Assets\Scripts\PlayerDataData.cs" />
     <Compile Include="Assets\Scripts\Voxeldata.cs" />
-    <Compile Include="Assets\Scripts\WorldManager.cs" />
     <Compile Include="Assets\Scripts\ItemsFunctions.cs" />
     <Compile Include="Assets\Scripts\BiomeAttributes.cs" />
     <Compile Include="Assets\Scripts\ProjectilesManager.cs" />
@@ -71,7 +70,6 @@
     <Compile Include="Assets\Scripts\Crafting.cs" />
     <Compile Include="Assets\Scripts\Intro.cs" />
     <Compile Include="Assets\Scripts\craftinginv.cs" />
-    <Compile Include="Assets\Scripts\ControllerImput.cs" />
     <Compile Include="Assets\Samples\Input System\1.7.0\Custom Device\New Controls.cs" />
     <Compile Include="Assets\Scripts\FixedTouchField.cs" />
     <Compile Include="Assets\Scripts\itemsManager.cs" />
@@ -79,19 +77,21 @@
     <Compile Include="Assets\Joystick Pack\Scripts\Joysticks\FloatingJoystick.cs" />
     <Compile Include="Assets\Joystick Pack\Scripts\Joysticks\DynamicJoystick.cs" />
     <Compile Include="Assets\Joystick Pack\Scripts\Base\Joystick.cs" />
+    <Compile Include="Assets\Scripts\Main scripts\SceneReader.cs" />
+    <Compile Include="Assets\Scripts\Main scripts\ControllerImput.cs" />
     <Compile Include="Assets\Scripts\ItemAtlas.cs" />
-    <Compile Include="Assets\Scripts\ChunkSerializer.cs" />
     <Compile Include="Assets\Samples\Input System\1.7.0\Custom Device\CustomDevice.cs" />
     <Compile Include="Assets\Scripts\BloodOnTheLeaves.cs" />
     <Compile Include="Assets\Scripts\AndroidInv.cs" />
     <Compile Include="Assets\Scripts\HighlyEfficientEntitiesManager.cs" />
     <Compile Include="Assets\Joystick Pack\Scripts\Joysticks\VariableJoystick.cs" />
+    <Compile Include="Assets\Scripts\Main scripts\Chunk.cs" />
     <Compile Include="Assets\Scripts\Quests.cs" />
+    <Compile Include="Assets\Scripts\Main scripts\WorldManager.cs" />
     <Compile Include="Assets\Scripts\BookManager.cs" />
     <Compile Include="Assets\Scripts\FightingHealth.cs" />
-    <Compile Include="Assets\Scripts\Chunk.cs" />
-    <Compile Include="Assets\Scripts\SceneReader.cs" />
     <Compile Include="Assets\Scripts\Structures.cs" />
+    <Compile Include="Assets\Scripts\Main scripts\ChunkSerializer.cs" />
     <Compile Include="Assets\Scripts\MouseController.cs" />
     <Compile Include="Assets\Scripts\HealthSistem.cs" />
     <Compile Include="Assets\Scripts\OnAppOpened.cs" />
@@ -104,14 +104,24 @@
     <Compile Include="Assets\Scripts\FightSistem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Resources\Dialogues\Off the grid.txt" />
+    <None Include="Assets\Resources\Dialogues\Sunflowers.txt" />
     <None Include="Assets\Resources\Dialogues\Falling.txt" />
     <None Include="Assets\Resources\Dialogues\Fighting.txt" />
     <None Include="Assets\Data\Shaders\WaterShader.shader" />
     <None Include="Assets\Resources\Dialogues\Rising.txt" />
     <None Include="Assets\Resources\Dialogues\Blood on the leaves.txt" />
     <None Include="Assets\Resources\Dialogues\Finding.txt" />
+    <None Include="Assets\Resources\Dialogues\Mortal Man.txt" />
+    <None Include="Assets\Resources\Dialogues\To fight.txt" />
+    <None Include="Assets\Resources\Dialogues\But nobody came.txt" />
+    <None Include="Assets\Resources\Dialogues\Lost in the world.txt" />
+    <None Include="Assets\Resources\Dialogues\Water.txt" />
     <None Include="Assets\Resources\UIMessage.txt" />
+    <None Include="Assets\Resources\Dialogues\Your worst nightmare.txt" />
+    <None Include="Assets\Resources\Dialogues\Guilt trip.txt" />
     <None Include="Assets\Data\Shaders\StandardShader.shader" />
+    <None Include="Assets\Resources\Dialogues\Insomnia.txt" />
     <None Include="Assets\Resources\Dialogues\Searching.txt" />
     <None Include="Assets\Resources\Dialogues\To pimp a butterfly.txt" />
   </ItemGroup>

@@ -17,7 +17,7 @@ public class SoundsManager : MonoBehaviour
     public AudioClip[] clip=new AudioClip[10];
     public static string Master = "sounds";
     public static string Music = "soundtrack";
-    public byte nrsongs=10;
+    public byte nrsongs=11;
     public void Start()
     {
         instance = this;

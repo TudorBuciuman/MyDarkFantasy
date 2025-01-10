@@ -52,7 +52,7 @@ public class NewWorld : MonoBehaviour
     {
         if (worldParent != null)
         {
-            string directoryPath = Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds");
+            string directoryPath = Path.Combine(Application.persistentDataPath, "worlds");
             if (Directory.Exists(directoryPath))
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
@@ -65,10 +65,11 @@ public class NewWorld : MonoBehaviour
                 if (w >= 1 && !Voxeldata.PlayerData.SawEnding)
                 {
                     NewWorldButton.GetComponent<Button>().enabled = false;
-                    NewWorldButton.GetComponentInChildren<Text>().text = "Worlds";
+                    NewWorldButton.GetComponentInChildren<Text>().text = "World";
                 }
                 else if (w == 0)
                 {
+                    NewWorldButton.GetComponent<Button>().enabled = true;
                     NewWorldButton.GetComponentInChildren<Text>().text = "New World";
                     NewWorldButton.GetComponent<Image>().rectTransform.localScale = new Vector3(5.5f, 5.5f, 0);
                     AudioSource.clip = normalclip;
@@ -140,7 +141,7 @@ public class NewWorld : MonoBehaviour
             {
                 byte p = 1;
                 Wname.text = ("MyWorld" + p.ToString()).ToString();
-                while (Directory.Exists(Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds", Wname.text)))
+                while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds", Wname.text)))
                 {
                     p++;
                     Wname.text = ("MyWorld" + p.ToString()).ToString();
@@ -149,7 +150,7 @@ public class NewWorld : MonoBehaviour
             string h;
             if (seed.Equals(""))
                 seed.text = random.ToString();
-            string savePath = Path.Combine(Application.persistentDataPath, "MyDarkFantasy/worlds", Wname.text);
+            string savePath = Path.Combine(Application.persistentDataPath, "worlds", Wname.text);
             if (!Directory.Exists(savePath))
             {
                 h=Wname.text;

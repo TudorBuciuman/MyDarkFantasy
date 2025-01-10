@@ -74,10 +74,10 @@ public class PlayerDataData : MonoBehaviour
     {
         //only applies before beating the game(last scene)
         DontForget playerData=Voxeldata.PlayerData;
-        if (playerData.scene < 4)
+        if (playerData.scene < 5)
         {
             playerData.sawIntro = false;
-            playerData.scene++;
+            //playerData.scene++;
             string jsonString = JsonUtility.ToJson(playerData, true);
             string filePath = Path.Combine(Application.persistentDataPath, location);
             File.WriteAllText(filePath, jsonString);

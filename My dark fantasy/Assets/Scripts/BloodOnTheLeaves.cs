@@ -16,6 +16,7 @@ public class BloodOnTheLeaves : MonoBehaviour
     public string[] dialogueLines;
     public float t;
     public static string SceneLoc = "Blood on the leaves";
+    public static byte SceneNum = 0;
     public int currentLine = 0;
     public bool isTyping = false, slow = true, isWhite = false;
 
@@ -25,6 +26,19 @@ public class BloodOnTheLeaves : MonoBehaviour
         audioSource.clip = clip;
         audioSource.Play();
         t=0;
+        switch (SceneNum)
+        {
+            case 0:
+                SceneLoc = "Blood on the leaves";
+                break;
+            case 1:
+                SceneLoc = "Insomnia";
+                break;
+            case 2:
+                SceneLoc = "To fight";
+                break;
+                
+        }
         Read(SceneLoc);
     }
     public void Read(string s)

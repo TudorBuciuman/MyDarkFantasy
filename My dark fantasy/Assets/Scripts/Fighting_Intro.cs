@@ -19,6 +19,9 @@ public class Fighting_Intro : MonoBehaviour
     public int currentLine = 0;
     public bool isTyping = false,slow=false,isWhite=false;
 
+    public GameObject YesOrYes;
+
+
     void Start()
     {
         Application.targetFrameRate = 60;
@@ -83,6 +86,12 @@ public class Fighting_Intro : MonoBehaviour
         {
             currentLine++;
             slow = !slow;
+        }
+        if (dialogueLines[currentLine][0] == '{')
+        {
+            currentLine++;
+            if(dialogueLines[currentLine][1] == '1')
+            yield return StartCoroutine(YesOrYesButtons());
         }
         if (dialogueLines[currentLine][0] == '>')
         {
@@ -180,19 +189,49 @@ public class Fighting_Intro : MonoBehaviour
 
     public IEnumerator BeforeQuit()
     {
-        audioSource.Stop();
-        dialogueTextUI.text = string.Empty;
-        yield return new WaitForSeconds(3.5f);
-        PlaySong(0);
-        yield return new WaitForSeconds(90);
-        FightingImg.sprite = sprites[0];
-        FightingImg.gameObject.SetActive(true);
-        StartCoroutine(GetInput());
-        yield return new WaitForSeconds(30);
-        PlayerDataData.SawIntro = true;
-        FightingImg.gameObject.SetActive(false);
-        yield return new WaitForSeconds(205);
-        PlayerDataData.SavePlayer();
+        switch (Voxeldata.PlayerData.scene) {
+            case 0:
+                {
+                    audioSource.Stop();
+                    dialogueTextUI.text = string.Empty;
+                    yield return new WaitForSeconds(3.5f);
+                    PlaySong(0);
+                    yield return new WaitForSeconds(90);
+                    FightingImg.sprite = sprites[0];
+                    FightingImg.gameObject.SetActive(true);
+                    StartCoroutine(GetInput());
+                    yield return new WaitForSeconds(30);
+                    PlayerDataData.SawIntro = true;
+                    FightingImg.gameObject.SetActive(false);
+                    yield return new WaitForSeconds(205);
+                    PlayerDataData.SavePlayer();
+                    break;
+                }
+            case 1:
+                {
+                    audioSource.Stop();
+                    dialogueTextUI.text = string.Empty;
+                    yield return new WaitForSeconds(3.5f);
+                    PlaySong(1);
+                    yield return new WaitForSeconds(90);
+                    FightingImg.sprite = sprites[1];
+                    FightingImg.gameObject.SetActive(true);
+                    StartCoroutine(GetInput());
+                    yield return new WaitForSeconds(30);
+                    PlayerDataData.SawIntro = true;
+                    FightingImg.gameObject.SetActive(false);
+                    yield return new WaitForSeconds(205);
+                    PlayerDataData.SavePlayer();
+                    break;
+                }
+    }
+    }
+
+    public IEnumerator YesOrYesButtons()
+    {
+        YesOrYes.gameObject.SetActive(true);
+        yield return new WaitForSeconds(3);
+        YesOrYes.gameObject.SetActive(false);
     }
 
 }

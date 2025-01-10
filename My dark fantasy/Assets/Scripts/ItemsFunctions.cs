@@ -27,6 +27,7 @@ public class ItemsFunctions : MonoBehaviour
     {
         int x = Mathf.RoundToInt(pos.x), z = Mathf.RoundToInt(pos.z), y = Mathf.RoundToInt(pos.y);
         byte size = 1;
+        //aici trebuie modificat sa poti sa dobori copacul daca ai taiat tot nivelul
         for(int i = y+1; i<150 && wman.Block(x,i,z)==type; i++)
         {
             WorldManager.SetTo(x,i,z,0);
