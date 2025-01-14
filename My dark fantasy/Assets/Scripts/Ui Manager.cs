@@ -33,6 +33,9 @@ public class UiManager : MonoBehaviour
     public Text soundtext;
 
     public GameObject MDF;
+
+    public AudioSource audiosource;
+    public AudioClip scarryclip;
     public void Start()
     {
         Application.targetFrameRate = 30;
@@ -69,11 +72,15 @@ public class UiManager : MonoBehaviour
         numOfClicks++;
         if (numOfClicks == 5)
         {
-            BurnTheWorld();
+            StartCoroutine(BurnTheWorld());
         }
     }
-    public void BurnTheWorld()
+
+    public IEnumerator BurnTheWorld()
     {
+        audiosource.clip = scarryclip;
+        audiosource.Play();
+        yield return new WaitForSeconds(5);
         string location1 = Application.persistentDataPath;
         File.Delete(Path.Combine(location1+"/PlayerSave.json"));
         //Directory.Delete(Path.Combine(location1+"/MyDarkFantasy"));

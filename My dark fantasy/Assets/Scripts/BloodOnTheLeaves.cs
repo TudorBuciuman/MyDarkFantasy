@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -18,24 +20,33 @@ public class BloodOnTheLeaves : MonoBehaviour
     public static string SceneLoc = "Blood on the leaves";
     public static byte SceneNum = 0;
     public int currentLine = 0;
-    public bool isTyping = false, slow = true, isWhite = false;
+    public bool isTyping = false, slow = false, isWhite = false;
 
     void Start()
     {
         Application.targetFrameRate = 60;
-        audioSource.clip = clip;
-        audioSource.Play();
+        
         t=0;
         switch (SceneNum)
         {
             case 0:
                 SceneLoc = "Blood on the leaves";
+                audioSource.clip = clip;
+                audioSource.Play();
                 break;
             case 1:
                 SceneLoc = "Insomnia";
                 break;
             case 2:
                 SceneLoc = "To fight";
+                break;
+            case 3:
+                SceneLoc = "Letting everything go";
+                slow=false;
+                break;
+            case 4:
+                SceneLoc = "Guilt trip";
+                StartCoroutine(LoadAndPlayMusic(9));
                 break;
                 
         }
@@ -52,6 +63,7 @@ public class BloodOnTheLeaves : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         StartCoroutine(DisplayNextLine());
+
     }
 
     public IEnumerator Lighting()
@@ -182,6 +194,39 @@ public class BloodOnTheLeaves : MonoBehaviour
             }
             yield return new WaitForSeconds(0.1f);
         }
+    }
+    private IEnumerator LoadAndPlayMusic(byte id)
+    {
+        string musicFilePath;
+        string path = Path.Combine(Application.streamingAssetsPath);
+#if UNITY_STANDALONE_WIN
+        //string[] musicFiles = Directory.GetFiles(path, "*.ogg");
+        musicFilePath = Path.Combine(Application.streamingAssetsPath+ $"/Songs/song{id}.ogg");
+#elif UNITY_ANDROID
+        musicFilePath = Application.streamingAssetsPath + $"/Songs/song{id}.ogg";
+        if (!musicFilePath.StartsWith("jar:file://"))
+        {
+            musicFilePath = "jar:file://" + musicFilePath;
+        }
+#endif
+
+        using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError("Error loading audio file: " + musicFilePath);
+        }
+        else
+        {
+            AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+            if (clip != null)
+            {
+                audioSource.clip = clip;
+                audioSource.Play();
+            }
+        }
+
     }
 
 }

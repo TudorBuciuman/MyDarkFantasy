@@ -76,6 +76,10 @@ public class Crafting : MonoBehaviour
                     options++;
 
                 }
+                else
+                {
+                    Debug.Log(recipes[p].Name);
+                }
                 p++;
             }
             else

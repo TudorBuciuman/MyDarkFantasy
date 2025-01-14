@@ -487,10 +487,13 @@ public class ControllerImput : MonoBehaviour
     }
     public void OnEscape(InputAction.CallbackContext context)
     {
-        if(!Toolbar.escape)
-        toolbar.Escape();
-        else
-        toolbar.Again();
+        if (!BookManager.readingBook)
+        {
+            if (!Toolbar.escape)
+                toolbar.Escape();
+            else
+                toolbar.Again();
+        }
     }
     public void OnClicking1(InputAction.CallbackContext context)
     {
@@ -827,6 +830,11 @@ public class ControllerImput : MonoBehaviour
                 toolbar.item[0,Toolbar.slothIndex] = 23;
                 toolbar.itemsize[0,Toolbar.slothIndex] = 1;
                 toolbar.itemSlots[Toolbar.slothIndex].image.sprite = wmanager.blockTypes[23].itemSprite;
+            }
+            else if (toolbar.item[0, Toolbar.slothIndex] == 38)
+            {
+                if(!BookManager.readingBook)
+                BookManager.instance.OpenABook();
             }
             else if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.isblock)
             {

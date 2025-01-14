@@ -3,22 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class BookManager : MonoBehaviour
 {
-    public Text Title;
+    public Text Title,authorText;
+    public static bool readingBook = false;
+    public static BookManager instance;
     public Text pagenr;
     public Text Page1;
     public Text Page2;
     public GameObject BookObj;
+    public GameObject Cover,pages;
     private Book currentBook;
     private int currentPageIndex;
-    public void FixedUpdate()
+    public void Start()
     {
-        if(Input.GetKeyUp(KeyCode.V)) { 
-        OpenABook();
-        }
+        instance = this;
     }
     public void InteractWithBook(Book book)
     {
@@ -28,54 +30,58 @@ public class BookManager : MonoBehaviour
     {
         currentBook = book;
         currentPageIndex = 0;
-
-        // Optional: Display title and author
-        //Title.text = book.title;
-        //authorText.text = "by " + book.author;
+        readingBook = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Toolbar.instance.openedInv = false;
+        Title.text = book.title;
+        authorText.text =book.author;
         BookObj.gameObject.SetActive(true);
-
+        StartCoroutine(GetInput());
         UpdatePage();
     }
     public void OpenABook()
     {
         string name = "Book1";
         currentBook=LoadBook(name);
+        OpenBook(currentBook);
     }
     public IEnumerator GetInput()
     {
         while (currentBook != null)
         {
-            if(Input.GetKeyDown(KeyCode.LeftArrow))
+            if(Input.GetKeyUp(KeyCode.LeftArrow))
             {
                 PreviousPage();
             }
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyUp(KeyCode.RightArrow))
             {
                 NextPage();
             }
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyUp(KeyCode.Escape))
             {
                 CloseBook();
             }
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.01f);
         }
     }
     public void CloseBook()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         BookObj.gameObject.SetActive(false);
         currentBook = null;
+        readingBook = false;
+        Toolbar.instance.openedInv = false;
     }
     public Book LoadBook(string fileName)
     {
-        string path = Path.Combine(Application.dataPath+"/Data/Books/" ,fileName);
-        if (File.Exists(path))
-        {
-            string json = File.ReadAllText(path);
-            Debug.Log(path);
-            return JsonUtility.FromJson<Book>(json);
-        }
-        Debug.LogError("Book file not found: " + path);
-        return null;
+        EditableBook bookSO = Resources.Load<EditableBook>("Books/"+fileName);
+        Book book=new();
+        book.author =bookSO.author;
+        book.title = bookSO.title;
+        book.pages = bookSO.pages;
+        return book;
     }
     public EditableBook CreateNewBook(string title, string author)
     {
@@ -87,7 +93,7 @@ public class BookManager : MonoBehaviour
     }
     public void NextPage()
     {
-        if (currentPageIndex < currentBook.pages.Count - 1)
+        if (currentPageIndex < currentBook.pages.Count)
         {
             currentPageIndex++;
             UpdatePage();
@@ -96,7 +102,7 @@ public class BookManager : MonoBehaviour
 
     public void PreviousPage()
     {
-        if (currentPageIndex > 0)
+        if (currentPageIndex >= 0)
         {
             currentPageIndex--;
             UpdatePage();
@@ -105,7 +111,18 @@ public class BookManager : MonoBehaviour
 
     private void UpdatePage()
     {
-        pagenr.text = currentBook.pages[currentPageIndex];
+        if (currentPageIndex > 0)
+        {
+            Page1.text = currentBook.pages[currentPageIndex-1];
+            pagenr.text = (currentPageIndex + 1).ToString();
+            Cover.gameObject.SetActive(false);
+            pages.SetActive(true);
+        }
+        else
+        {
+            Cover.gameObject.SetActive(true);
+            pages.SetActive(false);
+        }
     }
 
 }
@@ -117,10 +134,3 @@ public class Book
     public List<string> pages; 
 }
 
-[CreateAssetMenu(fileName = "NewBook", menuName = "Book")]
-public class EditableBook : ScriptableObject
-{
-    public string title;
-    public string author;
-    public List<string> pages = new List<string>();
-}
