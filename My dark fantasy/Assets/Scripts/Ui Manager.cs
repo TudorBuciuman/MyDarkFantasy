@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -36,6 +37,7 @@ public class UiManager : MonoBehaviour
 
     public AudioSource audiosource;
     public AudioClip scarryclip;
+    public AudioClip scarryclip2;
     public void Start()
     {
         Application.targetFrameRate = 30;
@@ -78,14 +80,24 @@ public class UiManager : MonoBehaviour
 
     public IEnumerator BurnTheWorld()
     {
+        OnAppOpened.onAppOpened.audioSource.Stop();
         audiosource.clip = scarryclip;
+        audiosource.Play();
+        yield return new WaitForSeconds(3);
+        audiosource.clip = scarryclip2;
         audiosource.Play();
         yield return new WaitForSeconds(5);
         string location1 = Application.persistentDataPath;
         File.Delete(Path.Combine(location1+"/PlayerSave.json"));
-        //Directory.Delete(Path.Combine(location1+"/MyDarkFantasy"));
-        foreach(string f in Directory.GetFiles(Path.Combine(location1 + "/MyDarkFantasy")))
-            File.Delete(f);
+        foreach (string f in Directory.GetDirectories(Path.Combine(location1, "worlds")))
+        {
+            foreach (string subFile in Directory.GetFiles(f, "*", SearchOption.AllDirectories))
+            {
+                File.SetAttributes(subFile, FileAttributes.Normal);
+            }
+            Directory.Delete(f, true);
+        }
+
         SceneManager.LoadScene("Intro");
     }
     public IEnumerator Close()

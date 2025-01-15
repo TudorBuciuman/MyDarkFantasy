@@ -11,7 +11,7 @@ public class BookManager : MonoBehaviour
     public Text Title,authorText;
     public static bool readingBook = false;
     public static BookManager instance;
-    public Text pagenr;
+    public Text pagenr1,pagenr2;
     public Text Page1;
     public Text Page2;
     public GameObject BookObj;
@@ -93,18 +93,19 @@ public class BookManager : MonoBehaviour
     }
     public void NextPage()
     {
-        if (currentPageIndex < currentBook.pages.Count)
+        if (currentPageIndex < currentBook.pages.Count-1)
         {
-            currentPageIndex++;
+            currentPageIndex+=2;
             UpdatePage();
         }
+
     }
 
     public void PreviousPage()
     {
-        if (currentPageIndex >= 0)
+        if (currentPageIndex >= 2)
         {
-            currentPageIndex--;
+            currentPageIndex-=2;
             UpdatePage();
         }
     }
@@ -114,7 +115,17 @@ public class BookManager : MonoBehaviour
         if (currentPageIndex > 0)
         {
             Page1.text = currentBook.pages[currentPageIndex-1];
-            pagenr.text = (currentPageIndex + 1).ToString();
+            if (currentPageIndex < currentBook.pages.Count - 1)
+            {
+                Page2.text = currentBook.pages[currentPageIndex];
+                pagenr2.text = (currentPageIndex).ToString();
+            }
+            else
+            {
+                Page2.text = null;
+                pagenr2.text= null;
+            }
+            pagenr1.text = (currentPageIndex - 1).ToString();
             Cover.gameObject.SetActive(false);
             pages.SetActive(true);
         }

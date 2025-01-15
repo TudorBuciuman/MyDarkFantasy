@@ -93,6 +93,7 @@ public class ChunkSerializer
             if (voxelCount != 16 * 160 * 16)
             {
                 throw new InvalidDataException("Decompressed data size does not match expected voxel count.");
+                //Ceva nu a functionat corespunzator, si nu stiu de ce
             }
 
             Chunk.VoxelStruct[,,] voxels = new Chunk.VoxelStruct[16, 160, 16];
@@ -149,6 +150,7 @@ public class ChunkSerializer
     public static void SaveChunk(int cx, int cz)
     {
         // Calculate region coordinates (region files are 32x32 chunks)
+        //daca citesti asta, Da, Eu am sris tot ce poti citi in acest script, de asta nu merge
         int rx = cx / 32;
         int rz = cz / 32;
         if (cx < 0 && cx % 32 != 0)
@@ -174,8 +176,8 @@ public class ChunkSerializer
             fss.Write(heade, 0, 4096);
         }
 
-        // Flatten the 3D `VoxelStruct` array into a 1D byte array
-        byte[] chunkData = new byte[16 * 16 * 160 * 2]; // Each voxel has 2 bytes (Value1 and Value2)
+        // 3D `VoxelStruct` devine un vector 1D de bytes
+        byte[] chunkData = new byte[16 * 16 * 160 * 2]; // Fiecare voxel are 2 bytes (Value1 si Value2)
         int index = 0;
 
         for (int x = 0; x < 16; x++)
@@ -184,8 +186,7 @@ public class ChunkSerializer
             {
                 for (int z = 0; z < 16; z++)
                 {
-                    chunkData[index++] = data[x, y, z].Value1; // First byte
-                    //chunkData[index++] = data[x, y, z].Value2; // Second byte
+                    chunkData[index++] = data[x, y, z].Value1; //primul byte
                 }
             }
         }
@@ -195,13 +196,13 @@ public class ChunkSerializer
             {
                 for (int z = 0; z < 16; z++)
                 {
-                    //chunkData[index++] = data[x, y, z].Value1; // First byte
-                    chunkData[index++] = data[x, y, z].Value2; // Second byte
+                    chunkData[index++] = data[x, y, z].Value2; // al doilea byte
                 }
             }
         }
 
         // Compress the chunk data using Zlib (Deflate)
+        //idk, asa chiar l-am copiat
         byte[] compressedData;
         using (var memoryStream = new MemoryStream())
         {
@@ -211,6 +212,8 @@ public class ChunkSerializer
             }
             compressedData = memoryStream.ToArray();
         }
+        //Restul functiei e overkill
+        //Deci nu incerca sa-l intelegi
 
         // Open or create the region file
         using FileStream fs = new(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
@@ -317,7 +320,6 @@ public class ChunkSerializer
     }
     public static Chunk.VoxelStruct[,,] ChunkReader(string savePath, int cx, int cz)
     {
-        // Read the chunk data from the region file
         Chunk.VoxelStruct[,,] chunkData = FindChunkInRegion(savePath, cx, cz);
 
         if (chunkData == null)
@@ -327,7 +329,7 @@ public class ChunkSerializer
 
         Chunk.VoxelStruct[,,] voxelData = new Chunk.VoxelStruct[16, 160, 16];
 
-        // Populate the voxelData array with the chunk data
+        // 1D -> 3D
         for (int x = 0; x < 16; x++)
         {
             for (int y = 0; y < 160; y++)
@@ -338,7 +340,6 @@ public class ChunkSerializer
                 }
             }
         }
-       // WorldManager.GetChunk(cx, cz).Voxels = voxelData;
         return voxelData;
     }
 

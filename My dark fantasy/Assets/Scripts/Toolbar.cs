@@ -120,14 +120,17 @@ public class Toolbar : MonoBehaviour
         {
             if (inputActions.Android.OpenInv.triggered)
             {
-                if (openedInv)
+                if (!BookManager.readingBook)
                 {
-                    CloseInventory();
-                }
-                else
-                {
-                    OpenInventory(0);
+                    if (openedInv)
+                    {
+                        CloseInventory();
+                    }
+                    else
+                    {
+                        OpenInventory(0);
 
+                    }
                 }
             }
         }
@@ -224,6 +227,10 @@ public class Toolbar : MonoBehaviour
                         {
                             select.transform.position = img.transform.position;
                             select.gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            selectedsloth = 50;
                         }
                     }
             }
@@ -369,8 +376,11 @@ public class Toolbar : MonoBehaviour
     }
     public void OpenInventoryAnd()
     {
-        OpenInventory(0);
-        closeInv.gameObject.SetActive(true);
+        if (!BookManager.readingBook)
+        {
+            OpenInventory(0);
+            closeInv.gameObject.SetActive(true);
+        }
     }
     public void CloseInvAnd()
     {
