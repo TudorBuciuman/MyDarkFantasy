@@ -5,7 +5,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
-//using Unity.Plastic.Newtonsoft.Json;
 
 public class ItemsFunctions : MonoBehaviour
 {

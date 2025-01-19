@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class Fighting_Intro : MonoBehaviour
@@ -25,6 +27,7 @@ public class Fighting_Intro : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
+
         switch (Voxeldata.PlayerData.scene)
         {
             case 0:
@@ -47,10 +50,19 @@ public class Fighting_Intro : MonoBehaviour
     }
     public void Read(string s)
     {
-        Screen.sleepTimeout = SleepTimeout.SystemSetting;
-        audioSource.clip = startingclip[Voxeldata.PlayerData.scene];
-        audioSource.Play();
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
         audioSource.loop = false;
+
+        if (Voxeldata.PlayerData.scene != 2)
+        {
+            audioSource.clip = startingclip[Voxeldata.PlayerData.scene];
+            audioSource.Play();
+        }
+        else
+        {
+            StartCoroutine(LoadAndPlayMusic(7));
+        }
+
         dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
         dialogueLines = dialogueFile.text.Split('\n');
         for (int i = 0; i < dialogueLines.Length; i++)
@@ -75,6 +87,40 @@ public class Fighting_Intro : MonoBehaviour
         audioSource.clip = clip[n];
         audioSource.Play();
     }
+    private IEnumerator LoadAndPlayMusic(byte id)
+    {
+        string musicFilePath;
+        string path = Path.Combine(Application.streamingAssetsPath);
+#if UNITY_STANDALONE_WIN
+        //string[] musicFiles = Directory.GetFiles(path, "*.ogg");
+        musicFilePath = Path.Combine(Application.streamingAssetsPath + $"/Songs/song{id}.ogg");
+#elif UNITY_ANDROID
+        musicFilePath = Application.streamingAssetsPath + $"/Songs/song{id}.ogg";
+        if (!musicFilePath.StartsWith("jar:file://"))
+        {
+            musicFilePath = "jar:file://" + musicFilePath;
+        }
+#endif
+
+        using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError("Error loading audio file: " + musicFilePath);
+        }
+        else
+        {
+            AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+            if (clip != null)
+            {
+                audioSource.clip = clip;
+                audioSource.Play();
+            }
+        }
+
+    }
+
     public IEnumerator DisplayNextLine()
     {
 
@@ -199,7 +245,6 @@ public class Fighting_Intro : MonoBehaviour
                     yield return new WaitForSeconds(90);
                     FightingImg.sprite = sprites[0];
                     FightingImg.gameObject.SetActive(true);
-                    StartCoroutine(GetInput());
                     yield return new WaitForSeconds(30);
                     PlayerDataData.SawIntro = true;
                     FightingImg.gameObject.SetActive(false);
@@ -213,14 +258,27 @@ public class Fighting_Intro : MonoBehaviour
                     dialogueTextUI.text = string.Empty;
                     yield return new WaitForSeconds(3.5f);
                     PlaySong(1);
-                    yield return new WaitForSeconds(90);
+                    yield return new WaitForSeconds(71);
                     FightingImg.sprite = sprites[1];
                     FightingImg.gameObject.SetActive(true);
-                    StartCoroutine(GetInput());
                     yield return new WaitForSeconds(30);
                     PlayerDataData.SawIntro = true;
                     FightingImg.gameObject.SetActive(false);
-                    yield return new WaitForSeconds(205);
+                    yield return new WaitForSeconds(35);
+                    PlayerDataData.SavePlayer();
+                    break;
+                }
+                case 2:
+                {
+                    audioSource.Stop();
+                    dialogueTextUI.text = string.Empty;
+                    StartCoroutine(LoadAndPlayMusic(6));
+                    yield return new WaitForSeconds(75.5f);
+                    FightingImg.sprite = sprites[2];
+                    FightingImg.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(10);
+                    FightingImg.gameObject.SetActive(false);
+                    yield return new WaitForSeconds(39f);
                     PlayerDataData.SavePlayer();
                     break;
                 }

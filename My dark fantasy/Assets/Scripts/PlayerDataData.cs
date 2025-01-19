@@ -51,7 +51,7 @@ public class PlayerDataData : MonoBehaviour
     }
     public static IEnumerator Play()
     {
-        yield return new WaitForSeconds(6);
+        yield return new WaitForSeconds(6.3f);
         SceneManager.LoadScene("UIScene");
     }
     public static void Intro_Fighting()

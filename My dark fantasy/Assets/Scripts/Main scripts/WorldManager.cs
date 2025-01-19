@@ -557,12 +557,13 @@ public class WorldManager : MonoBehaviour
                 SaveChunk(coord.x, coord.y);
                 chunk.chunkObject.SetActive(false);
                 activechunks.Remove(coord);
+                break;
             }
         }
     }
     private void ProcessQueuedChunks()
     {
-        int maxChunksPerFrame = 5;
+        int maxChunksPerFrame = 2;
         for (int i = 0; i < nextChunk.Count && i < maxChunksPerFrame; i++)
         {
             ChunkCoord coord = nextChunk.Peek();

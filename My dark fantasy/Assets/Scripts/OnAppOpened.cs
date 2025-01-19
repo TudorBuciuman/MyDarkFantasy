@@ -34,7 +34,7 @@ public class OnAppOpened : MonoBehaviour
         }
         dialogueFile = Resources.Load<TextAsset>($"UIMessage");
         DateTime currentTime = DateTime.Now;
-        if (currentTime.Hour > 18 || currentTime.Hour<8)
+        if (currentTime.Hour >= 18 || currentTime.Hour<8)
         {
             screenn.GetComponent<RawImage>().texture=moon.texture;
             but1.GetComponent<Image>().color = Color.white;

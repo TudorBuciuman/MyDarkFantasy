@@ -12,9 +12,11 @@ using System.Collections;
 public class NewWorld : MonoBehaviour
 {
     public int random;
+    public GameObject easteregg;
+    public Image background;
     public Button NewWorldButton;
     public Image lightingImg;
-    public AudioClip clip,normalclip;
+    public AudioClip clip,normalclip,creatingclip;
     public AudioSource AudioSource;
     public static byte nr = 0;
     public ChunkSerializer serializer;
@@ -39,6 +41,13 @@ public class NewWorld : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            if (Voxeldata.PlayerData.scene == 2)
+            {
+                background.color= Color.black;
+            }
+            else if(Voxeldata.PlayerData.scene==1){
+                easteregg.SetActive(true);
+            }
         }
         if (!OnAppOpened.readytogo)
         {
@@ -176,7 +185,7 @@ public class NewWorld : MonoBehaviour
             }
             serializer = new();
             serializer.Sync((savePath), int.Parse(seed.text));
-            EnterFaster();
+            StartCoroutine(EvenFasterEntering());
         }
     }
     public IEnumerator MakeLight(float time)
@@ -207,11 +216,20 @@ public class NewWorld : MonoBehaviour
     }
     public void EnterFaster()
     {
-
         AudioSource.clip = clip;
         AudioSource.Play();
         lightingImg.gameObject.SetActive(true);
         StartCoroutine(MakeLight(2.5f));
+    }
+    public IEnumerator EvenFasterEntering()
+    {
+        //its actually the slowest
+        AudioSource.clip = creatingclip;
+        AudioSource.Play();
+        AudioSource.loop = false;
+        yield return new WaitForSeconds(1);
+        lightingImg.gameObject.SetActive(true);
+        StartCoroutine(MakeLight(3.5f));
     }
     public void TryEditWorld() {
         GameObject a = GameObject.FindGameObjectWithTag("manager");
@@ -278,18 +296,18 @@ public class NewWorld : MonoBehaviour
     }
     public void BackUpWorld()
     {
-        if(!Directory.Exists(Path.Combine(Application.persistentDataPath, "MyDarkFantasy/backups"))){
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "MyDarkFantasy/backups"));
+        if(!Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds/backups"))){
+            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "worlds/backups"));
         }
         int y = 0;
-        while (Directory.Exists(Path.Combine(Application.persistentDataPath, "MyDarkFantasy/backups/",y.ToString())))
+        while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds/backups/",y.ToString())))
         {
             y++;
         }
-        Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "MyDarkFantasy/backups/", y.ToString()));
+        Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "worlds/backups/", y.ToString()));
 
         //nu exista alt mod de a copia fisierele
-        CopyDirectory(worldlocation, Path.Combine(Application.persistentDataPath, "MyDarkFantasy/backups/", y.ToString()));
+        CopyDirectory(worldlocation, Path.Combine(Application.persistentDataPath, "worlds/backups/", y.ToString()));
     }
     static void CopyDirectory(string sourceDir, string destDir)
     {

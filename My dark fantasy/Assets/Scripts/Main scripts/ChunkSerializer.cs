@@ -124,8 +124,6 @@ public class ChunkSerializer
             return voxels;
         }
     }
-
-
     public static bool IsReal(int cx, int cz)
     {
         if (loadedChunks.TryGetValue((cx, cz), out Chunk.VoxelStruct[,,] value) && value != null)
@@ -306,7 +304,7 @@ public class ChunkSerializer
         {
             Directory.CreateDirectory(Path.GetDirectoryName(savePath + "/playerprefab.json"));
         }
-        PlayerData data = new PlayerData
+        PlayerData data = new()
         {
             position = Pos,
             rotation = Rot,
