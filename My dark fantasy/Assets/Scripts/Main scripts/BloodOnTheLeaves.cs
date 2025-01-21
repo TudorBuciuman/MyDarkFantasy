@@ -16,7 +16,6 @@ public class BloodOnTheLeaves : MonoBehaviour
     public TextAsset dialogueFile;
     public Text dialogueTextUI;
     public string[] dialogueLines;
-    public float t;
     public static string SceneLoc = "Blood on the leaves";
     public static byte SceneNum = 0;
     public int currentLine = 0;
@@ -26,7 +25,6 @@ public class BloodOnTheLeaves : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        t=0;
         switch (SceneNum)
         {
             case 0:
@@ -97,7 +95,6 @@ public class BloodOnTheLeaves : MonoBehaviour
             {
                 float f = (float)(dialogueLines[currentLine][1] - '0') + (float)((dialogueLines[currentLine][2] - '0') / 10.0f);
                 yield return new WaitForSeconds(f);
-                t += f;
                 currentLine++;
                 StartCoroutine(DisplayNextLine());
                 yield return null;
@@ -140,7 +137,6 @@ public class BloodOnTheLeaves : MonoBehaviour
         {
             dialogueTextUI.text += c;
             yield return new WaitForSeconds(spd); //typing speed, big=slow
-            t += spd;
         }
         currentLine++;
         yield return new WaitForSeconds(1.4f);

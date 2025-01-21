@@ -29,8 +29,14 @@ public class PlayerDataData : MonoBehaviour
             }
             else
             {
+                if(!Voxeldata.PlayerData.NeedsToSeeCredits)
                 StartCoroutine(OtherScenes());
+                else
+                {
+                    SceneManager.LoadScene("EndCredits");
+                }
             }
+
         }
         else
         {
@@ -116,4 +122,8 @@ public class DontForget
     public bool SawEnding;
     public byte timesSlept;
     public byte currentSeparateScene;
+    public bool genocide;
+    public bool pacifist;
+    public bool Purge;
+    public bool NeedsToSeeCredits;
 }
