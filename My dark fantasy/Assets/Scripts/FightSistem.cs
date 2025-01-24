@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class FightSistem : MonoBehaviour
@@ -13,8 +15,8 @@ public class FightSistem : MonoBehaviour
     public Image bullet;
     public Image character;
 
-    public AudioClip swordsound;
-    public AudioSource AudioSource;
+    public AudioClip swordsound,music;
+    public AudioSource AudioSource,SoundsSource;
 
     public Text text;
     public GameObject heart;
@@ -35,44 +37,103 @@ public class FightSistem : MonoBehaviour
     public TextAsset dialogueFile;
     public string[] dialogueLines;
 
-    public string s = "Wizzard1";
+    public bool isWhite = false,slow=true;
+    public Image lightingImg;
+
+    private string s = "Yeezus";
     void Start()
     {
         Application.targetFrameRate = 60;
+        AudioSource.clip = music;
+        AudioSource.Play();
         dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
         dialogueLines = dialogueFile.text.Split('\n');
-        Debug.Log(dialogueLines.Length);
+        for (int i = 0; i < dialogueLines.Length; i++)
+        {
+            dialogueLines[i] = dialogueLines[i].Replace("\\n ", "\n");
+        }
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         StartCoroutine(DisplayNextLine());
     }
     public int currentLine = 0;
     public IEnumerator DisplayNextLine()
     {
-            dialogue.gameObject.SetActive(true);
-        if (currentLine<dialogueLines.Length)
+        if (currentLine < dialogueLines.Length - 1)
         {
-            if (dialogueLines[currentLine][0] != '{')
-                StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.1f));
-            else
+            if (dialogueLines[currentLine][0] == '%')
+            {
+                currentLine++;
+                slow = !slow;
+            }
+
+            while (dialogueLines[currentLine][0] == '[')
+            {
+                slow = true;
+                currentLine++;
+            }
+            if (dialogueLines[currentLine][0] == '>')
+            {
+                float f = (float)(dialogueLines[currentLine][1] - '0') + (float)((dialogueLines[currentLine][2] - '0') / 10.0f);
+                yield return new WaitForSeconds(f);
+                currentLine++;
+                StartCoroutine(DisplayNextLine());
+
+                yield break;
+            }
+            else if (dialogueLines[currentLine][0] == '@')
+            {
+                yield return StartCoroutine(Lighting());
+                currentLine++;
+                StartCoroutine(DisplayNextLine());
+                yield break;
+            }
+            else if (dialogueLines[currentLine][0] == '$')
+            {
+                //StartCoroutine(BeforeQuit());
+                yield break;
+            }
+            if (dialogueLines[currentLine][0] == '{')
             {
                 if (dialogueLines[currentLine][1] == 'P')
                 {
-                    Attack();
+                    StartCoroutine(Attack());
+                    yield break;
                 }
                 else if (dialogueLines[currentLine][1] == 'A')
                 {
-                    StartCoroutine(Attacked());
+                    currentLine++;
+                    yield return StartCoroutine(Attacked());
+                    StartCoroutine(DisplayNextLine());
+                    yield break;
+                }
+            }
+            else if (currentLine < dialogueLines.Length)
+            {
+                if (slow)
+                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.12f));
+                else
+                {
+                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.0782f));
                 }
             }
         }
-        yield return null;
+        else
+        {
+            //PlayerDataData.SavePlayerFile();
+            yield return new WaitForSeconds(5);
+            //SceneManager.LoadScene("Intro");
+        }
     }
-    bool fighting = false;
+
+    bool fighting = false,fought=false;
     public IEnumerator Inputt()
     {
         while (fighting)
         {
             if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
             {
+                fought = true;
                 int dammage = (int)sword.rectTransform.anchoredPosition.x;
                 dammage = 1000-Mathf.Abs(dammage);
                 if (dammage < 320)
@@ -88,9 +149,9 @@ public class FightSistem : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
     }
-    public void Attack()
+    public IEnumerator Attack()
     {
-        dialogue.gameObject.SetActive(false);
+        text.text = string.Empty;
         bullet.gameObject.SetActive(true);
         sword.rectTransform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         sword.rectTransform.anchoredPosition = new Vector3(-1000, -289, 0);
@@ -98,9 +159,56 @@ public class FightSistem : MonoBehaviour
         attack=StartCoroutine(StartAttacking());
         fighting = true;
         inputt=StartCoroutine(Inputt());
+        yield break;
+    }
+    public IEnumerator Lighting()
+    {
+        if (!isWhite)
+            yield return StartCoroutine(MakeLight(0.5f));
+        else
+            yield return StartCoroutine(MakeDark(0.5f));
+        isWhite = !isWhite;
+    }
+    public IEnumerator MakeLight(float time)
+    {
+        Color startColor = Color.black;
+
+        Color targetColor = Color.white;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < time / 2)
+        {
+            lightingImg.color = Color.Lerp(startColor, targetColor, elapsedTime / time);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        //lightingImg.color = targetColor;
+    }
+    public IEnumerator MakeDark(float time)
+    {
+
+        Color startColor = lightingImg.color;
+
+        Color targetColor = Color.black;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < time)
+        {
+            lightingImg.color = Color.Lerp(startColor, targetColor, elapsedTime / time);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        lightingImg.color = targetColor;
     }
     public IEnumerator StartAttacking()
     {
+        fought = false;
         float duration = 2f; 
         float elapsed = 0f;  
         Vector3 startPosition = sword.rectTransform.anchoredPosition; 
@@ -119,8 +227,11 @@ public class FightSistem : MonoBehaviour
     {
         StopCoroutine(inputt);
         yield return new WaitForSeconds(0.3f);
-        AudioSource.clip=swordsound;
-        AudioSource.Play();
+        if (fought)
+        {
+            SoundsSource.clip = swordsound;
+            SoundsSource.Play();
+        }
         yield return new WaitForSeconds(0.5f);
 
         sword.gameObject.SetActive(false);
@@ -145,21 +256,19 @@ public class FightSistem : MonoBehaviour
 
         isTyping = false;
         currentLine++;
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         StartCoroutine(DisplayNextLine());
     }
     public IEnumerator Attacked()
     {
-        dialogue.gameObject.SetActive(false);
+        text.text = string.Empty;
         yield return new WaitForSeconds(1);
         arena.gameObject.SetActive(true);
         GameObject a=Instantiate(heart,truearena.transform);
-        currentLine++;
         yield return StartCoroutine(AssignProjectiles());
-        dialogue.gameObject.SetActive(false);
         arena.gameObject.SetActive(false);
         Destroy(a);
-        StartCoroutine(DisplayNextLine());
+        yield return new WaitForSeconds(1);
     }
     public IEnumerator AssignProjectiles()
     {
@@ -188,7 +297,7 @@ public class FightSistem : MonoBehaviour
     public IEnumerator Attack1()
     {
         ProjectilesManager.speed = 210;
-        for (int i = 1; i < 10; i++)
+        for (int i = 1; i < 1; i++)
         {
             for (int k = 1; k < 3; k++)
             {
@@ -215,7 +324,7 @@ public class FightSistem : MonoBehaviour
     public IEnumerator SpawnBones()
     {
         ProjectilesManager.speed = 100;
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 1; i++)
         {
             int w = (i - 5) * 40;
             for (int j = 0; j <=1; j++)
@@ -231,7 +340,7 @@ public class FightSistem : MonoBehaviour
             yield return new WaitForSeconds(1.2f);
         }
         yield return new WaitForSeconds(2);
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 2; i++)
         {
             int w = (i - 10) * 40;
             for (int j = 0; j <= 3; j++)

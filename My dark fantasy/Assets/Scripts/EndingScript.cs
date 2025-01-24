@@ -8,8 +8,9 @@ using UnityEngine.UI;
 public class EndingScript : MonoBehaviour
 {
     int currentLine = 0;
-    public Animator credits,armageddon;
+    public Animator credits,armageddon,crashingDown;
     public GameObject credit, arm;
+    public GameObject eraseOrNot,crashOut;
     public TextAsset dialogueFile;
     public string[] dialogueLines;
     public Text dialogueTextUI;
@@ -112,8 +113,18 @@ public class EndingScript : MonoBehaviour
             }
             else if (dialogueLines[currentLine][0] == '$')
             {
-                //StartCoroutine(BeforeQuit());
+                StartCoroutine(BeforeQuit());
                 yield return null;
+            }
+            else if(dialogueLines[currentLine][0] == '#')
+            {
+                if (dialogueLines[currentLine][1] == 1)
+                {
+                    yield return StartCoroutine(Erase());
+                    currentLine++;
+                    StartCoroutine(DisplayNextLine());
+                    yield return null;
+                }
             }
 
             else if (currentLine < dialogueLines.Length)
@@ -146,9 +157,30 @@ public class EndingScript : MonoBehaviour
     {
         yield return new WaitForSeconds(300);
     }
+    public IEnumerator Erase()
+    {
+        eraseOrNot.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(5);
+        eraseOrNot.gameObject.SetActive(false);
+    }
     
     public void EndingSounds()
     {
 
+    }
+    public IEnumerator BeforeQuit()
+    {
+       // if (Voxeldata.PlayerData.genocide)
+        {
+            crashOut.gameObject.SetActive(true);
+            //yield return new WaitForSeconds(2);
+            crashingDown.SetTrigger("over");
+            AudioSource.clip = clips[5];
+            AudioSource.Play();
+            yield return new WaitForSeconds(10);
+            crashOut.gameObject.SetActive(false);
+            Application.Quit();
+        }
     }
 }

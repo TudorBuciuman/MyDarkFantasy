@@ -97,19 +97,19 @@ public class BloodOnTheLeaves : MonoBehaviour
                 yield return new WaitForSeconds(f);
                 currentLine++;
                 StartCoroutine(DisplayNextLine());
-                yield return null;
+                yield break;
             }
             else if (dialogueLines[currentLine][0] == '@')
             {
                 yield return StartCoroutine(Lighting());
                 currentLine++;
                 StartCoroutine(DisplayNextLine());
-                yield return null;
+                yield break;
             }
             else if (dialogueLines[currentLine][0] == '$')
             {
                 //StartCoroutine(BeforeQuit());
-                yield return null;
+                yield break;
             }
 
             else if (currentLine < dialogueLines.Length)

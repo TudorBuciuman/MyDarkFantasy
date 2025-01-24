@@ -74,7 +74,7 @@ public class Chunk
         child2.GetComponent<MeshRenderer>().materials = new Material[] { material, waterMat };
         child3.GetComponent<MeshRenderer>().materials = new Material[] { material, waterMat};
         child4.GetComponent<MeshRenderer>().materials = new Material[] { material, waterMat };
-
+        
         seed = ChunkSerializer.seed;
         
         random = new System.Random(seed);
