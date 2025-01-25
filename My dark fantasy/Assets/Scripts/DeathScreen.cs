@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class DeathScreen : MonoBehaviour
 {
+    public static bool world = true;
     public Text writing;
     public Text Logo;
     public Font comicSans;
@@ -49,7 +50,8 @@ public class DeathScreen : MonoBehaviour
             audioSource.clip = staydetermined;
             audioSource.Play();
         }
-        Toolbar.instance.openedInv = true;
+        if(world)
+            Toolbar.instance.openedInv = true;
         yield return new WaitForSeconds(3);
         Logo.gameObject.SetActive(true);
         yield return new WaitForSeconds(1.4f);
@@ -65,11 +67,14 @@ public class DeathScreen : MonoBehaviour
         yield return new WaitForSeconds(1.4f);
         Logo.gameObject.SetActive(false);
         yield return new WaitForSeconds(2f);
-        Toolbar.escape = false;
-        Toolbar.instance.openedInv = false;
-        HealthSistem.health = 20;
-        HealthSistem.istance.ReMakeHearts();
-        ControllerImput.Instance.currentVelocity=Vector3.zero;
+        if (world)
+        {
+            Toolbar.escape = false;
+            Toolbar.instance.openedInv = false;
+            HealthSistem.health = 20;
+            HealthSistem.istance.ReMakeHearts();
+            ControllerImput.Instance.currentVelocity = Vector3.zero;
+        }
         SceneManager.UnloadSceneAsync("DeathScreen");
         }
     private IEnumerator WaitingForYou()

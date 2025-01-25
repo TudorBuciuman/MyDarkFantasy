@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,7 +26,7 @@ public class FightSistem : MonoBehaviour
     public Image sword;
     public GameObject fightobj;
 
-    public byte life = 20;
+    public static float life = 20;
     public byte enemylife = 255;
     public byte fightnr = 0;
 
@@ -40,6 +41,10 @@ public class FightSistem : MonoBehaviour
     public bool isWhite = false,slow=true;
     public Image lightingImg;
 
+    public GameObject heartImgInv, Inventory;
+    public Text textBox;
+    public Image[] options=new Image[4];
+    public Sprite[] sprites=new Sprite[8];
     private string s = "Yeezus";
     void Start()
     {
@@ -59,7 +64,7 @@ public class FightSistem : MonoBehaviour
     public int currentLine = 0;
     public IEnumerator DisplayNextLine()
     {
-        if (currentLine < dialogueLines.Length - 1)
+        if (currentLine < dialogueLines.Length)
         {
             if (dialogueLines[currentLine][0] == '%')
             {
@@ -95,16 +100,14 @@ public class FightSistem : MonoBehaviour
             }
             if (dialogueLines[currentLine][0] == '{')
             {
-                if (dialogueLines[currentLine][1] == 'P')
+                if (dialogueLines[currentLine][1] == 'A')
                 {
-                    StartCoroutine(Attack());
+                    StartCoroutine(Attacked());
                     yield break;
                 }
-                else if (dialogueLines[currentLine][1] == 'A')
+                else if (dialogueLines[currentLine][1] == 'I')
                 {
-                    currentLine++;
-                    yield return StartCoroutine(Attacked());
-                    StartCoroutine(DisplayNextLine());
+                    StartCoroutine(OpenInventory());
                     yield break;
                 }
             }
@@ -121,12 +124,14 @@ public class FightSistem : MonoBehaviour
         else
         {
             //PlayerDataData.SavePlayerFile();
+            text.text = null;
             yield return new WaitForSeconds(5);
             //SceneManager.LoadScene("Intro");
         }
     }
 
-    bool fighting = false,fought=false;
+    bool fighting = false,fought=false,oninventory=false;
+    byte index = 0;
     public IEnumerator Inputt()
     {
         while (fighting)
@@ -148,18 +153,6 @@ public class FightSistem : MonoBehaviour
             }
             yield return new WaitForSeconds(0.01f);
         }
-    }
-    public IEnumerator Attack()
-    {
-        text.text = string.Empty;
-        bullet.gameObject.SetActive(true);
-        sword.rectTransform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-        sword.rectTransform.anchoredPosition = new Vector3(-1000, -289, 0);
-        sword.gameObject.SetActive(true);
-        attack=StartCoroutine(StartAttacking());
-        fighting = true;
-        inputt=StartCoroutine(Inputt());
-        yield break;
     }
     public IEnumerator Lighting()
     {
@@ -269,6 +262,9 @@ public class FightSistem : MonoBehaviour
         arena.gameObject.SetActive(false);
         Destroy(a);
         yield return new WaitForSeconds(1);
+        currentLine++;
+        Debug.Log("ok");
+        StartCoroutine(DisplayNextLine());
     }
     public IEnumerator AssignProjectiles()
     {
@@ -321,9 +317,27 @@ public class FightSistem : MonoBehaviour
             }
         }
     }
+    public IEnumerator AssignText()
+    {
+        switch(fightnr)
+        {
+            case 0:
+                yield return StartCoroutine(Write("*It's already too late"));
+                break;
+            case 1:
+                yield return StartCoroutine(Write("*A flicker of light fills the world"));
+                break;
+            case 2:
+                yield return StartCoroutine(Write("*Your life starts to flicker before your eyes"));
+                break;
+            case 3:
+                yield return StartCoroutine(Write("*You can't end this"));
+                break;
+        }
+    }
     public IEnumerator SpawnBones()
     {
-        ProjectilesManager.speed = 100;
+        ProjectilesManager.speed = 150;
         for (int i = 0; i < 1; i++)
         {
             int w = (i - 5) * 40;
@@ -358,7 +372,7 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Attack2()
     {
-        ProjectilesManager.speed = 150;
+        ProjectilesManager.speed = 250;
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j <= 1; j++)
@@ -371,5 +385,126 @@ public class FightSistem : MonoBehaviour
             }
             yield return new WaitForSeconds(1f);
         }
+    }
+    public IEnumerator OpenInventory()
+    {
+        oninventory= true;
+        textBox.text = null;
+        yield return new WaitForSeconds(1);
+        Inventory.gameObject.SetActive(true);
+        yield return StartCoroutine(AssignText());
+        UpdateIndex(0);
+        StartCoroutine(Sellection());
+    }
+    public void UpdateIndex(int n)
+    {
+        if (n > 0)
+        {
+            index++;
+            index %= 4;
+        }
+        else if(n<0)
+        {
+            if (index == 0)
+            {
+                index = 3;
+            }
+            else
+                index--;
+        }
+        heartImgInv.transform.SetParent(options[index].transform, false);
+        for(int i = 0; i < 4; i++)
+        {
+            if (i != index)
+            {
+                options[i].sprite = sprites[i];
+            }
+        }
+        options[index].sprite = sprites[index+4];
+    }
+    public IEnumerator Attack()
+    {
+        text.text = string.Empty;
+        bullet.gameObject.SetActive(true);
+        sword.rectTransform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        sword.rectTransform.anchoredPosition = new Vector3(-1000, -289, 0);
+        sword.gameObject.SetActive(true);
+        attack = StartCoroutine(StartAttacking());
+        fighting = true;
+        inputt = StartCoroutine(Inputt());
+        yield break;
+    }
+    public IEnumerator Write(string s)
+    {
+        textBox.text = null;
+        foreach(char c in s)
+        {
+            textBox.text += c;
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return new WaitForSeconds(1);
+    }
+    public IEnumerator Spare()
+    {
+        yield return StartCoroutine(Write("*But He didn't accept."));
+    }
+    public IEnumerator Item()
+    {
+        yield return StartCoroutine(Write("*But you have nothing"));
+        yield return null;
+    }
+    public IEnumerator Act()
+    {
+        yield return StartCoroutine(Write("*You called for help."));
+        yield return new WaitForSeconds(1);
+        yield return StartCoroutine(Write("*But nobody came.."));
+        yield return null;
+    }
+    public IEnumerator Sellection()
+    {
+        while (oninventory)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+                UpdateIndex(-1);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                UpdateIndex(1);
+            }
+            if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))
+            {
+                oninventory = false;
+                yield return new WaitForSeconds(1f);
+                switch (index)
+                {
+                    case 0:
+                        yield return StartCoroutine(Attack());
+                            break;
+                    case 1:
+                        yield return StartCoroutine(Act());
+                        currentLine++;
+                        StartCoroutine(DisplayNextLine());
+                        break;
+                    case 2:
+                        yield return StartCoroutine(Item());
+                        currentLine++;
+                        StartCoroutine(DisplayNextLine());
+                        break;
+                    case 3:
+                        yield return StartCoroutine(Spare());
+                        currentLine++;
+                        StartCoroutine(DisplayNextLine()); 
+                        break;
+
+                }
+                Inventory.gameObject.SetActive(false);
+
+            }
+
+
+
+            yield return new WaitForFixedUpdate();
+        }
+
     }
 }
