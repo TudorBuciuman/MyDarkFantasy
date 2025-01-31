@@ -6,7 +6,7 @@ using System;
 public class PerlinExample : MonoBehaviour
 {
     //Acesta este un exemplu de perlin noise, dar nu este cel folosit de mine
-    //Ca si idee, tot acest cod poate fi scris ca Mathf.PerlinNoise()
+    //Ca si idee, tot acest cod poate fi scris ca Mathf.PerlinNoise(x,y) si va merge
     public static class Perlin
     {
         private static int[] permutation = { 151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225,

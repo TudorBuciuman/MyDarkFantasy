@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -11,18 +13,19 @@ public class FightSistem : MonoBehaviour
 {
     //I can't spell system ;(
     //Is is sistem or system ?
+    public static FightSistem instance;
     public GameObject img;
     public Image dialogue;
     public Image bullet;
     public Image character;
 
-    public AudioClip swordsound,music;
+    public AudioClip swordsound,music,deathmusic;
     public AudioSource AudioSource,SoundsSource;
 
     public Text text;
     public GameObject heart;
     public GameObject arena,truearena;
-    public GameObject projectiles;
+    public GameObject projectiles,projectile1;
     public Image sword;
     public GameObject fightobj;
 
@@ -48,7 +51,13 @@ public class FightSistem : MonoBehaviour
     private string s = "Yeezus";
     void Start()
     {
+        instance= this;
         Application.targetFrameRate = 60;
+        Read();
+    }
+    public int currentLine = 0;
+    public void Read()
+    {
         AudioSource.clip = music;
         AudioSource.Play();
         dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
@@ -61,7 +70,44 @@ public class FightSistem : MonoBehaviour
         Cursor.visible = false;
         StartCoroutine(DisplayNextLine());
     }
-    public int currentLine = 0;
+    public void PlayDeathMusic()
+    {
+        StartCoroutine(LoadAndPlayMusic(8));
+    }
+    private IEnumerator LoadAndPlayMusic(byte id)
+    {
+        string musicFilePath;
+        string path = Path.Combine(Application.streamingAssetsPath);
+#if UNITY_STANDALONE_WIN
+        //string[] musicFiles = Directory.GetFiles(path, "*.ogg");
+        musicFilePath = Path.Combine(Application.streamingAssetsPath + $"/Songs/song{id}.ogg");
+#elif UNITY_ANDROID
+        musicFilePath = Application.streamingAssetsPath + $"/Songs/song{id}.ogg";
+        if (!musicFilePath.StartsWith("jar:file://"))
+        {
+            musicFilePath = "jar:file://" + musicFilePath;
+        }
+#endif
+
+        using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError("Error loading audio file: " + musicFilePath);
+        }
+        else
+        {
+            AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+            if (clip != null)
+            {
+                AudioSource.clip = clip;
+                AudioSource.Play();
+            }
+        }
+
+    }
+
     public IEnumerator DisplayNextLine()
     {
         if (currentLine < dialogueLines.Length)
@@ -124,19 +170,19 @@ public class FightSistem : MonoBehaviour
         else
         {
             //PlayerDataData.SavePlayerFile();
-            text.text = null;
+            dialogueTextUI.text = null;
             yield return new WaitForSeconds(5);
             //SceneManager.LoadScene("Intro");
         }
     }
 
-    bool fighting = false,fought=false,oninventory=false;
+    bool fighting = false,fought=false,oninventory=false,enter=false;
     byte index = 0;
     public IEnumerator Inputt()
     {
         while (fighting)
         {
-            if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
+            if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter) || Input.GetKey(KeyCode.Z))
             {
                 fought = true;
                 int dammage = (int)sword.rectTransform.anchoredPosition.x;
@@ -218,6 +264,7 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Calculate()
     {
+        if(inputt!=null)
         StopCoroutine(inputt);
         yield return new WaitForSeconds(0.3f);
         if (fought)
@@ -229,7 +276,7 @@ public class FightSistem : MonoBehaviour
 
         sword.gameObject.SetActive(false);
 
-        yield return new WaitForSeconds(2.2f);
+        yield return new WaitForSeconds(1.2f);
 
         bullet.gameObject.SetActive(false);
         currentLine++;
@@ -263,7 +310,6 @@ public class FightSistem : MonoBehaviour
         Destroy(a);
         yield return new WaitForSeconds(1);
         currentLine++;
-        Debug.Log("ok");
         StartCoroutine(DisplayNextLine());
     }
     public IEnumerator AssignProjectiles()
@@ -281,8 +327,10 @@ public class FightSistem : MonoBehaviour
                     break;
                 }
             default:
-                yield return StartCoroutine(Attack1());
-                break;
+                {
+                    yield return StartCoroutine(Attack1());
+                    break;
+                }
         }
         fightnr++;
         yield return new WaitForSeconds(0.3f);
@@ -292,30 +340,41 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Attack1()
     {
-        ProjectilesManager.speed = 210;
-        for (int i = 1; i < 1; i++)
+        ProjectilesManager.speed = 2.5f;
+        for (int i = 1; i < 3; i++)
         {
-            for (int k = 1; k < 3; k++)
+            for (int k = 1; k < 4; k++)
             {
-                for (int j = 1; j < 3; j++)
+                for (int j = 1; j < 4; j++)
                 {
                     GameObject newProjectile = Instantiate(projectiles, truearena.transform);
+                    newProjectile.transform.localScale = new Vector3(2, 2, 1);
                     ProjectilesManager boneScript = newProjectile.GetComponent<ProjectilesManager>();
-                    if (j == 1)
+                    if (j%2 == 1)
                     {
-                        newProjectile.GetComponent<Image>().rectTransform.anchoredPosition = new Vector3(-210, Random.Range(-5, 5) * 30);
+                        newProjectile.transform.position = new Vector3(-2.1f, Random.Range(-5, 6) * 0.3f);
                         boneScript.direction = Vector2.right;
                     }
                     else
                     {
-                        newProjectile.GetComponent<Image>().rectTransform.anchoredPosition = new Vector3(210, Random.Range(-5, 5) * 30);
+                        newProjectile.transform.position = new Vector3(2.1f, Random.Range(-5, 6) * 0.3f);
                         boneScript.direction = Vector2.left;
                     }
 
-                    yield return new WaitForSeconds(1.2f);
+                    yield return new WaitForSeconds(0.4f);
                 }
             }
         }
+        GameObject newProjectil = Instantiate(projectile1, truearena.transform);
+        GameObject newProjectil1 = Instantiate(projectile1, truearena.transform);
+        GameObject newProjectil2 = Instantiate(projectile1, truearena.transform);
+        newProjectil.transform.localScale = new Vector3(3, 3, 1);
+        newProjectil.transform.position = new Vector3(-1.78f, 2.2f, 0);
+        newProjectil1.transform.localScale = new Vector3(3, 3, 1);
+        newProjectil1.transform.position = new Vector3(0, 2.2f, 0);
+        newProjectil2.transform.localScale = new Vector3(3, 3, 1);
+        newProjectil2.transform.position = new Vector3(1.78f, 2.2f, 0);
+        yield return new WaitForSeconds(2);
     }
     public IEnumerator AssignText()
     {
@@ -337,7 +396,7 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator SpawnBones()
     {
-        ProjectilesManager.speed = 150;
+        ProjectilesManager.speed = 1.5f;
         for (int i = 0; i < 1; i++)
         {
             int w = (i - 5) * 40;
@@ -346,7 +405,7 @@ public class FightSistem : MonoBehaviour
                 if (j == 1) 
                     w = -w;
                 GameObject newProjectile = Instantiate(projectiles, truearena.transform);
-                newProjectile.GetComponent<Image>().rectTransform.anchoredPosition = new Vector2(w, 200);
+                newProjectile.transform.position = new Vector2(w*0.01f, 2);
                 ProjectilesManager boneScript = newProjectile.GetComponent<ProjectilesManager>();
 
                 boneScript.direction = Vector2.down;
@@ -361,7 +420,7 @@ public class FightSistem : MonoBehaviour
             {
                 w+=(i<2)? 150: -150;
                 GameObject newProjectile = Instantiate(projectiles, truearena.transform);
-                newProjectile.GetComponent<Image>().rectTransform.anchoredPosition = new Vector2(w, 200);
+                newProjectile.transform.position = new Vector2(w*0.01f, 2);
                 ProjectilesManager boneScript = newProjectile.GetComponent<ProjectilesManager>();
 
                 boneScript.direction = Vector2.down;
@@ -378,9 +437,9 @@ public class FightSistem : MonoBehaviour
             for (int j = 0; j <= 1; j++)
             {
                 GameObject newProjectile = Instantiate(projectiles, truearena.transform);
-                newProjectile.GetComponent<Image>().rectTransform.anchoredPosition = new Vector2((i*j-5)*40, -200);
+                newProjectile.transform.position = new Vector2((i*j-5)*0.4f,-2);
                 ProjectilesManager boneScript = newProjectile.GetComponent<ProjectilesManager>();
-                ProjectilesManager.speed = 250;
+                ProjectilesManager.speed = 2.5f;
                 boneScript.direction = Vector2.up;
             }
             yield return new WaitForSeconds(1f);
@@ -392,9 +451,10 @@ public class FightSistem : MonoBehaviour
         textBox.text = null;
         yield return new WaitForSeconds(1);
         Inventory.gameObject.SetActive(true);
-        yield return StartCoroutine(AssignText());
-        UpdateIndex(0);
         StartCoroutine(Sellection());
+        yield return StartCoroutine(AssignText());
+        enter = true;
+        UpdateIndex(0);
     }
     public void UpdateIndex(int n)
     {
@@ -431,6 +491,7 @@ public class FightSistem : MonoBehaviour
         sword.gameObject.SetActive(true);
         attack = StartCoroutine(StartAttacking());
         fighting = true;
+        yield return new WaitForSeconds(0.2f);
         inputt = StartCoroutine(Inputt());
         yield break;
     }
@@ -440,9 +501,9 @@ public class FightSistem : MonoBehaviour
         foreach(char c in s)
         {
             textBox.text += c;
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
         }
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.3f);
     }
     public IEnumerator Spare()
     {
@@ -471,13 +532,14 @@ public class FightSistem : MonoBehaviour
             {
                 UpdateIndex(1);
             }
-            if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))
+            if (enter && Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))
             {
                 oninventory = false;
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.1f);
                 switch (index)
                 {
                     case 0:
+                        Inventory.gameObject.SetActive(false);
                         yield return StartCoroutine(Attack());
                             break;
                     case 1:
@@ -493,16 +555,12 @@ public class FightSistem : MonoBehaviour
                     case 3:
                         yield return StartCoroutine(Spare());
                         currentLine++;
-                        StartCoroutine(DisplayNextLine()); 
+                        StartCoroutine(DisplayNextLine());
                         break;
-
                 }
                 Inventory.gameObject.SetActive(false);
-
+                enter = false;
             }
-
-
-
             yield return new WaitForFixedUpdate();
         }
 

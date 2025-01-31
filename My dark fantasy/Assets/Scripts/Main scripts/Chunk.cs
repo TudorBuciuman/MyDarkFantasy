@@ -5,7 +5,6 @@ using UnityEngine;
 public class Chunk
 {
     private readonly object listLock = new object();
-    //public byte[,,] Voxels = new byte[16, 160, 16];
     public VoxelStruct[,,] Voxels = new VoxelStruct[16, 160, 16];
     public ChunkCoord Coord;
     public BiomeAttributes[,] biome;
