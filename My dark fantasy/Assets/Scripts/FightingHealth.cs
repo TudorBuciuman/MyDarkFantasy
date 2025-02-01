@@ -12,14 +12,9 @@ public class FightingHealth : MonoBehaviour
     public float damageAmount=3;
     public GameObject heart;
     public static float speed = 3f;
-    Rigidbody2D rb;
     public float timepassed = 0;
     public static float sprintspeed=1;
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        //ts = this.GetComponent<GameObject>();
-    }
+
     void FixedUpdate()
     {
         if(timepassed > 0) 
@@ -43,9 +38,7 @@ public class FightingHealth : MonoBehaviour
             movement += Vector3.right; 
         }
 
-        movement = movement.normalized * speed * Time.deltaTime;
-
-        transform.position += movement;
+        transform.position += speed * Time.deltaTime * movement.normalized;
     }
     public void OnTriggerEnter2D(Collider2D collision)
     {
@@ -58,10 +51,8 @@ public class FightingHealth : MonoBehaviour
                 StartCoroutine(Heartdammage());
                 if (FightSistem.life <= 0)
                 {
-                    FightSistem.instance.PlayDeathMusic();
-                    SceneManager.LoadSceneAsync("DeathScreen",LoadSceneMode.Additive);
-                    DeathScreen.world = false;
-                    FightSistem.life = 20;
+                    timepassed = 100000000;
+                    StartCoroutine(FightSistem.instance.PlayDeathMusic());
                 }
             }
         }

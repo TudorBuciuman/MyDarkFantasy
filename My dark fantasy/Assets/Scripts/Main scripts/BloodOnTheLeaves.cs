@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class BloodOnTheLeaves : MonoBehaviour
 {
     public Image lightingImg;
-    public AudioClip clip;
+    public AudioClip[] clip=new AudioClip[5];
     public Image FightingImg;
     public Sprite[] sprites = new Sprite[5];
     public AudioSource audioSource;
@@ -17,9 +17,9 @@ public class BloodOnTheLeaves : MonoBehaviour
     public Text dialogueTextUI;
     public string[] dialogueLines;
     public static string SceneLoc = "Blood on the leaves";
-    public static byte SceneNum = 0;
-    public int currentLine = 0;
-    public bool isTyping = false, slow = false, isWhite = false;
+    public static byte SceneNum = 5;
+    int currentLine = 0;
+    bool slow = false, isWhite = false;
 
     void Start()
     {
@@ -29,7 +29,7 @@ public class BloodOnTheLeaves : MonoBehaviour
         {
             case 0:
                 SceneLoc = "Blood on the leaves";
-                audioSource.clip = clip;
+                audioSource.clip = clip[0];
                 audioSource.Play();
                 break;
             case 1:
@@ -45,6 +45,12 @@ public class BloodOnTheLeaves : MonoBehaviour
             case 4:
                 SceneLoc = "Guilt trip";
                 StartCoroutine(LoadAndPlayMusic(9));
+                break;
+            case 5:
+                SceneLoc = "Fear";
+                slow = true;
+                audioSource.clip = clip[1];
+                audioSource.Play();
                 break;
                 
         }
@@ -108,7 +114,7 @@ public class BloodOnTheLeaves : MonoBehaviour
             }
             else if (dialogueLines[currentLine][0] == '$')
             {
-                //StartCoroutine(BeforeQuit());
+                StartCoroutine(BeforeQuit());
                 yield break;
             }
 
@@ -131,7 +137,6 @@ public class BloodOnTheLeaves : MonoBehaviour
     }
     private IEnumerator TypeLine(string line, float spd)
     {
-        isTyping = true;
         dialogueTextUI.text = "";
         foreach (char c in line)
         {
@@ -179,6 +184,16 @@ public class BloodOnTheLeaves : MonoBehaviour
         }
 
         lightingImg.color = targetColor;
+    }
+    public IEnumerator BeforeQuit()
+    {
+        if (SceneNum == 5)
+        {
+            audioSource.clip = clip[2];
+            audioSource.Play();
+        }
+        yield return new WaitForSeconds(10);
+        SceneManager.LoadScene("Intro");
     }
     public IEnumerator GetInput()
     {

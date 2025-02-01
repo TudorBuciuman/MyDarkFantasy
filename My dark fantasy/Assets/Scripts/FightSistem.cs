@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -29,6 +31,7 @@ public class FightSistem : MonoBehaviour
     public Image sword;
     public GameObject fightobj;
 
+    public static byte deaths = 0;
     public static float life = 20;
     public byte enemylife = 255;
     public byte fightnr = 0;
@@ -41,14 +44,17 @@ public class FightSistem : MonoBehaviour
     public TextAsset dialogueFile;
     public string[] dialogueLines;
 
+    public GameObject deathscene;
+    public Text dsc1, ds2;
+
     public bool isWhite = false,slow=true;
     public Image lightingImg;
-
+    public Coroutine textManager;
     public GameObject heartImgInv, Inventory;
     public Text textBox;
     public Image[] options=new Image[4];
     public Sprite[] sprites=new Sprite[8];
-    private string s = "Yeezus";
+    private readonly string s = "Yeezus";
     void Start()
     {
         instance= this;
@@ -60,6 +66,7 @@ public class FightSistem : MonoBehaviour
     {
         AudioSource.clip = music;
         AudioSource.Play();
+        StartCoroutine(Musicdellay());
         dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
         dialogueLines = dialogueFile.text.Split('\n');
         for (int i = 0; i < dialogueLines.Length; i++)
@@ -70,9 +77,44 @@ public class FightSistem : MonoBehaviour
         Cursor.visible = false;
         StartCoroutine(DisplayNextLine());
     }
-    public void PlayDeathMusic()
+    public IEnumerator Musicdellay()
     {
+        yield return new WaitForSeconds(24);
+        AudioSource.Pause();
+        yield return new WaitForSeconds(6.5f);
+        AudioSource.UnPause();
+
+    }
+    public IEnumerator PlayDeathMusic()
+    {
+        deaths++;
+        AudioSource.Stop();
+        StopAllCoroutines();
+        deathscene.SetActive(true);
+        yield return new WaitForSeconds(3);
         StartCoroutine(LoadAndPlayMusic(8));
+        yield return new WaitForSeconds(1);
+        dsc1.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        ds2.text = "Don't lose hope..";
+        ds2.gameObject.SetActive(true);
+
+        while (true)
+        {
+            if(Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
+            {
+                break;
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        yield return new WaitForSeconds(1);
+        ds2.gameObject.SetActive(false);
+        yield return new WaitForSeconds(1);
+        dsc1.gameObject.SetActive(false);
+        yield return new WaitForSeconds(1);
+        AudioSource.Stop();
+        life = 20;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     private IEnumerator LoadAndPlayMusic(byte id)
     {
@@ -176,7 +218,7 @@ public class FightSistem : MonoBehaviour
         }
     }
 
-    bool fighting = false,fought=false,oninventory=false,enter=false;
+    bool fighting = false,fought=false,oninventory=false;
     byte index = 0;
     public IEnumerator Inputt()
     {
@@ -251,7 +293,7 @@ public class FightSistem : MonoBehaviour
         float duration = 2f; 
         float elapsed = 0f;  
         Vector3 startPosition = sword.rectTransform.anchoredPosition; 
-        Vector3 endPosition = new Vector3(1000, -289,0);
+        Vector3 endPosition = new(1000, -289,0);
 
         while (elapsed < duration)
         {
@@ -303,10 +345,10 @@ public class FightSistem : MonoBehaviour
     {
         text.text = string.Empty;
         yield return new WaitForSeconds(1);
-        arena.gameObject.SetActive(true);
+        arena.SetActive(true);
         GameObject a=Instantiate(heart,truearena.transform);
         yield return StartCoroutine(AssignProjectiles());
-        arena.gameObject.SetActive(false);
+        arena.SetActive(false);
         Destroy(a);
         yield return new WaitForSeconds(1);
         currentLine++;
@@ -326,6 +368,13 @@ public class FightSistem : MonoBehaviour
                     yield return StartCoroutine(Attack2());
                     break;
                 }
+                /*
+            case 10:
+                {
+                    yield return StartCoroutine(ItsSoOver());
+                    break;
+                }
+                */
             default:
                 {
                     yield return StartCoroutine(Attack1());
@@ -381,16 +430,16 @@ public class FightSistem : MonoBehaviour
         switch(fightnr)
         {
             case 0:
-                yield return StartCoroutine(Write("*It's already too late"));
+                yield return textManager = StartCoroutine(Write("*It's already too late"));
                 break;
             case 1:
-                yield return StartCoroutine(Write("*A flicker of light fills the world"));
+                yield return textManager = StartCoroutine(Write("*A flicker of light fills the world"));
                 break;
             case 2:
-                yield return StartCoroutine(Write("*Your life starts to flicker before your eyes"));
+                yield return textManager = StartCoroutine(Write("*Your life starts to flicker before your eyes"));
                 break;
             case 3:
-                yield return StartCoroutine(Write("*You can't end this"));
+                yield return textManager = StartCoroutine(Write("*You can't end this"));
                 break;
         }
     }
@@ -450,10 +499,9 @@ public class FightSistem : MonoBehaviour
         oninventory= true;
         textBox.text = null;
         yield return new WaitForSeconds(1);
-        Inventory.gameObject.SetActive(true);
+        Inventory.SetActive(true);
         StartCoroutine(Sellection());
         yield return StartCoroutine(AssignText());
-        enter = true;
         UpdateIndex(0);
     }
     public void UpdateIndex(int n)
@@ -495,14 +543,18 @@ public class FightSistem : MonoBehaviour
         inputt = StartCoroutine(Inputt());
         yield break;
     }
+    string message;
     public IEnumerator Write(string s)
     {
+        isTyping = true;
+        message = s;
         textBox.text = null;
         foreach(char c in s)
         {
             textBox.text += c;
             yield return new WaitForSeconds(0.05f);
         }
+        isTyping = false;
         yield return new WaitForSeconds(0.3f);
     }
     public IEnumerator Spare()
@@ -516,10 +568,20 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Act()
     {
-        yield return StartCoroutine(Write("*You called for help."));
-        yield return new WaitForSeconds(1);
-        yield return StartCoroutine(Write("*But nobody came.."));
-        yield return null;
+        if (deaths==0)
+        {
+            yield return StartCoroutine(Write("*You called for help."));
+            yield return new WaitForSeconds(1);
+            yield return StartCoroutine(Write("*But nobody came.."));
+            yield return null;
+        }
+        else
+        {
+            yield return StartCoroutine(Write("*You told Him that he's \n killed you \n many times"));
+            yield return new WaitForSeconds(1);
+            yield return StartCoroutine(Write("*He nods sadly."));
+            yield return null;
+        }
     }
     public IEnumerator Sellection()
     {
@@ -532,14 +594,14 @@ public class FightSistem : MonoBehaviour
             {
                 UpdateIndex(1);
             }
-            if (enter && Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))
+            if (!isTyping && (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return)))
             {
                 oninventory = false;
                 yield return new WaitForSeconds(0.1f);
                 switch (index)
                 {
                     case 0:
-                        Inventory.gameObject.SetActive(false);
+                        Inventory.SetActive(false);
                         yield return StartCoroutine(Attack());
                             break;
                     case 1:
@@ -558,8 +620,13 @@ public class FightSistem : MonoBehaviour
                         StartCoroutine(DisplayNextLine());
                         break;
                 }
-                Inventory.gameObject.SetActive(false);
-                enter = false;
+                Inventory.SetActive(false);
+
+            }
+            if(isTyping && Input.GetKey(KeyCode.X)) {
+                StopCoroutine(textManager);
+                textBox.text = message;
+                isTyping = false;
             }
             yield return new WaitForFixedUpdate();
         }

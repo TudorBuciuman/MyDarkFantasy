@@ -249,13 +249,13 @@ public class Fighting_Intro : MonoBehaviour
                     audioSource.clip = clip[0];
                     audioSource.time = 20.2f;
                     audioSource.Play();
-                    yield return new WaitForSeconds(220);
+                    yield return new WaitForSeconds(70);
                     FightingImg.sprite = sprites[0];
                     FightingImg.gameObject.SetActive(true);
                     yield return new WaitForSeconds(30);
                     PlayerDataData.SawIntro = true;
                     FightingImg.gameObject.SetActive(false);
-                    yield return new WaitForSeconds(180);
+                    yield return new WaitForSeconds(215);
                     PlayerDataData.SavePlayer();
                     break;
                 }
@@ -296,9 +296,9 @@ public class Fighting_Intro : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        YesOrYes.gameObject.SetActive(true);
+        YesOrYes.SetActive(true);
         yield return new WaitForSeconds(3);
-        YesOrYes.gameObject.SetActive(false);
+        YesOrYes.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
