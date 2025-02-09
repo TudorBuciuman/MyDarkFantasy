@@ -148,7 +148,8 @@ public class ChunkSerializer
     public static void SaveChunk(int cx, int cz)
     {
         // Calculate region coordinates (region files are 32x32 chunks)
-        //daca citesti asta, Da, Eu am sris tot ce poti citi in acest script, de asta nu merge
+        //daca citesti asta, Da, Eu am sris tot ce poti citi in acest script,
+        //de asta nu merge
         int rx = cx / 32;
         int rz = cz / 32;
         if (cx < 0 && cx % 32 != 0)
@@ -200,7 +201,7 @@ public class ChunkSerializer
         }
 
         // Compress the chunk data using Zlib (Deflate)
-        //idk, asa chiar l-am copiat
+        //idk, pe asta chiar l-am copiat
         byte[] compressedData;
         using (var memoryStream = new MemoryStream())
         {

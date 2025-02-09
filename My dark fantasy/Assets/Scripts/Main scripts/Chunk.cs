@@ -5,7 +5,6 @@ using UnityEngine;
 public class Chunk
 {
     private readonly object listLock = new object();
-    //public byte[,,] Voxels = new byte[16, 160, 16];
     public VoxelStruct[,,] Voxels = new VoxelStruct[16, 160, 16];
     public ChunkCoord Coord;
     public BiomeAttributes[,] biome;
@@ -74,7 +73,7 @@ public class Chunk
         child2.GetComponent<MeshRenderer>().materials = new Material[] { material, waterMat };
         child3.GetComponent<MeshRenderer>().materials = new Material[] { material, waterMat};
         child4.GetComponent<MeshRenderer>().materials = new Material[] { material, waterMat };
-
+        
         seed = ChunkSerializer.seed;
         
         random = new System.Random(seed);

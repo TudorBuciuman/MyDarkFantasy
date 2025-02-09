@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class BloodOnTheLeaves : MonoBehaviour
 {
     public Image lightingImg;
-    public AudioClip clip;
+    public AudioClip[] clip=new AudioClip[10];
     public Image FightingImg;
     public Sprite[] sprites = new Sprite[5];
     public AudioSource audioSource;
@@ -18,8 +18,8 @@ public class BloodOnTheLeaves : MonoBehaviour
     public string[] dialogueLines;
     public static string SceneLoc = "Blood on the leaves";
     public static byte SceneNum = 0;
-    public int currentLine = 0;
-    public bool isTyping = false, slow = false, isWhite = false;
+    int currentLine = 0;
+    bool slow = false, isWhite = false;
 
     void Start()
     {
@@ -29,7 +29,7 @@ public class BloodOnTheLeaves : MonoBehaviour
         {
             case 0:
                 SceneLoc = "Blood on the leaves";
-                audioSource.clip = clip;
+                audioSource.clip = clip[0];
                 audioSource.Play();
                 break;
             case 1:
@@ -46,7 +46,19 @@ public class BloodOnTheLeaves : MonoBehaviour
                 SceneLoc = "Guilt trip";
                 StartCoroutine(LoadAndPlayMusic(9));
                 break;
-                
+            case 5:
+                SceneLoc = "Fear";
+                slow = true;
+                audioSource.clip = clip[1];
+                audioSource.Play();
+                break;
+            case 6:
+                SceneLoc = "The winner takes it all";
+                slow = false;
+                audioSource.clip = clip[2];
+                audioSource.Play();
+                break;
+
         }
         Read(SceneLoc);
     }
@@ -97,19 +109,19 @@ public class BloodOnTheLeaves : MonoBehaviour
                 yield return new WaitForSeconds(f);
                 currentLine++;
                 StartCoroutine(DisplayNextLine());
-                yield return null;
+                yield break;
             }
             else if (dialogueLines[currentLine][0] == '@')
             {
                 yield return StartCoroutine(Lighting());
                 currentLine++;
                 StartCoroutine(DisplayNextLine());
-                yield return null;
+                yield break;
             }
             else if (dialogueLines[currentLine][0] == '$')
             {
-                //StartCoroutine(BeforeQuit());
-                yield return null;
+                StartCoroutine(BeforeQuit());
+                yield break;
             }
 
             else if (currentLine < dialogueLines.Length)
@@ -131,7 +143,6 @@ public class BloodOnTheLeaves : MonoBehaviour
     }
     private IEnumerator TypeLine(string line, float spd)
     {
-        isTyping = true;
         dialogueTextUI.text = "";
         foreach (char c in line)
         {
@@ -179,6 +190,16 @@ public class BloodOnTheLeaves : MonoBehaviour
         }
 
         lightingImg.color = targetColor;
+    }
+    public IEnumerator BeforeQuit()
+    {
+        if (SceneNum == 5)
+        {
+            audioSource.clip = clip[2];
+            audioSource.Play();
+        }
+        yield return new WaitForSeconds(10);
+        SceneManager.LoadScene("Intro");
     }
     public IEnumerator GetInput()
     {

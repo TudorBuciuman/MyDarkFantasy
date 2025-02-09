@@ -9,6 +9,7 @@ public class Fighting_Intro : MonoBehaviour
 {
     public Image lightingImg;
     public AudioClip[] clip = new AudioClip[6];
+    public AudioClip[] chorus = new AudioClip[3];
     public AudioClip[] startingclip=new AudioClip[5];
     public Image FightingImg;
     public Sprite[] sprites = new Sprite[5];
@@ -27,7 +28,7 @@ public class Fighting_Intro : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
-
+        
         switch (Voxeldata.PlayerData.scene)
         {
             case 0:
@@ -46,6 +47,7 @@ public class Fighting_Intro : MonoBehaviour
                 SceneLoc = "Finding";
                 break;
         }
+        
         Read(SceneLoc);
     }
     public void Read(string s)
@@ -145,19 +147,19 @@ public class Fighting_Intro : MonoBehaviour
             yield return new WaitForSeconds(f); 
             currentLine++;
             StartCoroutine(DisplayNextLine());
-            yield return null;
+            yield break;
         }
         else if (dialogueLines[currentLine][0] == '@')
         {
             yield return StartCoroutine(Lighting());
             currentLine++;
             StartCoroutine(DisplayNextLine());
-            yield return null;
+            yield break;
         }
         else if (dialogueLines[currentLine][0] == '$')
         {
             StartCoroutine(BeforeQuit());
-            yield return null;
+            yield break;
         }
         else if (currentLine < dialogueLines.Length)
         {
@@ -229,7 +231,7 @@ public class Fighting_Intro : MonoBehaviour
             {
                 break;
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
         }
     }
 
@@ -241,14 +243,19 @@ public class Fighting_Intro : MonoBehaviour
                     audioSource.Stop();
                     dialogueTextUI.text = string.Empty;
                     yield return new WaitForSeconds(3.5f);
-                    PlaySong(0);
-                    yield return new WaitForSeconds(90);
+                    audioSource.clip = chorus[0];
+                    audioSource.Play();
+                    yield return new WaitForSeconds(27.5f);
+                    audioSource.clip = clip[0];
+                    audioSource.time = 20.2f;
+                    audioSource.Play();
+                    yield return new WaitForSeconds(70);
                     FightingImg.sprite = sprites[0];
                     FightingImg.gameObject.SetActive(true);
                     yield return new WaitForSeconds(30);
                     PlayerDataData.SawIntro = true;
                     FightingImg.gameObject.SetActive(false);
-                    yield return new WaitForSeconds(205);
+                    yield return new WaitForSeconds(215);
                     PlayerDataData.SavePlayer();
                     break;
                 }
@@ -287,9 +294,13 @@ public class Fighting_Intro : MonoBehaviour
 
     public IEnumerator YesOrYesButtons()
     {
-        YesOrYes.gameObject.SetActive(true);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        YesOrYes.SetActive(true);
         yield return new WaitForSeconds(3);
-        YesOrYes.gameObject.SetActive(false);
+        YesOrYes.SetActive(false);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
 }

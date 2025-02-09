@@ -19,13 +19,6 @@ public class HealthSistem : MonoBehaviour
     {
         istance = this;
     }
-    public void FixedUpdate()
-    {
-        if(Input.GetKeyUp(KeyCode.K))
-        {
-            ScreenOfDeath();
-        }
-    }
     public void ScreenOfDeath()
     {
         soundsManager.StopSong();

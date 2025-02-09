@@ -178,7 +178,7 @@ public class UiManager : MonoBehaviour
     }
     public void EnterUIScene()
     {
-        SceneManager.UnloadSceneAsync("Quests");
+        SceneManager.UnloadSceneAsync("Acts");
     }
     public void OpenSet(string sceneName)
     {
@@ -292,15 +292,15 @@ public class UiManager : MonoBehaviour
     }
     public void SmallSett()
     {
-        a.gameObject.SetActive(false);
-        b.gameObject.SetActive(false);
-        d.gameObject.SetActive(false);
-        e.gameObject.SetActive(true);
+        a.SetActive(false);
+        b.SetActive(false);
+        d.SetActive(false);
+        e.SetActive(true);
     }
     public void NormalSet()
     {
-        a.gameObject.SetActive(true);
-        b.gameObject.SetActive(false);
+        a.SetActive(true);
+        b.SetActive(false);
     }
     public void UpdateRend()
     {
