@@ -9,7 +9,7 @@ public class Waterfall : MonoBehaviour
     public static float speed = 1f;
     public Image img;
     public Text dialogueTextUI;
-    public bool slow = true;
+    public bool slow = true, activate = false,andr=true;
     public TextAsset dialogueFile;
     public string[] dialogueLines;
     public int currentLine = 0;
@@ -18,6 +18,13 @@ public class Waterfall : MonoBehaviour
     public AudioSource source,background;
     Rigidbody2D rb;
     public static float sprintspeed = 1;
+    private void Awake()
+    {
+#if UNITY_ANDROID
+    andr=true;
+        
+#endif
+    }
     void Start()
     {
         Screen.sleepTimeout=SleepTimeout.NeverSleep; 
@@ -34,13 +41,7 @@ public class Waterfall : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 movement= Vector3.zero;
-        /*
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            movement += Vector3.left;
-        }
-        */
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        if ((andr && AndrOnly()) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || activate)
         {
             movement += Vector3.right;
         }
@@ -70,7 +71,10 @@ public class Waterfall : MonoBehaviour
         Cursor.visible = false;
         StartCoroutine(DisplayNextLine());
     }
-
+    public bool AndrOnly()
+    {
+        return Input.touches.Length > 0;
+    }
     public IEnumerator DisplayNextLine()
     {
         if (currentLine < dialogueLines.Length)
@@ -139,6 +143,7 @@ public class Waterfall : MonoBehaviour
         source.Play();
         background.volume = 65;
         Read();
+        activate = true;
     }
     public IEnumerator MakeLight(float time)
     {

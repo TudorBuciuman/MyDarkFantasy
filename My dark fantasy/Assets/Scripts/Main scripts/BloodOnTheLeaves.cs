@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class BloodOnTheLeaves : MonoBehaviour
 {
     public Image lightingImg;
-    public AudioClip[] clip=new AudioClip[5];
+    public AudioClip[] clip=new AudioClip[10];
     public Image FightingImg;
     public Sprite[] sprites = new Sprite[5];
     public AudioSource audioSource;
@@ -17,7 +17,7 @@ public class BloodOnTheLeaves : MonoBehaviour
     public Text dialogueTextUI;
     public string[] dialogueLines;
     public static string SceneLoc = "Blood on the leaves";
-    public static byte SceneNum = 5;
+    public static byte SceneNum = 0;
     int currentLine = 0;
     bool slow = false, isWhite = false;
 
@@ -52,7 +52,13 @@ public class BloodOnTheLeaves : MonoBehaviour
                 audioSource.clip = clip[1];
                 audioSource.Play();
                 break;
-                
+            case 6:
+                SceneLoc = "The winner takes it all";
+                slow = false;
+                audioSource.clip = clip[2];
+                audioSource.Play();
+                break;
+
         }
         Read(SceneLoc);
     }

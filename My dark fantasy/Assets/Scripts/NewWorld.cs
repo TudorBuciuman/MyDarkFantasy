@@ -300,14 +300,14 @@ public class NewWorld : MonoBehaviour
             Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "worlds/backups"));
         }
         int y = 0;
-        while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds/backups/",y.ToString())))
+        while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds/backups/", worldLocation)))
         {
             y++;
         }
-        Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "worlds/backups/", y.ToString()));
+        Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "worlds/backups/", worldLocation));
 
         //nu exista alt mod de a copia fisierele
-        CopyDirectory(worldlocation, Path.Combine(Application.persistentDataPath, "worlds/backups/", y.ToString()));
+        CopyDirectory(worldlocation, Path.Combine(Application.persistentDataPath, "worlds/backups/", worldLocation));
     }
     static void CopyDirectory(string sourceDir, string destDir)
     {
