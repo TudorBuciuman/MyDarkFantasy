@@ -9,7 +9,7 @@ Did I say it's free? It's free :) <br>
 Also it's open source :) <br>
 And if you have ideas contact me on IG;
 <div align="left">
-  <img height="255" src="https://i.imgur.com/fqkFaci.png"  />
+  <img height="255" src="https://i.imgur.com/DZxPSH2.png"/>
 </div>
 <h2>
   Downloads
