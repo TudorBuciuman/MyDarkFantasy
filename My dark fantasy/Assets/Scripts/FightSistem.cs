@@ -46,6 +46,8 @@ public class FightSistem : MonoBehaviour
 
     public GameObject deathscene;
     public Text dsc1, ds2;
+    public Slider healthBar;
+    public Text healthtxt;
 
     public bool isWhite = false,slow=true;
     public Image lightingImg;
@@ -58,10 +60,16 @@ public class FightSistem : MonoBehaviour
     void Start()
     {
         instance= this;
+        healthBar.value = 20;
         Application.targetFrameRate = 60;
         Read();
     }
     public int currentLine = 0;
+    public void UpdateHealth()
+    {
+        healthBar.value = life;
+        healthtxt.text = life.ToString();
+    }
     public void Read()
     {
         AudioSource.clip = music;
@@ -360,10 +368,15 @@ public class FightSistem : MonoBehaviour
         {
             case 0:
                 {
-                    yield return StartCoroutine(SpawnBones());
+                    yield return StartCoroutine(Atk1.ts.upd());
                     break;
                 }
             case 1:
+                {
+                    yield return StartCoroutine(SpawnBones());
+                    break;
+                }
+            case 2:
                 {
                     yield return StartCoroutine(Attack2());
                     break;
@@ -539,7 +552,7 @@ public class FightSistem : MonoBehaviour
         sword.gameObject.SetActive(true);
         attack = StartCoroutine(StartAttacking());
         fighting = true;
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.33f);
         inputt = StartCoroutine(Inputt());
         yield break;
     }
@@ -552,7 +565,7 @@ public class FightSistem : MonoBehaviour
         foreach(char c in s)
         {
             textBox.text += c;
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.035f);
         }
         isTyping = false;
         yield return new WaitForSeconds(0.3f);
@@ -597,7 +610,6 @@ public class FightSistem : MonoBehaviour
             if (!isTyping && (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return)))
             {
                 oninventory = false;
-                yield return new WaitForSeconds(0.1f);
                 switch (index)
                 {
                     case 0:

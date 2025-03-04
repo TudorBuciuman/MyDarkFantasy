@@ -50,6 +50,38 @@ public class SoundsManager : MonoBehaviour
             StartCoroutine(LoadAndPlayMusic(path, id));
         }
     }
+    public static IEnumerator PlaySongByName(string name)
+    {
+        string musicFilePath;
+
+#if UNITY_STANDALONE_WIN
+        string[] musicFiles = Directory.GetFiles(Path.Combine(Application.streamingAssetsPath, "Songs"), "*.ogg");
+        musicFilePath = Path.Combine(Application.streamingAssetsPath, $"Songs/{name}.ogg");
+#elif UNITY_ANDROID
+        musicFilePath = Application.streamingAssetsPath + $"/Songs/song{id}.ogg";
+        if (!musicFilePath.StartsWith("jar:file://"))
+        {
+            musicFilePath = "jar:file://" + musicFilePath;
+        }
+#endif
+
+        using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError("Error loading audio file: " + www.error);
+        }
+        else
+        {
+            AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+            if (clip != null)
+            {
+                instance.songs.clip = clip;
+                instance.songs.Play();
+            }
+        }
+    }
     public void PlaySceneSong(byte id)
     {
         string path = Path.Combine(Application.streamingAssetsPath, "Songs");

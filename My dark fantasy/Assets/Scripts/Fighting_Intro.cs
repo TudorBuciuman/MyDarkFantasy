@@ -28,24 +28,52 @@ public class Fighting_Intro : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
-        
-        switch (Voxeldata.PlayerData.scene)
+        if (Voxeldata.PlayerData.genocide)
         {
-            case 0:
-                SceneLoc = "Fighting";
-                break;
-            case 1:
-                SceneLoc = "Rising";
-                break;
-            case 2:
-                SceneLoc = "Falling";
-                break;
-            case 3:
-                SceneLoc = "Searching";
-                break;
-            case 4:
-                SceneLoc = "Finding";
-                break;
+            switch (Voxeldata.PlayerData.scene)
+            {
+                case 0:
+                    SceneLoc = "Fighting";
+                    break;
+                case 1:
+                    SceneLoc = "Falling";
+                    break;
+                case 2:
+                    SceneLoc = "Rising";
+                    startingclip[2] = startingclip[1];
+                    break;
+                case 3:
+                    SceneLoc = "Becoming";
+                    slow = false;
+                    startingclip[3] = clip[3];
+                    break;
+                case 4:
+                    SceneLoc = "Judgement";
+                    break;
+            }
+        }
+        else
+        {
+            switch (Voxeldata.PlayerData.scene)
+            {
+                case 0:
+                    SceneLoc = "Fighting";
+                    break;
+                case 1:
+                    SceneLoc = "Rising";
+                    break;
+                case 2:
+                    SceneLoc = "Falling";
+                    break;
+                case 3:
+                    SceneLoc = "Searching";
+                    slow = true;
+                    StartCoroutine(Searching());
+                    break;
+                case 4:
+                    SceneLoc = "Finding";
+                    break;
+            }
         }
         
         Read(SceneLoc);
@@ -54,18 +82,25 @@ public class Fighting_Intro : MonoBehaviour
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         audioSource.loop = false;
-
-        if (Voxeldata.PlayerData.scene != 2)
+        if (Voxeldata.PlayerData.scene != 2 && !Voxeldata.PlayerData.genocide)
         {
             audioSource.clip = startingclip[Voxeldata.PlayerData.scene];
             audioSource.Play();
         }
-        else
+        else if(!Voxeldata.PlayerData.genocide)
         {
             StartCoroutine(LoadAndPlayMusic(7));
         }
-
-        dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
+        else if(Voxeldata.PlayerData.scene == 1 && Voxeldata.PlayerData.genocide)
+        {
+            StartCoroutine(LoadAndPlayMusic(7));
+        }
+        else if (Voxeldata.PlayerData.genocide)
+        {
+            audioSource.clip = startingclip[Voxeldata.PlayerData.scene];
+            audioSource.Play();
+        }
+            dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
         dialogueLines = dialogueFile.text.Split('\n');
         for (int i = 0; i < dialogueLines.Length; i++)
         {
@@ -87,6 +122,12 @@ public class Fighting_Intro : MonoBehaviour
     public void PlaySong(int n)
     {
         audioSource.clip = clip[n];
+        audioSource.Play();
+    }
+    public IEnumerator Searching()
+    {
+        yield return new WaitForSeconds(105);
+        audioSource.clip = clip[3];
         audioSource.Play();
     }
     private IEnumerator LoadAndPlayMusic(byte id)
@@ -137,9 +178,9 @@ public class Fighting_Intro : MonoBehaviour
         }
         if (dialogueLines[currentLine][0] == '{')
         {
-            currentLine++;
             if(dialogueLines[currentLine][1] == '1')
             yield return StartCoroutine(YesOrYesButtons());
+            currentLine++;
         }
         if (dialogueLines[currentLine][0] == '>')
         {
@@ -237,7 +278,15 @@ public class Fighting_Intro : MonoBehaviour
 
     public IEnumerator BeforeQuit()
     {
-        switch (Voxeldata.PlayerData.scene) {
+        int c = Voxeldata.PlayerData.scene;
+        if (Voxeldata.PlayerData.genocide)
+        {
+            if (c == 1)
+                c = 2;
+            else if (c == 2)
+                c = 1;
+        }
+        switch (c) {
             case 0:
                 {
                     audioSource.Stop();
@@ -253,6 +302,7 @@ public class Fighting_Intro : MonoBehaviour
                     FightingImg.sprite = sprites[0];
                     FightingImg.gameObject.SetActive(true);
                     yield return new WaitForSeconds(30);
+                    //StartCoroutine(ExtremeGlitchVisualizer.inst.upd());
                     PlayerDataData.SawIntro = true;
                     FightingImg.gameObject.SetActive(false);
                     yield return new WaitForSeconds(215);
@@ -286,6 +336,15 @@ public class Fighting_Intro : MonoBehaviour
                     yield return new WaitForSeconds(10);
                     FightingImg.gameObject.SetActive(false);
                     yield return new WaitForSeconds(39f);
+                    PlayerDataData.SavePlayer();
+                    break;
+                }
+            case 3:
+                {
+                    dialogueTextUI.text = string.Empty;
+                    FightingImg.sprite = sprites[3];
+                    FightingImg.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(10);
                     PlayerDataData.SavePlayer();
                     break;
                 }
