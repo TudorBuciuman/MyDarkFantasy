@@ -119,6 +119,7 @@ public class DontForget
     public bool sawIntro;
     public byte typeofrun;
     public byte[] action;
+    public bool enteredWorld;
     public bool SawEnding;
     public byte timesSlept;
     public byte currentSeparateScene;

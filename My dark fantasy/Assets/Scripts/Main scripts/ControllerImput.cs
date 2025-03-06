@@ -19,7 +19,7 @@ public class ControllerImput : MonoBehaviour
     public itemsManager itemsManager;
     public SoundsManager soundTrack;
     public Toolbar toolbar;
-    public GameObject Hud1,Hud2,Hud3;
+    public GameObject Hud1,Hud2,Hud3,healthBar;
     public Transform cam;
     public static ControllerImput Instance;
 
@@ -172,10 +172,11 @@ public class ControllerImput : MonoBehaviour
     }
     public void ReRead()
     {
-        if (!UiManager.hud)
+        if (!UiManager.hud || LostInTheWorld.intro)
         {
             Hud1.SetActive(false);
             Hud2.SetActive(false);
+            healthBar.SetActive(false);
             Pos.gameObject.SetActive(false);
             Hud3.GetComponent<Image>().gameObject.SetActive(false);
             CancelInvoke(nameof(PosOut));
@@ -185,6 +186,7 @@ public class ControllerImput : MonoBehaviour
             InvokeRepeating(nameof(PosOut), 0, 0.05f);
             Hud1.SetActive(true);
             Hud2.SetActive(true);
+            healthBar.SetActive(true);
             Pos.gameObject.SetActive(true);
             Hud3.GetComponent<Image>().gameObject.SetActive(true);
         }

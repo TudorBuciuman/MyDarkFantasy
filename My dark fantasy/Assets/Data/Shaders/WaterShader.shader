@@ -1,88 +1,80 @@
 ﻿Shader "WaterShader" {
 
-	Properties {
-		_MainTex ("First Texture", 2D) = "white" {}
-		_SecondaryTex("Second Texture", 2D) = "white" {}
-	}
+    Properties {
+        _MainTex ("First Texture", 2D) = "white" {}
+        _SecondaryTex ("Second Texture", 2D) = "white" {}
+        _AmbientLight ("Ambient Light", Color) = (1,1,1,1)
+    }
 
-	SubShader {
-		
-		Tags {"Queue"="Transparent" "RenderType"="Transparent"}
-		LOD 100
-		Lighting Off
-		ZWrite Off
-		Blend SrcAlpha OneMinusSrcAlpha
+    SubShader {
 
-		Pass {
-		
-			CGPROGRAM
-				#pragma vertex vertFunction
-				#pragma fragment fragFunction
-				#pragma target 2.0
+        Tags {"Queue"="Transparent" "RenderType"="Transparent"}
+        LOD 100
+        Lighting Off
+        ZWrite Off
+        Blend SrcAlpha OneMinusSrcAlpha
 
-				#include "UnityCG.cginc"
+        Pass {
+        
+            CGPROGRAM
+                #pragma vertex vertFunction
+                #pragma fragment fragFunction
+                #pragma target 2.0
 
-				struct appdata {
-				
-					float4 vertex : POSITION;
-					float2 uv : TEXCOORD0;
-					float4 color : COLOR;
+                #include "UnityCG.cginc"
 
-				};
+                struct appdata {
+                    float4 vertex : POSITION;
+                    float2 uv : TEXCOORD0;
+                    float4 color : COLOR;
+                };
 
-				struct v2f {
-				
-					float4 vertex : SV_POSITION;
-					float2 uv : TEXCOORD0;
-					float4 color : COLOR;
+                struct v2f {
+                    float4 vertex : SV_POSITION;
+                    float2 uv : TEXCOORD0;
+                    float4 color : COLOR;
+                };
 
-				};
+                sampler2D _MainTex;
+                sampler2D _SecondaryTex;
+                float4 _AmbientLight;  // Ambient light from RenderSettings
 
-				sampler2D _MainTex;
-				sampler2D _SecondaryTex;
-				float GlobalLightLevel;
-				float minGlobalLightLevel;
-				float maxGlobalLightLevel;
+                float GlobalLightLevel;
+                float minGlobalLightLevel;
+                float maxGlobalLightLevel;
 
-				v2f vertFunction (appdata v) {
-				
-					v2f o;
+                v2f vertFunction (appdata v) {
+                    v2f o;
+                    o.vertex = UnityObjectToClipPos(v.vertex);
+                    o.uv = v.uv;
+                    o.color = v.color;
+                    return o;
+                }
 
-					o.vertex = UnityObjectToClipPos(v.vertex);
-					o.uv = v.uv;
-					o.color = v.color;
+                fixed4 fragFunction (v2f i) : SV_Target {
+                    i.uv.x += (_SinTime.x * 0.5);
 
-					return o;
+                    fixed4 tex1 = tex2D (_MainTex, i.uv);
+                    fixed4 tex2 = tex2D(_SecondaryTex, i.uv);
 
-				}
+                    fixed4 col = lerp(tex1, tex2, 0.5 + (_SinTime.w * 0.5));
 
-				fixed4 fragFunction (v2f i) : SV_Target {
-				
-					i.uv.x += (_SinTime.x * 0.5);
+                    float shade = (maxGlobalLightLevel - minGlobalLightLevel) * GlobalLightLevel + minGlobalLightLevel;
+                    shade *= i.color.a;
+                    shade = clamp(1 - shade, minGlobalLightLevel, maxGlobalLightLevel);
 
-					fixed4 tex1 = tex2D (_MainTex, i.uv);
-					fixed4 tex2 = tex2D(_SecondaryTex, i.uv);
+                    clip(col.a - 1);
+                    col = lerp(col, float4(0, 0, 0, 1), shade);
 
-					fixed4 col = lerp(tex1, tex2, 0.5 + (_SinTime.w * 0.5));
+                    // Apply ambient light intensity
+                    col.rgb *= _AmbientLight.rgb;
 
-					float shade = (maxGlobalLightLevel - minGlobalLightLevel) * GlobalLightLevel + minGlobalLightLevel;
-					shade *= i.color.a;
-					shade = clamp (1 - shade, minGlobalLightLevel, maxGlobalLightLevel);
+                    col.a = 0.5f;
 
-					clip(col.a - 1);
-					col = lerp(col, float4(0, 0, 0, 1), shade);
+                    return col;
+                }
 
-					col.a = 0.5f;
-
-					return col;
-
-				}
-
-				ENDCG
-
-		}
-
-
-	}
-
+            ENDCG
+        }
+    }
 }
