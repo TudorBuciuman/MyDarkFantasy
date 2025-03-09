@@ -62,7 +62,7 @@ public class BookManager : MonoBehaviour
             {
                 CloseBook();
             }
-            yield return null;
+            yield return new WaitForSeconds(0.01f);
         }
     }
     public void CloseBook()

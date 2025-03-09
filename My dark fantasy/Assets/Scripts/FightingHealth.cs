@@ -47,7 +47,9 @@ public class FightingHealth : MonoBehaviour
             if (timepassed<=0)
             {
                 FightSistem.life-= damageAmount;
-                FightSistem.instance.UpdateHealth();
+                FightSistem.instance.healthslider.value = FightSistem.life;
+                FightSistem.instance.hlt.text = FightSistem.life.ToString();
+
                 timepassed = 2;
                 StartCoroutine(Heartdammage());
                 if (FightSistem.life <= 0)

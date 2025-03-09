@@ -282,6 +282,8 @@ public class UiManager : MonoBehaviour
     {
         a.gameObject.SetActive(false);
         b.gameObject.SetActive(true);
+        d.gameObject.SetActive(false);
+        e.gameObject.SetActive(false);
     }
     public void TotalSettings()
     {
@@ -301,6 +303,8 @@ public class UiManager : MonoBehaviour
     {
         a.SetActive(true);
         b.SetActive(false);
+        d.gameObject.SetActive(false);
+        e.gameObject.SetActive(false);
     }
     public void UpdateRend()
     {

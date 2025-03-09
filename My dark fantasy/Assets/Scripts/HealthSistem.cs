@@ -34,7 +34,6 @@ public class HealthSistem : MonoBehaviour
             health=maxHealth;
             Toolbar.instance.SaveProgress();
             Voxeldata.PlayerData.deaths++;
-            BloodOnTheLeaves.SceneNum = 0;
             SceneManager.LoadScene("Blood");
         }
         else

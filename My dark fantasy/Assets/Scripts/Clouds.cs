@@ -20,15 +20,17 @@ public class Clouds : MonoBehaviour {
     Dictionary<Vector2Int, GameObject> clouds = new Dictionary<Vector2Int, GameObject>();
 
     private void Start() {
-        cloudTexWidth = cloudPattern.width;
-        cloudTileSize = 16;
-        offset = new Vector3Int(-(cloudTexWidth / 2), 0, -(cloudTexWidth / 2));
+        if (LostInTheWorld.intro)
+        {
+            cloudTexWidth = cloudPattern.width;
+            cloudTileSize = 16;
+            offset = new Vector3Int(-(cloudTexWidth / 2), 0, -(cloudTexWidth / 2));
 
-        transform.position = new Vector3(0, cloudHeight, 0);
+            transform.position = new Vector3(0, cloudHeight, 0);
 
-        LoadCloudData();
-        CreateClouds();       
-
+            LoadCloudData();
+            CreateClouds();
+        }
     }
 
     private void LoadCloudData () {

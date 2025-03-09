@@ -847,7 +847,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &203114047
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2217,7 +2217,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 449.58984, y: -543.26}
+  m_AnchoredPosition: {x: 449.59, y: -543.26}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &477846048
@@ -3058,7 +3058,7 @@ GameObject:
   - component: {fileID: 559260110}
   - component: {fileID: 559260109}
   m_Layer: 5
-  m_Name: BookManager
+  m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3957,7 +3957,6 @@ GameObject:
   m_Component:
   - component: {fileID: 705507995}
   - component: {fileID: 705507994}
-  - component: {fileID: 705507996}
   m_Layer: 0
   m_Name: Sun
   m_TagString: Untagged
@@ -4042,20 +4041,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!114 &705507996
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 705507993}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1398e99d09529164fb2b205eb86b814e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Skybox: {fileID: 2100000, guid: da296afa0e361a145a0e8432f009e6f9, type: 2}
-  water: {fileID: 2100000, guid: 7686bfcc2457a9d479fd6340f2317ec1, type: 2}
 --- !u!1 &706263598
 GameObject:
   m_ObjectHideFlags: 0
@@ -4268,7 +4253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.9218044, g: 0.93333334, b: 0.13725486, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4693,7 +4678,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &777175813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4898,18 +4883,18 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: f935b8d08526c6f44a83685a9cadf77d, type: 3}
-    m_FontSize: 56
+    m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 300
     m_Alignment: 0
     m_AlignByGeometry: 0
-    m_RichText: 0
+    m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: 132 -22 -222
 --- !u!222 &782628377
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4935,8 +4920,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 421, y: -240}
-  m_SizeDelta: {x: 800, y: 100}
+  m_AnchoredPosition: {x: 460, y: -240}
+  m_SizeDelta: {x: 850, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &798209894
 GameObject:
@@ -5977,7 +5962,6 @@ MonoBehaviour:
   Hud1: {fileID: 1934662809}
   Hud2: {fileID: 236393063}
   Hud3: {fileID: 1922894751}
-  healthBar: {fileID: 490989622}
   cam: {fileID: 963194228}
   movementSpeed: 5
   movementAcceleration: 5
@@ -6146,6 +6130,7 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
+  - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -6376,6 +6361,21 @@ MonoBehaviour:
   m_DefaultActionMap: Android
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1398e99d09529164fb2b205eb86b814e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Skybox: {fileID: 2100000, guid: da296afa0e361a145a0e8432f009e6f9, type: 2}
+  water: {fileID: 2100000, guid: 7686bfcc2457a9d479fd6340f2317ec1, type: 2}
+  canvas: {fileID: 2032523343}
 --- !u!1 &971897615
 GameObject:
   m_ObjectHideFlags: 0
@@ -8824,8 +8824,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -211, y: 20}
-  m_SizeDelta: {x: 370, y: 500}
+  m_AnchoredPosition: {x: -211.76497, y: 19.58539}
+  m_SizeDelta: {x: 370.5664, y: 503.0516}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1349391307
 MonoBehaviour:
@@ -8849,7 +8849,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: b24522cfefbe77b4fbc646d741da6c90, type: 3}
-    m_FontSize: 40
+    m_FontSize: 32
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -10072,7 +10072,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 3.8549347, y: -0.5}
+  m_AnchoredPosition: {x: 3.8549366, y: -0.5}
   m_SizeDelta: {x: -9.510126, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1488151231
@@ -10247,7 +10247,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: 60
 --- !u!222 &1538991413
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10443,7 +10443,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1584624450
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13206,7 +13206,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 219, y: 20}
+  m_AnchoredPosition: {x: 219, y: 19.58539}
   m_SizeDelta: {x: 370.5664, y: 503.0516}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1965374139
@@ -13231,7 +13231,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: b24522cfefbe77b4fbc646d741da6c90, type: 3}
-    m_FontSize: 40
+    m_FontSize: 32
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -13242,7 +13242,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: pag2
+  m_Text: pag1
 --- !u!222 &1965374140
 CanvasRenderer:
   m_ObjectHideFlags: 0

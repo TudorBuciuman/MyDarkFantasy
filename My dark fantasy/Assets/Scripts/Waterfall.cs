@@ -53,10 +53,10 @@ public class Waterfall : MonoBehaviour
             pt1 = true;
             StartCoroutine(part1());
         }
-        if(!txtpt2 && transform.position.x > 0)
+        if(!txtpt2 && transform.position.x > -26)
         {
             txtpt2 = true;
-            dialogueTextUI.rectTransform.localPosition = new Vector3(1300, dialogueTextUI.rectTransform.localPosition.y, dialogueTextUI.rectTransform.localPosition.z);
+            dialogueTextUI.rectTransform.localPosition = new Vector3(800, dialogueTextUI.rectTransform.localPosition.y, dialogueTextUI.rectTransform.localPosition.z);
         }
     }
     public void Read()
@@ -132,7 +132,7 @@ public class Waterfall : MonoBehaviour
         partt1();
         yield return new WaitForSeconds(186);
         source.clip = clip3;
-        source.volume = 75;
+        source.volume = 85;
         source.Play();
         yield return new WaitForSeconds(55);
         StartCoroutine(MakeLight(4));

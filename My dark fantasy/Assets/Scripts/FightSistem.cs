@@ -46,30 +46,23 @@ public class FightSistem : MonoBehaviour
 
     public GameObject deathscene;
     public Text dsc1, ds2;
-    public Slider healthBar;
-    public Text healthtxt;
 
     public bool isWhite = false,slow=true;
     public Image lightingImg;
     public Coroutine textManager;
     public GameObject heartImgInv, Inventory;
-    public Text textBox;
+    public Slider healthslider;
+    public Text textBox,hlt;
     public Image[] options=new Image[4];
     public Sprite[] sprites=new Sprite[8];
     private readonly string s = "Yeezus";
     void Start()
     {
         instance= this;
-        healthBar.value = 20;
         Application.targetFrameRate = 60;
         Read();
     }
     public int currentLine = 0;
-    public void UpdateHealth()
-    {
-        healthBar.value = life;
-        healthtxt.text = life.ToString();
-    }
     public void Read()
     {
         AudioSource.clip = music;
@@ -552,7 +545,7 @@ public class FightSistem : MonoBehaviour
         sword.gameObject.SetActive(true);
         attack = StartCoroutine(StartAttacking());
         fighting = true;
-        yield return new WaitForSeconds(0.33f);
+        yield return new WaitForSeconds(0.2f);
         inputt = StartCoroutine(Inputt());
         yield break;
     }
@@ -565,7 +558,7 @@ public class FightSistem : MonoBehaviour
         foreach(char c in s)
         {
             textBox.text += c;
-            yield return new WaitForSeconds(0.035f);
+            yield return new WaitForSeconds(0.05f);
         }
         isTyping = false;
         yield return new WaitForSeconds(0.3f);
@@ -610,6 +603,7 @@ public class FightSistem : MonoBehaviour
             if (!isTyping && (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return)))
             {
                 oninventory = false;
+                yield return new WaitForSeconds(0.1f);
                 switch (index)
                 {
                     case 0:

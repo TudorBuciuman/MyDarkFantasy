@@ -10,16 +10,15 @@ public class BloodOnTheLeaves : MonoBehaviour
 {
     public Image lightingImg;
     public AudioClip[] clip=new AudioClip[10];
-    public Image FightingImg,twistedImg,background;
+    public Image FightingImg;
     public Sprite[] sprites = new Sprite[5];
     public AudioSource audioSource;
     public TextAsset dialogueFile;
     public Text dialogueTextUI;
     public string[] dialogueLines;
     public static string SceneLoc = "Blood on the leaves";
-    public static byte SceneNum = 4;
+    public static byte SceneNum = 0;
     int currentLine = 0;
-    float waittime = 1.4f;
     bool slow = false, isWhite = false;
 
     void Start()
@@ -31,7 +30,6 @@ public class BloodOnTheLeaves : MonoBehaviour
             case 0:
                 SceneLoc = "Blood on the leaves";
                 audioSource.clip = clip[0];
-                waittime = 1.3f;
                 audioSource.Play();
                 break;
             case 1:
@@ -46,7 +44,6 @@ public class BloodOnTheLeaves : MonoBehaviour
                 break;
             case 4:
                 SceneLoc = "Guilt trip";
-                waittime = 1.2f;
                 StartCoroutine(LoadAndPlayMusic(9));
                 break;
             case 5:
@@ -58,31 +55,10 @@ public class BloodOnTheLeaves : MonoBehaviour
             case 6:
                 SceneLoc = "The winner takes it all";
                 slow = false;
-                audioSource.clip = clip[7];
+                audioSource.clip = clip[2];
                 audioSource.Play();
                 break;
-            case 7:
-                SceneLoc = "Cold";
-                slow = false;
-                audioSource.clip = clip[3];
-                audioSource.Play();
-                break;
-            case 8:
-                SceneLoc = "Gone";
-                slow = false;
-                audioSource.clip = clip[4];
-                audioSource.Play();
-                break;
-            case 9:
-                SceneLoc = "Never see me again";
-                slow = false;
-                audioSource.loop = true;
-                waittime = 0.5f;
-                StartCoroutine(MakeImageAppear(10,twistedImg, new Color32(171, 171, 171, 255)));
-                StartCoroutine(MakeImageAppear(10,background,new Color32(148,111,49,255)));
-                audioSource.clip = clip[5];
-                audioSource.Play();
-                break;
+
         }
         Read(SceneLoc);
     }
@@ -103,15 +79,7 @@ public class BloodOnTheLeaves : MonoBehaviour
     public IEnumerator Lighting()
     {
         if (!isWhite)
-        {
-            if (SceneNum==0)
-            {
-                audioSource.clip = clip[6];
-                audioSource.Play();
-            }
             yield return StartCoroutine(MakeLight(0.5f));
-
-        }
         else
             yield return StartCoroutine(MakeDark(0.5f));
         isWhite = !isWhite;
@@ -182,26 +150,9 @@ public class BloodOnTheLeaves : MonoBehaviour
             yield return new WaitForSeconds(spd); //typing speed, big=slow
         }
         currentLine++;
-        yield return new WaitForSeconds(waittime);
+        yield return new WaitForSeconds(1.4f);
         StartCoroutine(DisplayNextLine());
 
-    }
-    public IEnumerator MakeImageAppear(float time,Image Img,Color32 clr)
-    {
-        Img.gameObject.SetActive(true);
-        Color startColor = Img.color;
-
-        Color targetColor = clr;
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < time)
-        {
-            Img.color = Color.Lerp(startColor, targetColor, elapsedTime / time);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
     }
     public IEnumerator MakeLight(float time)
     {
@@ -247,23 +198,8 @@ public class BloodOnTheLeaves : MonoBehaviour
             audioSource.clip = clip[2];
             audioSource.Play();
         }
-        else if (SceneNum == 9)
-        {
-            StartCoroutine(NormalRoute());
-        }
-            yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(10);
         SceneManager.LoadScene("Intro");
-    }
-    public IEnumerator NormalRoute()
-    {
-        audioSource.clip = clip[6];
-        audioSource.loop = false;
-        audioSource.Play();
-        twistedImg.gameObject.SetActive(false);
-        background.color = Color.black;
-        yield return StartCoroutine(MakeLight(1));
-        yield return new WaitForSeconds(1.2f);
-        yield return StartCoroutine(MakeDark(8));
     }
     public IEnumerator GetInput()
     {
