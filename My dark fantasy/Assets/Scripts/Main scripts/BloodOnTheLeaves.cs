@@ -58,7 +58,12 @@ public class BloodOnTheLeaves : MonoBehaviour
                 audioSource.clip = clip[2];
                 audioSource.Play();
                 break;
-
+            case 7:
+                SceneLoc = "Cold";
+                slow = false;
+                audioSource.clip = clip[4];
+                audioSource.Play();
+                break;
         }
         Read(SceneLoc);
     }
