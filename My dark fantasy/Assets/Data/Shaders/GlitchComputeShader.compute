@@ -1,0 +1,82 @@
+#pragma kernel CSMain
+
+RWTexture2D<float4> Result;
+cbuffer Params
+{
+    float _Time;
+    float _Intensity;
+    float _AmplitudeMultiplier;
+    int _TextureWidth;
+    int _TextureHeight;
+}
+
+// Random generator for glitch effects
+float random(float2 st)
+{
+    return frac(sin(dot(st.xy, float2(12.9898, 78.233))) * 43758.5453123);
+}
+
+// Noise function for distortion
+float perlinNoise(float2 pos)
+{
+    return frac(sin(dot(pos, float2(35.1234, 91.3456))) * 43758.5453123);
+}
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= _TextureWidth || id.y >= _TextureHeight)
+        return;
+
+    float2 uv = id.xy / float2(_TextureWidth, _TextureHeight);
+    float noise = perlinNoise(uv * 0.3 + _Time * 5.0) * _AmplitudeMultiplier;
+
+    // **RGB Chaos Shifting**
+    float r = abs(sin(noise * 8.0 + _Time * 20.0)) * _AmplitudeMultiplier;
+    float g = abs(sin(noise * 10.0 - _Time * 15.0)) * _AmplitudeMultiplier;
+    float b = abs(sin(noise * 12.0 + _Time * 10.0)) * _AmplitudeMultiplier;
+
+    // **Bass EXPLOSION Glitch Waves**
+    float bassEffect = sin(_Time * 2.0) * 0.2 * _AmplitudeMultiplier;
+    uv.x += bassEffect * sin(uv.y * 10.0);
+    uv.y += bassEffect * cos(uv.x * 10.0);
+
+    // **Tearing & Pixel Stretching (Looks Like Corrupt Data)**
+    if (random(uv) < 0.04 * _AmplitudeMultiplier)
+    {
+        uv.x += random(uv) * 0.3 * _AmplitudeMultiplier;
+    }
+    if (random(uv) < 0.02 * _AmplitudeMultiplier)
+    {
+        uv.y += random(uv) * 0.3 * _AmplitudeMultiplier;
+    }
+
+    // **Flickering & Screen Interference**
+    float flicker = step(0.5, sin(_Time * 25.0 + uv.y * 60.0) * 0.5 + 0.5);
+
+    // **Screen Bending (Like a CRT glitch)**
+    uv.x += sin(uv.y * 10.0 + _Time * 5.0) * 0.02;
+    uv.y += cos(uv.x * 10.0 - _Time * 5.0) * 0.02;
+
+    // **Color Inversion Spikes (For "Flashbang" Moments)**
+    if (random(uv) < 0.005 * _AmplitudeMultiplier)
+    {
+        r = 1.0 - r;
+        g = 1.0 - g;
+        b = 1.0 - b;
+    }
+
+    // **Final Chromatic Aberration & Distortion**
+    float redOffset = sin(_Time * 4.0 + _AmplitudeMultiplier) * 0.3;
+    float greenOffset = sin(_Time * 5.0 - _AmplitudeMultiplier) * 0.3;
+    float blueOffset = sin(_Time * 6.0 + _AmplitudeMultiplier) * 0.3;
+
+    float4 color = float4(
+        clamp(r + redOffset, 0.0, 1.0),
+        clamp(g + greenOffset, 0.0, 1.0),
+        clamp(b + blueOffset, 0.0, 1.0),
+        1.0
+    ) * flicker; // Apply flickering effect
+
+    Result[id.xy] = color;
+}
