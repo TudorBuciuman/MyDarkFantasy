@@ -81,12 +81,7 @@ public class Atk1 : MonoBehaviour
                 xPos = posx-2;
             }
             GameObject fire = Instantiate(sineFirePrefab, new Vector3(xPos, yPos, 0), Quaternion.identity, parent.transform);
-            SineFire fireScript = fire.GetComponent<SineFire>();
-            fireScript.vspeed = -9f;
-            fireScript.s = 0;
-            fireScript.add = (i == 1);
-            
-            
+            fire.GetComponent<SineFire>().add = (i == 1);
         }
         off+=Time.deltaTime;
 

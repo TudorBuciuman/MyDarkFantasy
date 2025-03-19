@@ -21,7 +21,8 @@ public class FightSistem : MonoBehaviour
     public Image bullet;
     public Image character;
 
-    public AudioClip swordsound,music,deathmusic;
+    public AudioClip swordsound,music,goodbye;
+    public AudioClip switch_sound, damage, heal, starting;
     public AudioSource AudioSource,SoundsSource;
 
     public Text text;
@@ -31,60 +32,94 @@ public class FightSistem : MonoBehaviour
     public Image sword;
     public GameObject fightobj;
 
-    public static byte deaths = 0;
+    private static byte deaths = 0;
     public static float life = 20;
-    public byte enemylife = 255;
-    public byte fightnr = 0;
+    private byte fightnr = 0;
 
     public Coroutine attack;
     public Coroutine inputt;
 
-    public bool isTyping=false;
+    private bool isTyping=false;
     public Text dialogueTextUI;
     public TextAsset dialogueFile;
-    public string[] dialogueLines;
+    private string[] dialogueLines;
 
     public GameObject deathscene;
     public Text dsc1, ds2;
 
-    public bool isWhite = false,slow=true;
+    private bool isWhite = false,slow=true;
     public Image lightingImg;
     public Coroutine textManager;
     public GameObject heartImgInv, Inventory;
     public Slider healthslider;
     public Text textBox,hlt;
+    public GameObject selectheart;
     public Image[] options=new Image[4];
     public Sprite[] sprites=new Sprite[8];
     private readonly string s = "Yeezus";
+    public struct FightAct
+    {
+        public byte attacks;
+        public byte deaths;
+        public byte acts;
+        public byte spares;
+        public bool gen, pac;
+    };
+    private static FightAct fightAct;
     void Start()
     {
         instance= this;
         Application.targetFrameRate = 60;
         Read();
     }
-    public int currentLine = 0;
+    private int currentLine = 0;
     public void Read()
     {
-        AudioSource.clip = music;
-        AudioSource.Play();
-        StartCoroutine(Musicdellay());
-        dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
-        dialogueLines = dialogueFile.text.Split('\n');
-        for (int i = 0; i < dialogueLines.Length; i++)
+        if (deaths!=0)
         {
-            dialogueLines[i] = dialogueLines[i].Replace("\\n ", "\n");
+            currentLine = 12;
+            AudioSource.clip = music;
+            AudioSource.loop = true;
+            AudioSource.Play();
+            dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
+            dialogueLines = dialogueFile.text.Split('\n');
+            for (int i = 0; i < dialogueLines.Length; i++)
+            {
+                dialogueLines[i] = dialogueLines[i].Replace("\\n ", "\n");
+            }
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            StartCoroutine(DisplayNextLine());
         }
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        StartCoroutine(DisplayNextLine());
+        else
+        {
+            AudioSource.clip = goodbye;
+            AudioSource.Play();
+            StartCoroutine(Musicdellay());
+            dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
+            dialogueLines = dialogueFile.text.Split('\n');
+            for (int i = 0; i < dialogueLines.Length; i++)
+            {
+                dialogueLines[i] = dialogueLines[i].Replace("\\n ", "\n");
+            }
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            StartCoroutine(DisplayNextLine());
+        }
     }
     public IEnumerator Musicdellay()
     {
         yield return new WaitForSeconds(24);
         AudioSource.Pause();
-        yield return new WaitForSeconds(6.5f);
-        AudioSource.UnPause();
-
+        AudioSource.clip = music;
+        AudioSource.loop = true;
+        yield return new WaitForSeconds(9f);
+        AudioSource.Play();
+    }
+    public void PlayDamageSound()
+    {
+        SoundsSource.clip = damage;
+        SoundsSource.Play();
     }
     public IEnumerator PlayDeathMusic()
     {
@@ -150,7 +185,15 @@ public class FightSistem : MonoBehaviour
         }
 
     }
-
+    public IEnumerator PacifistDeath()
+    {
+        //flying projectiles
+        //it ends after dying
+        //custom death animation
+        //death anthem
+        //it starts then rising
+        yield return null;
+    }
     public IEnumerator DisplayNextLine()
     {
         if (currentLine < dialogueLines.Length)
@@ -215,7 +258,7 @@ public class FightSistem : MonoBehaviour
             //PlayerDataData.SavePlayerFile();
             dialogueTextUI.text = null;
             yield return new WaitForSeconds(5);
-            //SceneManager.LoadScene("Intro");
+            SceneManager.LoadScene("Intro");
         }
     }
 
@@ -234,7 +277,10 @@ public class FightSistem : MonoBehaviour
                     dammage = 0;
                 else
                     dammage = dammage / 50 + 10;
-                Debug.Log(dammage);
+                if (dammage > 0)
+                {
+                    fightAct.attacks++;
+                }
                 StopCoroutine(attack);
                 fighting = false;
                 StartCoroutine(Calculate());
@@ -366,7 +412,7 @@ public class FightSistem : MonoBehaviour
                 }
             case 1:
                 {
-                    yield return StartCoroutine(SpawnBones());
+                    yield return StartCoroutine(Atk2.ts.upd());
                     break;
                 }
             case 2:
@@ -374,13 +420,27 @@ public class FightSistem : MonoBehaviour
                     yield return StartCoroutine(Attack2());
                     break;
                 }
-                /*
-            case 10:
+            case 3:
                 {
-                    yield return StartCoroutine(ItsSoOver());
+                    yield return StartCoroutine(Atk2.ts.upd());
                     break;
                 }
-                */
+            case 4:
+                {
+                    yield return StartCoroutine(Atk1.ts.upd());
+                    break;
+                }
+            case 5:
+                {
+                    yield return StartCoroutine(Attack2());
+                    break;
+                }
+            case 6:
+                {
+                    yield return StartCoroutine(Atk2.ts.upd());
+                    fightnr = 255;
+                    break;
+                }
             default:
                 {
                     yield return StartCoroutine(Attack1());
@@ -436,16 +496,29 @@ public class FightSistem : MonoBehaviour
         switch(fightnr)
         {
             case 0:
-                yield return textManager = StartCoroutine(Write("*It's already too late"));
+                yield return textManager = StartCoroutine(Write("* It's already too late"));
                 break;
             case 1:
-                yield return textManager = StartCoroutine(Write("*A flicker of light fills the world"));
+                yield return textManager = StartCoroutine(Write("* A flicker of light fills \n the world"));
                 break;
             case 2:
-                yield return textManager = StartCoroutine(Write("*Your life starts to flicker before your eyes"));
+                yield return textManager = StartCoroutine(Write("* Your life starts to flicker \n before your eyes"));
                 break;
             case 3:
-                yield return textManager = StartCoroutine(Write("*You can't end this"));
+                yield return textManager = StartCoroutine(Write("* Your best friend!"));
+                break;
+            case 4:
+                yield return textManager = StartCoroutine(Write("* You can't end this"));
+                break;
+            case 5:
+                yield return textManager = StartCoroutine(Write("* you suddenly feel like \n taking a nap"));
+                break;
+            case 6:
+                yield return textManager = StartCoroutine(Write("* you might want to cry \n but you have no eyes.."));
+                break;
+            default:
+                yield return textManager = StartCoroutine(Write("* the end has come..."));
+
                 break;
         }
     }
@@ -550,6 +623,9 @@ public class FightSistem : MonoBehaviour
         yield break;
     }
     string message;
+    byte actnum=0;
+    bool acted = false;
+    static bool diedTxt=false;
     public IEnumerator Write(string s)
     {
         isTyping = true;
@@ -565,27 +641,224 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Spare()
     {
+        textBox.text = "  *Spare";
+        heartImgInv.SetActive(false);
+        selectheart.SetActive(true);
+        while (true)
+        {
+            if ((Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Z) || Input.GetKeyUp(KeyCode.Return)))
+            {
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
+                heartImgInv.SetActive(true);
+                selectheart.SetActive(false);
+                break;
+            }
+            if (Input.GetKeyUp(KeyCode.X))
+            {
+                heartImgInv.SetActive(true);
+                selectheart.SetActive(false);
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
+                textBox.text = null;
+                yield return StartCoroutine(AssignText());
+                yield break;
+            }
+            yield return null;
+        }
+        fightAct.spares++;
         yield return StartCoroutine(Write("*But He didn't accept."));
+
     }
     public IEnumerator Item()
     {
-        yield return StartCoroutine(Write("*But you have nothing"));
+        textBox.text = "  *Pie";
+        heartImgInv.SetActive(false);
+        selectheart.SetActive(true);
+        while (true)
+        {
+            if ((Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Z) || Input.GetKeyUp(KeyCode.Return)))
+            {
+                heartImgInv.SetActive(true);
+                selectheart.SetActive(false);
+                break;
+            }
+            if (Input.GetKeyUp(KeyCode.X))
+            {
+                heartImgInv.SetActive(true);
+                selectheart.SetActive(false);
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
+                textBox.text = null;
+                yield return StartCoroutine(AssignText());
+                yield break;
+            }
+            yield return null;
+        }
+        SoundsSource.clip = heal;
+        SoundsSource.Play();
+        if (life < 10)
+        {
+            life += 10;
+            healthslider.value = life;
+            hlt.text = life.ToString();
+            yield return StartCoroutine(Write("* You recovered 10hp"));
+        }
+        else
+        {
+            life = 20;
+            healthslider.value = life;
+            hlt.text = 20.ToString();
+            yield return StartCoroutine(Write("* You're healed"));
+
+        }
         yield return null;
     }
     public IEnumerator Act()
     {
-        if (deaths==0)
+        textBox.text = "  * YEEZUS";
+        selectheart.SetActive(true);
+        heartImgInv.SetActive(false);
+        while (true)
         {
-            yield return StartCoroutine(Write("*You called for help."));
-            yield return new WaitForSeconds(1);
-            yield return StartCoroutine(Write("*But nobody came.."));
-            yield return null;
+            if ((Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Z) || Input.GetKeyUp(KeyCode.Return)))
+            {
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
+                
+                yield return null;
+                break;
+            }
+            if (Input.GetKeyUp(KeyCode.X))
+            {
+                heartImgInv.SetActive(true);
+                selectheart.SetActive(false);
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
+                textBox.text = null;
+                yield return StartCoroutine(AssignText());
+                yield break;
+            }
+                yield return null;
+        }
+        yield return StartCoroutine(ActText());
+        if (acted)
+        {
+            heartImgInv.SetActive(true);
+            selectheart.SetActive(false);
+            fightAct.acts++;
+            if (deaths == 0 && !diedTxt)
+            {
+                diedTxt = true;
+                fightAct.acts=0;
+                yield return StartCoroutine(Write("* You called for help."));
+                yield return new WaitForSeconds(1);
+                yield return StartCoroutine(Write("* But nobody came.."));
+                yield return new WaitForSeconds(1);
+                yield return StartCoroutine(Write("* soo sad!"));
+                yield return null;
+            }
+            else if (deaths == 1 && !diedTxt)
+            {
+                diedTxt = true;
+                fightAct.acts = 0;
+                yield return StartCoroutine(Write("* You told Him that He has \n killed you too many times"));
+                yield return new WaitForSeconds(1);
+                yield return StartCoroutine(Write("* He nods sadly."));
+                yield return null;
+            }
+            else
+            {
+                switch (actnum)
+                {
+                    case 0:
+                        yield return StartCoroutine(Write("* You tell YEEZUS that He will \nface the consequences for what \nHe did."));
+                        yield return new WaitForSeconds(1);
+                        yield return StartCoroutine(Write("* His breathing only gets \nfunny"));
+                        break;
+                    case 1:
+                        yield return StartCoroutine(Write("* You bow to him."));
+                        yield return new WaitForSeconds(1);
+                        yield return StartCoroutine(Write("* This won't help.."));
+                        break;
+                    case 2:
+                        yield return StartCoroutine(Write("* The Justice feels you soul."));
+                        yield return new WaitForSeconds(0.5f);
+                        yield return StartCoroutine(Write("* Justice will be served.."));
+                        break;
+                    case 3:
+                        yield return StartCoroutine(Write("* Don't cry there is always \ntomorrow!"));
+                        yield return new WaitForSeconds(1);
+                        yield return StartCoroutine(Write("* But this time.. \nit's over.."));
+                        break;
+                    case 4:
+                        yield return StartCoroutine(Write("* This is what you'll do \nif you lose."));
+                        break;
+                    case 5:
+                        yield return StartCoroutine(Write("* He agrees to take your soul."));
+                        yield return new WaitForSeconds(0.5f);
+                        yield return StartCoroutine(Write("* While you get nothing."));
+                        break;
+                    default:
+                        yield return StartCoroutine(Write("* YEEZUS - In blood and flesh \n* The king is dead, \nyet the crown still awaits."));
+                        yield return new WaitForSeconds(1.5f);
+
+                        break;
+                }
+                actnum++;
+                yield return null;
+            }
         }
         else
         {
-            yield return StartCoroutine(Write("*You told Him that he's \n killed you \n many times"));
-            yield return new WaitForSeconds(1);
-            yield return StartCoroutine(Write("*He nods sadly."));
+            StartCoroutine(Act());
+        }
+    }
+    public IEnumerator ActText()
+    {
+        acted = false;
+        switch (actnum)
+        {
+            case 0:
+                textBox.text = "  * Talk";
+                break;
+            case 1:
+                textBox.text = "  * Bow";
+                break;
+            case 2:
+                textBox.text = "  * Justice";
+                break;
+            case 3:
+                textBox.text = "  * Cry";
+                break;
+            case 4:
+                textBox.text = "  * Burn";
+                break;
+            case 5:
+                textBox.text = "  * Agreement";
+                break;
+            default:
+                textBox.text = "  * Check";
+                break;
+        }
+        while (true)
+        {
+            if ((Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Z) || Input.GetKeyUp(KeyCode.Return)))
+            {
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
+                heartImgInv.SetActive(true);
+                selectheart.SetActive(false);
+                acted = true;
+                yield break;
+            }
+            if (Input.GetKeyUp(KeyCode.X))
+            {
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
+                textBox.text = null;
+                yield break;
+            }
             yield return null;
         }
     }
@@ -593,15 +866,27 @@ public class FightSistem : MonoBehaviour
     {
         while (oninventory)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+            if (Input.GetKeyUp(KeyCode.LeftArrow)) {
                 UpdateIndex(-1);
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            else if (Input.GetKeyUp(KeyCode.RightArrow))
             {
                 UpdateIndex(1);
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
             }
-            if (!isTyping && (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return)))
+            if ((Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Z) || Input.GetKeyUp(KeyCode.Return)))
             {
+                if (isTyping)
+                {
+                    StopCoroutine(textManager);
+                    textBox.text = message;
+                    isTyping = false;
+                }
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
                 oninventory = false;
                 yield return new WaitForSeconds(0.1f);
                 switch (index)
@@ -634,7 +919,7 @@ public class FightSistem : MonoBehaviour
                 textBox.text = message;
                 isTyping = false;
             }
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
 
     }
