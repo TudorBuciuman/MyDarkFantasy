@@ -27,7 +27,7 @@ public class FightSistem : MonoBehaviour
 
     public Text text;
     public GameObject heart;
-    public GameObject arena,truearena;
+    public GameObject arena,secondarena;
     public GameObject projectiles,projectile1;
     public Image sword;
     public GameObject fightobj;
@@ -70,6 +70,7 @@ public class FightSistem : MonoBehaviour
     {
         instance= this;
         Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 1;
         Read();
     }
     private int currentLine = 0;
@@ -126,28 +127,43 @@ public class FightSistem : MonoBehaviour
         deaths++;
         AudioSource.Stop();
         StopAllCoroutines();
+        ds2.text = null;
+        ds2.gameObject.SetActive(true);
         deathscene.SetActive(true);
         yield return new WaitForSeconds(3);
         StartCoroutine(LoadAndPlayMusic(8));
         yield return new WaitForSeconds(1);
         dsc1.gameObject.SetActive(true);
         yield return new WaitForSeconds(2);
-        ds2.text = "Don't lose hope..";
-        ds2.gameObject.SetActive(true);
+        string s = "Don't lose hope..";
+        foreach (char c in s) {
+            ds2.text +=c;
+            yield return new WaitForSeconds(0.1f);
+        }
 
+        yield return new WaitForSeconds(2f);
+        ds2.text = null;
+        yield return new WaitForSeconds(0.5f);
+        s = " we count on you!";
+        foreach (char c in s)
+        {
+            ds2.text += c;
+            yield return new WaitForSeconds(0.1f);
+        }
         while (true)
         {
             if(Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
             {
                 break;
             }
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
         yield return new WaitForSeconds(1);
         ds2.gameObject.SetActive(false);
         yield return new WaitForSeconds(1);
         dsc1.gameObject.SetActive(false);
         yield return new WaitForSeconds(1);
+        ds2.text = null;
         AudioSource.Stop();
         life = 20;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -157,7 +173,6 @@ public class FightSistem : MonoBehaviour
         string musicFilePath;
         string path = Path.Combine(Application.streamingAssetsPath);
 #if UNITY_STANDALONE_WIN
-        //string[] musicFiles = Directory.GetFiles(path, "*.ogg");
         musicFilePath = Path.Combine(Application.streamingAssetsPath + $"/Songs/song{id}.ogg");
 #elif UNITY_ANDROID
         musicFilePath = Application.streamingAssetsPath + $"/Songs/song{id}.ogg";
@@ -392,10 +407,22 @@ public class FightSistem : MonoBehaviour
     {
         text.text = string.Empty;
         yield return new WaitForSeconds(1);
-        arena.SetActive(true);
-        GameObject a=Instantiate(heart,truearena.transform);
-        yield return StartCoroutine(AssignProjectiles());
-        arena.SetActive(false);
+        GameObject a;
+        if (fightnr != 2)
+        {
+            arena.SetActive(true);
+            a = Instantiate(heart, arena.transform);
+        }
+        else
+        {
+            secondarena.SetActive(true);
+            a = Instantiate(heart, secondarena.transform);
+        }
+            yield return StartCoroutine(AssignProjectiles());
+        if (fightnr != 3)
+            arena.SetActive(false);
+        else
+            secondarena.SetActive(false);
         Destroy(a);
         yield return new WaitForSeconds(1);
         currentLine++;
@@ -407,6 +434,11 @@ public class FightSistem : MonoBehaviour
         {
             case 0:
                 {
+                    yield return StartCoroutine(Atk4.ts.upd());
+                    break;
+                }
+            case 10:
+                {
                     yield return StartCoroutine(Atk1.ts.upd());
                     break;
                 }
@@ -417,7 +449,7 @@ public class FightSistem : MonoBehaviour
                 }
             case 2:
                 {
-                    yield return StartCoroutine(Attack2());
+                    yield return StartCoroutine(Atk3.ts.upd());
                     break;
                 }
             case 3:
@@ -462,7 +494,7 @@ public class FightSistem : MonoBehaviour
             {
                 for (int j = 1; j < 4; j++)
                 {
-                    GameObject newProjectile = Instantiate(projectiles, truearena.transform);
+                    GameObject newProjectile = Instantiate(projectiles, arena.transform);
                     newProjectile.transform.localScale = new Vector3(2, 2, 1);
                     ProjectilesManager boneScript = newProjectile.GetComponent<ProjectilesManager>();
                     if (j%2 == 1)
@@ -480,9 +512,9 @@ public class FightSistem : MonoBehaviour
                 }
             }
         }
-        GameObject newProjectil = Instantiate(projectile1, truearena.transform);
-        GameObject newProjectil1 = Instantiate(projectile1, truearena.transform);
-        GameObject newProjectil2 = Instantiate(projectile1, truearena.transform);
+        GameObject newProjectil = Instantiate(projectile1, arena.transform);
+        GameObject newProjectil1 = Instantiate(projectile1, arena.transform);
+        GameObject newProjectil2 = Instantiate(projectile1, arena.transform);
         newProjectil.transform.localScale = new Vector3(3, 3, 1);
         newProjectil.transform.position = new Vector3(-1.78f, 2.2f, 0);
         newProjectil1.transform.localScale = new Vector3(3, 3, 1);
@@ -532,7 +564,7 @@ public class FightSistem : MonoBehaviour
             {
                 if (j == 1) 
                     w = -w;
-                GameObject newProjectile = Instantiate(projectiles, truearena.transform);
+                GameObject newProjectile = Instantiate(projectiles, arena.transform);
                 newProjectile.transform.position = new Vector2(w*0.01f, 2);
                 ProjectilesManager boneScript = newProjectile.GetComponent<ProjectilesManager>();
 
@@ -547,7 +579,7 @@ public class FightSistem : MonoBehaviour
             for (int j = 0; j <= 3; j++)
             {
                 w+=(i<2)? 150: -150;
-                GameObject newProjectile = Instantiate(projectiles, truearena.transform);
+                GameObject newProjectile = Instantiate(projectiles, arena.transform);
                 newProjectile.transform.position = new Vector2(w*0.01f, 2);
                 ProjectilesManager boneScript = newProjectile.GetComponent<ProjectilesManager>();
 
@@ -564,7 +596,7 @@ public class FightSistem : MonoBehaviour
         {
             for (int j = 0; j <= 1; j++)
             {
-                GameObject newProjectile = Instantiate(projectiles, truearena.transform);
+                GameObject newProjectile = Instantiate(projectiles, arena.transform);
                 newProjectile.transform.position = new Vector2((i*j-5)*0.4f,-2);
                 ProjectilesManager boneScript = newProjectile.GetComponent<ProjectilesManager>();
                 ProjectilesManager.speed = 2.5f;
@@ -611,6 +643,33 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Attack()
     {
+        textBox.text = "  *YEEZUS";
+        heartImgInv.SetActive(false);
+        selectheart.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        while (true)
+        {
+            if ((Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Z) || Input.GetKeyUp(KeyCode.Return)))
+            {
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
+                heartImgInv.SetActive(true);
+                selectheart.SetActive(false);
+                break;
+            }
+            if (Input.GetKeyUp(KeyCode.X))
+            {
+                heartImgInv.SetActive(true);
+                selectheart.SetActive(false);
+                SoundsSource.clip = switch_sound;
+                SoundsSource.Play();
+                textBox.text = null;
+                yield return StartCoroutine(AssignText());
+                yield break;
+            }
+            yield return null;
+        }
+        Inventory.SetActive(false);
         text.text = string.Empty;
         bullet.gameObject.SetActive(true);
         sword.rectTransform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
@@ -634,10 +693,10 @@ public class FightSistem : MonoBehaviour
         foreach(char c in s)
         {
             textBox.text += c;
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.04f);
         }
         isTyping = false;
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.2f);
     }
     public IEnumerator Spare()
     {
@@ -782,7 +841,7 @@ public class FightSistem : MonoBehaviour
                         yield return StartCoroutine(Write("* This won't help.."));
                         break;
                     case 2:
-                        yield return StartCoroutine(Write("* The Justice feels you soul."));
+                        yield return StartCoroutine(Write("* The Justice fills your soul."));
                         yield return new WaitForSeconds(0.5f);
                         yield return StartCoroutine(Write("* Justice will be served.."));
                         break;
@@ -892,7 +951,6 @@ public class FightSistem : MonoBehaviour
                 switch (index)
                 {
                     case 0:
-                        Inventory.SetActive(false);
                         yield return StartCoroutine(Attack());
                             break;
                     case 1:
