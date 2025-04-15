@@ -8,9 +8,9 @@ using UnityEngine.Networking;
 public class SoundsManager : MonoBehaviour
 {
     public static SoundsManager instance;
-    public AudioSource moveSource;
     public AudioMixer soundsMixer;
     public AudioMixer musicMixer;
+    public AudioSource moveSource;
     public AudioSource mouseSource;
     public AudioSource pickup;
     public AudioSource songs;
@@ -96,7 +96,7 @@ public class SoundsManager : MonoBehaviour
                 moveSource.Play();
                 break;
             case 1:
-                mouseSource.clip = clip[Random.Range(7,9)];
+                moveSource.clip = clip[Random.Range(7,9)];
                 moveSource.Play();
                 break;
             default:

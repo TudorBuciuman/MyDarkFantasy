@@ -21,13 +21,6 @@ public class Intro : MonoBehaviour
             TTG.sprite = logoBlackndWhite;
         StartCoroutine(PlayOnSight());
     }
-    public void Update()
-    {
-        if (Input.GetKey(KeyCode.V))
-        {
-            SceneManager.LoadScene("Fight");
-        }
-    }
     private IEnumerator PlayOnSight()
     {
         yield return Waiting(2.3f);

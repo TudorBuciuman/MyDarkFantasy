@@ -296,36 +296,40 @@ public class NewWorld : MonoBehaviour
     }
     public void BackUpWorld()
     {
-        if(!Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds/backups"))){
-            Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "worlds/backups"));
-        }
-        int y = 0;
-        while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds/backups/", worldLocation)))
-        {
-            y++;
-        }
-        Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, "worlds/backups/", worldLocation));
+        string backupsPath = Path.Combine(Application.persistentDataPath, "backups");
 
-        //nu exista alt mod de a copia fisierele
-        CopyDirectory(worldlocation, Path.Combine(Application.persistentDataPath, "worlds/backups/", worldLocation));
+        if (!Directory.Exists(backupsPath))
+        {
+            Directory.CreateDirectory(backupsPath);
+        }
+
+        int backupNumber = 0;
+        string backupDirectory = Path.Combine(backupsPath, changewname.text);
+
+        while (Directory.Exists(backupDirectory))
+        {
+            backupNumber++;
+            backupDirectory = Path.Combine(backupsPath, $"{worldLocation}_{backupNumber}");
+        }
+
+        Directory.CreateDirectory(backupDirectory);
+
+        CopyDirectory(worldLocation, backupDirectory);
     }
     static void CopyDirectory(string sourceDir, string destDir)
     {
-        // Create the destination directory if it doesn't exist
         if (!Directory.Exists(destDir))
         {
             Directory.CreateDirectory(destDir);
         }
 
-        // Copy all files from the source to the destination
         foreach (string file in Directory.GetFiles(sourceDir))
         {
             string fileName = Path.GetFileName(file);
             string destFile = Path.Combine(destDir, fileName);
-            File.Copy(file, destFile, true);  // true overwrites existing files
+            File.Copy(file, destFile, true);  
         }
 
-        // Recursively copy subdirectories
         foreach (string subDir in Directory.GetDirectories(sourceDir))
         {
             string dirName = Path.GetFileName(subDir);

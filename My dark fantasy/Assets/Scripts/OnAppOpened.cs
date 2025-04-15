@@ -15,7 +15,7 @@ public class OnAppOpened : MonoBehaviour
     public Sprite moon;
     public GameObject screenn,but1,but2,but3;
     public static byte itemsnum;
-    public static BlockProprieties[] blockTypes=new BlockProprieties[51];
+    public static BlockProprieties[] blockTypes=new BlockProprieties[62];
     public GameObject MDF;
     public GameObject fallingGObj;
     public AudioClip[] clips = new AudioClip[5];

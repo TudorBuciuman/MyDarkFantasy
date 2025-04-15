@@ -177,11 +177,12 @@ public class Toolbar : MonoBehaviour
                             select.gameObject.SetActive(false);
                             invimg[selectedsloth].image.sprite = invimg[f].image.sprite;
                             invimg[f].image.sprite = World.blockTypes[0].itemSprite;
-                            invimg[selectedsloth].num.text = invimg[f].num.text;
+                            if (World.blockTypes[item[selectedsloth / 9, selectedsloth % 9]].Items.isblock)
+                                invimg[selectedsloth].num.text = invimg[f].num.text;
                             invimg[f].num.text = null;
                             selectedsloth = 50;
                         }
-                        else if (item[selectedsloth / 9, selectedsloth % 9] == item[f / 9, f % 9])
+                        else if (item[selectedsloth / 9, selectedsloth % 9] == item[f / 9, f % 9] && World.blockTypes[item[selectedsloth / 9, selectedsloth % 9]].Items.isblock)
                         {
                             if (itemsize[selectedsloth / 9, selectedsloth % 9] + itemsize[f / 9, f % 9] <= 96)
                             {
@@ -208,8 +209,10 @@ public class Toolbar : MonoBehaviour
                             itemsize[selectedsloth / 9, selectedsloth % 9] = a;
                             item[f / 9, f % 9] = item[selectedsloth / 9, selectedsloth % 9];
                             item[selectedsloth / 9, selectedsloth % 9] = b;
-                            invimg[selectedsloth].num.text = itemsize[selectedsloth / 9, selectedsloth % 9].ToString();
-                            invimg[f].num.text = itemsize[f / 9, f % 9].ToString();
+                            if (World.blockTypes[item[selectedsloth / 9, selectedsloth % 9]].Items.isblock)
+                                invimg[selectedsloth].num.text = itemsize[selectedsloth / 9, selectedsloth % 9].ToString();
+                            if (World.blockTypes[item[f / 9, f % 9]].Items.isblock)
+                                invimg[f].num.text = itemsize[f / 9, f % 9].ToString();
                             invimg[selectedsloth].image.sprite = World.blockTypes[item[selectedsloth / 9, selectedsloth % 9]].itemSprite;
                             invimg[f].image.sprite = World.blockTypes[item[f / 9, f % 9]].itemSprite;
                         }

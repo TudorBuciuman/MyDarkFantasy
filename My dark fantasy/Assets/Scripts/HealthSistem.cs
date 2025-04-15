@@ -48,7 +48,7 @@ public class HealthSistem : MonoBehaviour
     public void UpdateHealth(float amount)
     {
         health += amount;
-        if (health < 0)
+        if (health <= 0)
         {
             health = 0;
             ReMakeHearts();

@@ -123,6 +123,17 @@ public class BloodOnTheLeaves : MonoBehaviour
                 StartCoroutine(DisplayNextLine());
                 yield break;
             }
+            else if (dialogueLines[currentLine][0] == '{')
+            {
+                if (dialogueLines[currentLine][1] == 's')
+                {
+                    audioSource.clip = clip[5];
+                    audioSource.Play();
+                }
+                currentLine++;
+                StartCoroutine(DisplayNextLine());
+                yield break;
+            }
             else if (dialogueLines[currentLine][0] == '$')
             {
                 StartCoroutine(BeforeQuit());

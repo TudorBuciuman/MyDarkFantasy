@@ -28,8 +28,15 @@ public class Fighting_Intro : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
-        
-        switch (Voxeldata.PlayerData.scene)
+        byte s = Voxeldata.PlayerData.scene;
+        if (Voxeldata.PlayerData.genocide)
+        {
+            if (s == 1)
+                s = 2;
+            else if (s == 2)
+                s = 1;
+        }
+        switch (s)
         {
             case 0:
                 SceneLoc = "Fighting";
@@ -41,8 +48,13 @@ public class Fighting_Intro : MonoBehaviour
                 SceneLoc = "Falling";
                 break;
             case 3:
-                SceneLoc = "Searching";
-                break;
+                {
+                    if (!Voxeldata.PlayerData.genocide)
+                        SceneLoc = "Searching";
+                    else
+                        SceneLoc = "Becoming";
+                        break;
+                }
             case 4:
                 SceneLoc = "Finding";
                 break;
@@ -54,18 +66,36 @@ public class Fighting_Intro : MonoBehaviour
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         audioSource.loop = false;
-
-        if (Voxeldata.PlayerData.scene != 2)
+        byte f = Voxeldata.PlayerData.scene;
+        if (Voxeldata.PlayerData.genocide)
         {
-            audioSource.clip = startingclip[Voxeldata.PlayerData.scene];
+            if (f == 1)
+                f = 2;
+            else if (f == 2)
+                f = 1;
+        }
+        if (f != 2 && f !=3)
+        {
+            audioSource.clip = startingclip[f];
             audioSource.Play();
         }
-        else
+        else if(f !=3)
         {
             StartCoroutine(LoadAndPlayMusic(7));
         }
-
-        dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
+        else
+        {
+            if (!Voxeldata.PlayerData.genocide)
+            {
+                StartCoroutine(Searching());
+            }
+            else
+            {
+                audioSource.clip = clip[3];
+                audioSource.Play();
+            }
+        }
+            dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
         dialogueLines = dialogueFile.text.Split('\n');
         for (int i = 0; i < dialogueLines.Length; i++)
         {
@@ -75,7 +105,14 @@ public class Fighting_Intro : MonoBehaviour
         Cursor.visible=false;
         StartCoroutine(DisplayNextLine());
     }
-
+    public IEnumerator Searching()
+    {
+        audioSource.clip = startingclip[3];
+        audioSource.Play();
+        yield return new WaitForSeconds(90);
+        audioSource.clip = clip[3];
+        audioSource.Play();
+    }
     public IEnumerator Lighting()
     {
         if(!isWhite)
@@ -237,9 +274,18 @@ public class Fighting_Intro : MonoBehaviour
 
     public IEnumerator BeforeQuit()
     {
-        switch (Voxeldata.PlayerData.scene) {
+        byte s = Voxeldata.PlayerData.scene;
+        if (Voxeldata.PlayerData.genocide)
+        {
+            if (s == 1)
+                s = 2;
+            else if (s == 2)
+                s = 1;
+        }
+        switch (s) {
             case 0:
                 {
+                    //fighting
                     audioSource.Stop();
                     dialogueTextUI.text = string.Empty;
                     yield return new WaitForSeconds(3.5f);
@@ -261,6 +307,7 @@ public class Fighting_Intro : MonoBehaviour
                 }
             case 1:
                 {
+                    //rising
                     audioSource.Stop();
                     dialogueTextUI.text = string.Empty;
                     yield return new WaitForSeconds(3.5f);
@@ -275,8 +322,9 @@ public class Fighting_Intro : MonoBehaviour
                     PlayerDataData.SavePlayer();
                     break;
                 }
-                case 2:
+            case 2:
                 {
+                    //falling
                     audioSource.Stop();
                     dialogueTextUI.text = string.Empty;
                     StartCoroutine(LoadAndPlayMusic(6));
@@ -289,7 +337,54 @@ public class Fighting_Intro : MonoBehaviour
                     PlayerDataData.SavePlayer();
                     break;
                 }
-    }
+            case 3:
+                {
+                    //searching
+                    dialogueTextUI.text = string.Empty;
+                    FightingImg.sprite = sprites[3];
+                    FightingImg.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(10);
+                    FightingImg.gameObject.SetActive(false);
+                    PlayerDataData.SavePlayer();
+                    break;
+                }
+            case 4:
+                {
+                    //finding
+                    audioSource.Stop();
+                    dialogueTextUI.text = string.Empty;
+                    FightingImg.sprite = sprites[4];
+                    FightingImg.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(10);
+                    FightingImg.gameObject.SetActive(false);
+                    PlayerDataData.SavePlayer();
+                    break;
+                }
+            case 5:
+                {
+                    //becoming
+                    audioSource.Stop();
+                    dialogueTextUI.text = string.Empty;
+                    FightingImg.sprite = sprites[5];
+                    FightingImg.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(10);
+                    FightingImg.gameObject.SetActive(false);
+                    PlayerDataData.SavePlayer();
+                    break;
+                }
+            case 6:
+                {
+                    //judgement
+                    audioSource.Stop();
+                    dialogueTextUI.text = string.Empty;
+                    FightingImg.sprite = sprites[6];
+                    FightingImg.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(10);
+                    FightingImg.gameObject.SetActive(false);
+                    PlayerDataData.SavePlayer();
+                    break;
+                }
+        }
     }
 
     public IEnumerator YesOrYesButtons()

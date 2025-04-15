@@ -836,6 +836,11 @@ public class ControllerImput : MonoBehaviour
                 if(!BookManager.readingBook)
                 BookManager.instance.OpenABook();
             }
+            else if (toolbar.item[0, Toolbar.slothIndex] == 55 && brktime<=0)
+            {
+                ItemsFunctions.RealKnife();
+                brktime = 2;
+            }
             else if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.isblock)
             {
                 float step = 0.1f;
@@ -849,7 +854,7 @@ public class ControllerImput : MonoBehaviour
                         {
                             time = 0.2f;
                             wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z),new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex],(byte)(Random.Range(0,2))));
-                            toolbar.UpdateAnItem(Toolbar.slothIndex);
+                            //toolbar.UpdateAnItem(Toolbar.slothIndex);
                         }
                         break;
                     }
@@ -913,4 +918,5 @@ public class ControllerImput : MonoBehaviour
     {
         mapImg.gameObject.SetActive(false);
     }
+
 }

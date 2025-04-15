@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1.2
-  m_AmbientMode: 3
+  m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 8b8f08f646c9795448e1453324734903, type: 2}
   m_HaloStrength: 0.5
@@ -14353,9 +14353,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d21b4b0801e3514c8bd3ee585fdd004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSource: {fileID: 1934646421}
   soundsMixer: {fileID: 24100000, guid: 3f8f3f680ea3b1d44b344b36816a28bd, type: 2}
   musicMixer: {fileID: 24100000, guid: 4c54db5dc88bf10478eaa1fd3fa31c66, type: 2}
+  moveSource: {fileID: 1934646421}
   mouseSource: {fileID: 1752453060}
   pickup: {fileID: 2069848992}
   songs: {fileID: 1089663057}
@@ -14371,6 +14371,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 773243d07ba88c74f94f222ee5f300f3, type: 3}
   - {fileID: 8300000, guid: 0b3cb41b1524cc54cb129c860a4dbdde, type: 3}
   - {fileID: 8300000, guid: 1269d3f7e174f9a4ebfced9c57007b0f, type: 3}
+  - {fileID: 8300000, guid: 1c62bb4a5ab82ad41959693ccf722a40, type: 3}
   nrsongs: 10
 --- !u!1 &2119639282
 GameObject:

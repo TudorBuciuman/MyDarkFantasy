@@ -76,6 +76,25 @@ public class ItemsFunctions : MonoBehaviour
             }
         }
     }
+
+    public static void RealKnife()
+    {
+        if (HealthSistem.health <= 1)
+        {
+            //activate protocol
+            SoundsManager.instance.mouseSource.Stop();
+        }
+        HealthSistem.istance.UpdateHealth(-1);
+        SoundsManager.instance.Placement(11);
+        if (!SoundsManager.instance.songs.isPlaying)
+        {
+            SoundsManager.instance.PlaySong(7);
+        }
+        else if (SoundsManager.instance.songs.clip.name != "song7")
+        {
+            SoundsManager.instance.PlaySong(7);
+        }
+    }
 }
 [System.Serializable]
 public class ChestData
