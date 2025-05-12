@@ -30,7 +30,7 @@ public class Intro : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         PlaySound();
-        yield return Waiting(2.5f);
+        yield return Waiting(2.6f);
         Text.text = "presents";
         Text.gameObject.SetActive(true);
         yield return Waiting(2f);

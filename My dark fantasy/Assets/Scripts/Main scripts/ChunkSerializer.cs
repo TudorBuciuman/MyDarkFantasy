@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.IO.Compression;
+using System;
 public class ChunkSerializer
 {
     public static string savePath;
@@ -279,44 +280,93 @@ public class ChunkSerializer
     {
         seed = Seed;
         savePath = sv;
-        if (!File.Exists(savePath+"/playerprefab.json"))
+        string path = Path.Combine(savePath , "playerprefab.dat");
+        if (!File.Exists(path))
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(savePath + "/playerprefab.json"));
+            Debug.Log(3);
             pos =Vector3.zero;
             rot =Quaternion.identity;
             WorldManager.currenttime = 300;
         }
         else
         {
-            string json = File.ReadAllText(savePath + "/playerprefab.json");
-            PlayerData data = JsonUtility.FromJson<PlayerData>(json);
+            try
+            {
+                byte[] compressedData = File.ReadAllBytes(path); 
 
-            pos= data.position;
-            rot = data.rotation;
-            MouseController.xrot = data.mx;
-            MouseController.yrot = data.my;
-            WorldManager.currenttime=data.currentTime;
+                using (MemoryStream memoryStream = new MemoryStream(compressedData))
+                {
+                    using (GZipStream decompressionStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+                    {
+                        using (MemoryStream resultStream = new MemoryStream())
+                        {
+                            decompressionStream.CopyTo(resultStream);
+                            byte[] decompressedData = resultStream.ToArray();
+
+                            // Convert back to JSON
+                            string jsonData = System.Text.Encoding.UTF8.GetString(decompressedData);
+
+                            PlayerData data = JsonUtility.FromJson<PlayerData>(jsonData);
+                            pos = data.position;
+                            rot = data.rotation;
+                            MouseController.xrot = data.mx;
+                            MouseController.yrot = data.my;
+                            WorldManager.currenttime = data.currentTime;
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e);
+                File.Delete(path);
+                pos = Vector3.zero;
+                rot = Quaternion.identity;
+                WorldManager.currenttime = 300;
+            }
+
+            
         }
         pret = true;
     }
-    public static void savePlayerData(Vector3 Pos,Quaternion Rot)
+    public static void SavePlayerData(Vector3 Pos,Quaternion Rot)
     {
-        if (!File.Exists(savePath + "/playerprefab.json"))
+        if (!File.Exists(savePath + "/playerprefab.dat"))
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(savePath + "/playerprefab.json"));
+            Directory.CreateDirectory(Path.GetDirectoryName(savePath + "/playerprefab.dat"));
         }
-        PlayerData data = new()
+        
+        try
         {
-            position = Pos,
-            rotation = Rot,
-            mx = MouseController.xrot,
-            my = MouseController.yrot,
-            currentTime = WorldManager.currenttime
-        };
-        string json = JsonUtility.ToJson(data);
-        File.WriteAllText(savePath + "/playerprefab.json", json);
+            PlayerData data = new()
+            {
+                position = Pos,
+                rotation = Rot,
+                mx = MouseController.xrot,
+                my = MouseController.yrot,
+                currentTime = WorldManager.currenttime
+            };
+            string jsonData = JsonUtility.ToJson(data, true);
 
-    }
+            byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+            string filePath = Path.Combine(savePath, "playerprefab.dat");
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                using (GZipStream compressionStream = new GZipStream(fileStream, CompressionMode.Compress))
+                {
+                    compressionStream.Write(dataBytes, 0, dataBytes.Length);
+                }
+            }
+
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+            throw (e);
+        }
+
+        }
     public static Chunk.VoxelStruct[,,] ChunkReader(string savePath, int cx, int cz)
     {
         Chunk.VoxelStruct[,,] chunkData = FindChunkInRegion(savePath, cx, cz);

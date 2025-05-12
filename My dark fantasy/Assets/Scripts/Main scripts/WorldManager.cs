@@ -314,7 +314,7 @@ public class WorldManager : MonoBehaviour
             {
                 GetChunk(x / 16, z / 16).Voxels[0, y, 0] = id;
             } 
-            if (z % 16 == 0)
+            else if (z % 16 == 0)
             {
                 GetChunk(x / 16 - 1, z / 16).Voxels[(16 - (-x % 16)), y, 0] = id;
             }
@@ -677,4 +677,5 @@ public class Tool
 public class Normalitem
 {
     public byte coolfunction;
+    public byte secondfunction;
 }

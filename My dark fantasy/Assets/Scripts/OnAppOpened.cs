@@ -23,6 +23,8 @@ public class OnAppOpened : MonoBehaviour
     public GameObject falling;
     public GameObject flowers;
     public static bool pressed=false;
+    public GameObject cameraObj;
+    private readonly float rotationTime = 230;
     
     public static Sprite[] itemsAtlas;
     void Awake()
@@ -34,22 +36,12 @@ public class OnAppOpened : MonoBehaviour
         }
         dialogueFile = Resources.Load<TextAsset>($"UIMessage");
         DateTime currentTime = DateTime.Now;
-        if (currentTime.Hour >= 18 || currentTime.Hour<8)
-        {
-            screenn.GetComponent<RawImage>().texture=moon.texture;
-            but1.GetComponent<Image>().color = Color.white;
-            but2.GetComponent<Image>().color = Color.white;
-            but3.GetComponent<Image>().color = Color.white;
-        }
-        if(Voxeldata.PlayerData.scene == 1 && currentTime.Hour < 18 && currentTime.Hour > 8)
-        {
-            flowers.gameObject.SetActive(true);
-        }
+
         if (Voxeldata.PlayerData.scene == 2)
         {
             audioSource.clip = clips[2];
             audioSource.loop = false;
-            falling.gameObject.SetActive(true);
+            falling.SetActive(true);
         }
         else
         {
@@ -61,6 +53,10 @@ public class OnAppOpened : MonoBehaviour
         if (!pressed)
         {
             StartCoroutine(Waiting());
+        }
+        else
+        {
+            StartCoroutine(Spinning());
         }
     }
     public void Start()
@@ -154,7 +150,18 @@ public class OnAppOpened : MonoBehaviour
             }
             yield return new WaitForSeconds(0.1f);
         }
+        StartCoroutine(Spinning());
+        yield return null;
     }
-
+    public IEnumerator Spinning()
+    {
+        yield return new WaitForSeconds(0.5f);
+        while (true)
+        {
+            float anglePerSecond = 360f / rotationTime;
+            cameraObj.transform.Rotate(0, anglePerSecond * Time.deltaTime, 0, Space.Self);
+            yield return null; 
+        }
+    }
 }
 

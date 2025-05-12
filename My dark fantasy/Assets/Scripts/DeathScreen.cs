@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class DeathScreen : MonoBehaviour
 {
     public static bool world = true;
+    public static bool active = false;
     public Text writing;
     public Text Logo;
     public Font comicSans;
@@ -38,6 +39,7 @@ public class DeathScreen : MonoBehaviour
     } 
     private IEnumerator TheWorldNeedsYou()
     {
+        active = true;
         int r = Random.Range(0, 15);
         if (r >= 9)
         {
@@ -76,6 +78,7 @@ public class DeathScreen : MonoBehaviour
             HealthSistem.istance.ReMakeHearts();
             ControllerImput.Instance.currentVelocity = Vector3.zero;
         }
+        active = false;
         SceneManager.UnloadSceneAsync("DeathScreen");
         }
     private IEnumerator WaitingForYou()
@@ -87,6 +90,8 @@ public class DeathScreen : MonoBehaviour
                 break;  
             yield return new WaitForSeconds(0.01f);  
         }
+
+        yield return null;
     }
 
 }

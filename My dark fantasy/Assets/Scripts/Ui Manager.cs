@@ -270,6 +270,8 @@ public class UiManager : MonoBehaviour
 
         if (scene.Contains("World"))
         {
+            MouseController.sensivity = data.sens * 10;
+            Voxeldata.NumberOfChunks = data.render;
             SoundsManager.instance.UpdateSounds();
             SceneManager.UnloadSceneAsync("Settings");
             ChunkSerializer.CloseSet();

@@ -188,14 +188,18 @@ public class NewWorld : MonoBehaviour
             StartCoroutine(EvenFasterEntering());
         }
     }
-    public IEnumerator MakeLight(float time)
+    public IEnumerator MakeLight(float time,bool whte)
     {
 
         Color startColor = new Color(0f, 0f, 0f, 0f);
 
-        Color targetColor = Color.white;
+        Color targetColor;
+        if (whte)
+            targetColor = Color.white;
+        else
+            targetColor = Color.black;
 
-        float elapsedTime = 0f;
+            float elapsedTime = 0f;
 
         while (elapsedTime < time)
         {
@@ -209,27 +213,28 @@ public class NewWorld : MonoBehaviour
     }
     public void EnterWorld()
     {
-        instance.EnterFaster();
+        instance.lightingImg.color = Color.black;
+        instance.EnterFaster(false);
         serializer = new();
         serializer.Sync(this.GetComponent<worldsmanager>().location, this.GetComponent<worldsmanager>().seed);
         Directory.SetLastAccessTime(this.GetComponent<worldsmanager>().location, DateTime.Now);
     }
-    public void EnterFaster()
+    public void EnterFaster(bool wht)
     {
         AudioSource.clip = clip;
         AudioSource.Play();
         lightingImg.gameObject.SetActive(true);
-        StartCoroutine(MakeLight(2.5f));
+        StartCoroutine(MakeLight(2.5f,wht));
     }
     public IEnumerator EvenFasterEntering()
     {
         //its actually the slowest
-        AudioSource.clip = creatingclip;
+        AudioSource.clip = normalclip;
         AudioSource.Play();
         AudioSource.loop = false;
         yield return new WaitForSeconds(1);
         lightingImg.gameObject.SetActive(true);
-        StartCoroutine(MakeLight(3.5f));
+        StartCoroutine(MakeLight(3.5f,true));
     }
     public void TryEditWorld() {
         GameObject a = GameObject.FindGameObjectWithTag("manager");
@@ -240,7 +245,7 @@ public class NewWorld : MonoBehaviour
     public void EditWorld(GameObject c)
     {
         wset.gameObject.SetActive(true);
-        backup.gameObject.SetActive(true);
+        //backup.gameObject.SetActive(true);
         deleteqm.gameObject.SetActive(true);
         save.gameObject.SetActive(true);
         serializer = new();

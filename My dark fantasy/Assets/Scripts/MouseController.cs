@@ -14,11 +14,33 @@ public class MouseController : MonoBehaviour
     public void Awake()
     {
         inputActions = new NewControls();
+
     }
     void Update()
     {
         if (!toolbar.openedInv)
-        Manage();
+           Manage(); 
+        /*
+        if (Input.GetKey(KeyCode.Alpha0))
+        {
+            orientation.transform.localEulerAngles=new Vector3(0,0,0);
+        }
+        else if(Input.GetKey(KeyCode.Alpha1))
+        {
+            orientation.transform.localEulerAngles = new Vector3(0, 90, 0);
+
+        }
+        else if (Input.GetKey(KeyCode.Alpha2))
+        {
+            orientation.transform.localEulerAngles = new Vector3(0, 180, 0);
+
+        }
+        else if (Input.GetKey(KeyCode.Alpha3))
+        {
+            orientation.transform.localEulerAngles = new Vector3(0, -90, 0);
+
+        }
+        */
         //AndroidMovement();
         //pentru android trebuie folosita prima si pentru pc a doua
     }

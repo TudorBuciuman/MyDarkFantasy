@@ -1,9 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -34,9 +29,15 @@ public class ControllerImput : MonoBehaviour
     public static float lookSpeed = 400f;
     public static float smoothSpeed = 100.0f;
     public const float gravity = -10f;
+    public const float waterSpeed = 2f;
+    public const float waterAcceleration = 5f;
+    public const float waterDeceleration = 5f;
+
     public Transform orientation;
     public static float speed = 50f;
     public static float jump = 4.8f;
+    private bool inWater=false;
+    private float timeinWater = 0;
     public CharacterController controller;
     public GameObject box;
     public FixedJoystick joystick;
@@ -69,6 +70,7 @@ public class ControllerImput : MonoBehaviour
     public Text framerate;
 
     public Image itemimg,mapImg,mapImg2;
+    public Image watersprite;
 
     public short fps=0;
     public static float wtime=0,brktime=0;
@@ -164,7 +166,6 @@ public class ControllerImput : MonoBehaviour
     private void FixedUpdate()
     {
         PlayerControll();
-
     }
     public void GetFps() { 
         fps = ((short)(1f / Time.unscaledDeltaTime));
@@ -175,20 +176,21 @@ public class ControllerImput : MonoBehaviour
         if (!UiManager.hud)
         {
             Hud1.SetActive(false);
-            Hud2.SetActive(false);
-            Pos.gameObject.SetActive(false);
-            Hud3.GetComponent<Image>().gameObject.SetActive(false);
+            Hud2.GetComponent<CanvasGroup>().alpha = 0;
+            Hud3.GetComponent<Image>().enabled = false;
             CancelInvoke(nameof(PosOut));
+            Pos.text = null;
+            Pos.gameObject.SetActive(false);
         }
         else
         {
             InvokeRepeating(nameof(PosOut), 0, 0.05f);
             Hud1.SetActive(true);
-            Hud2.SetActive(true);
+            Hud2.GetComponent<CanvasGroup>().alpha = 1;
             Pos.gameObject.SetActive(true);
-            Hud3.GetComponent<Image>().gameObject.SetActive(true);
+            Hud3.GetComponent<Image>().enabled = true;
         }
-        if(UiManager.fps)
+        if(UiManager.fps && UiManager.hud)
         InvokeRepeating(nameof(GetFps), 0, 0.3f);
         else
         {
@@ -199,11 +201,11 @@ public class ControllerImput : MonoBehaviour
     }
     public void PlayScary()
     {
-        if (transform.position.y < 50)
+        if (transform.position.y < 60)
         {
             soundTrack.PlayRandomSound(0);
         }
-        else if(transform.position.y>100){
+        else if(transform.position.y>80){
             soundTrack.PlayRandomSound(1);
         }
         else if (WorldManager.currenttime > 900)
@@ -252,8 +254,13 @@ public class ControllerImput : MonoBehaviour
     }
     void CalculateVelocity()
     {
+        // === Determine if in water ===
+        bool inWater = IsInWater();
+
+        // === Movement input direction ===
         moveDirection = transform.right * pozX + transform.forward * pozZ;
 
+        // === Collision blocking ===
         if ((moveDirection.z > 0 && Front) || (moveDirection.z < 0 && Back))
         {
             moveDirection.z = 0;
@@ -264,44 +271,60 @@ public class ControllerImput : MonoBehaviour
             moveDirection.x = 0;
             currentVelocity.x = 0;
         }
-        float targetSpeed = sprint ? sprintspeed : movementSpeed;
-        float acceleration = sprint ? sprintAcceleration : movementAcceleration;
-        float deceleration = sprint ? 25 : 13;
 
-        Vector3 targetHorizontalVelocity = moveDirection * targetSpeed;
+        // === Movement values ===
+        float baseSpeed = inWater ? waterSpeed : (sprint ? sprintspeed : movementSpeed);
+        float baseAccel = inWater ? waterAcceleration : (sprint ? sprintAcceleration : movementAcceleration);
+        float baseDecel = inWater ? waterDeceleration : (sprint ? 25 : 13);
+
+        // === Horizontal movement ===
+        Vector3 targetVelocity = moveDirection * baseSpeed;
 
         if (moveDirection.magnitude > 0)
         {
-            currentVelocity.x = Mathf.MoveTowards(currentVelocity.x, targetHorizontalVelocity.x, acceleration * Time.fixedDeltaTime);
-            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, targetHorizontalVelocity.z, acceleration * Time.fixedDeltaTime);
+            currentVelocity.x = Mathf.MoveTowards(currentVelocity.x, targetVelocity.x, baseAccel * Time.fixedDeltaTime);
+            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, targetVelocity.z, baseAccel * Time.fixedDeltaTime);
         }
-    
-        else 
+        else
         {
-            currentVelocity.x = Mathf.MoveTowards(currentVelocity.x, 0, deceleration * Time.fixedDeltaTime);
-            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, 0, deceleration * Time.fixedDeltaTime);
+            currentVelocity.x = Mathf.MoveTowards(currentVelocity.x, 0, baseDecel * Time.fixedDeltaTime);
+            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, 0, baseDecel * Time.fixedDeltaTime);
         }
-        
-        if (!grounded) 
+
+        // === Vertical ===
+        //DO NOT TOUCH!!!
+        if (!grounded && !inWater)
         {
             verticalMomentum += gravity * Time.fixedDeltaTime;
-            verticalMomentum = Mathf.Clamp(verticalMomentum, -50, 10);
+            verticalMomentum = Mathf.Clamp(verticalMomentum, -500, 10);
         }
-        currentVelocity.y = verticalMomentum*Time.fixedDeltaTime;
+        else if (inWater)
+        {
+            float waterGravity = -2f; 
+            verticalMomentum += waterGravity * Time.fixedDeltaTime;
 
-       
-        if (currentVelocity.y > 0) 
+            verticalMomentum = Mathf.Clamp(verticalMomentum, -1.5f, 2f);
+        }
+        else
+        {
+            verticalMomentum = -0.1f; 
+        }
+
+
+        currentVelocity.y = verticalMomentum * Time.fixedDeltaTime;
+
+        if (currentVelocity.y > 0)
         {
             currentVelocity.y = CheckUpSpeed(currentVelocity.y);
         }
-        else if (currentVelocity.y < 0) 
+        else if (currentVelocity.y < 0)
         {
-            float r=CheckDownSpeed(currentVelocity.y);
+            float r = CheckDownSpeed(currentVelocity.y);
             if (r == 0)
             {
                 if (currentVelocity.y < -0.25f)
                 {
-                    float c=currentVelocity.y;
+                    float c = currentVelocity.y;
                     currentVelocity.y = 0;
                     grounded = true;
                     verticalMomentum = -0.1f;
@@ -315,9 +338,13 @@ public class ControllerImput : MonoBehaviour
         {
             grounded = true;
         }
+
         currentVelocity.y *= speed;
+
+        // === Apply movement ===
         controller.Move(currentVelocity * Time.fixedDeltaTime);
 
+        // === Footstep sounds ===
         if (moveDirection.magnitude > 0 && grounded)
         {
             if (wtime <= 0)
@@ -334,8 +361,8 @@ public class ControllerImput : MonoBehaviour
 
         if (wtime > 0)
             wtime -= Time.fixedDeltaTime;
-        
     }
+
     public void PosOut()
     {
         Pos.text = $"{(int)transform.position.x}  {(int)transform.position.y}  {(int)transform.position.z}";
@@ -348,6 +375,11 @@ public class ControllerImput : MonoBehaviour
             grounded = false;
             jumpQm = false;
         }
+        if (inWater)
+        {
+            verticalMomentum = 2f;
+        }
+
     }
     public void OnMovement(InputAction.CallbackContext context)
     {
@@ -474,6 +506,10 @@ public class ControllerImput : MonoBehaviour
                 moveDirection.y = jump;
                 grounded = false;
                 jumpQm = true;
+            }
+            else if (inWater)
+            {
+                verticalMomentum = 2;
             }
         }
         //pozX = joystick.Horizontal;
@@ -686,9 +722,99 @@ public class ControllerImput : MonoBehaviour
 
     }
 
+    private bool IsInWater()
+    {
+        Vector3[] checkPositions = new Vector3[]
+        {
+        transform.position, 
+        transform.position + new Vector3(0, 0, -0.5f), 
+        transform.position + new Vector3(0, 0, 0.5f), 
+        transform.position + new Vector3(0.5f, 0, 0), 
+        transform.position + new Vector3(0.5f, 0, -0.5f), 
+        transform.position + new Vector3(-0.5f, 0, 0),
+        transform.position + new Vector3(-0.5f, 0, +0.5f) 
+        };
+
+        bool isInWaterAtAnyPosition = false;
+
+        foreach (Vector3 pos in checkPositions)
+        {
+            Vector3Int blockPos = Vector3Int.FloorToInt(pos);
+            byte b = wmanager.Block(blockPos.x, blockPos.y, blockPos.z);
+
+            if (b == 21) 
+            {
+                isInWaterAtAnyPosition = true;
+                break; 
+            }
+        }
+
+        if (isInWaterAtAnyPosition)
+        {
+            if (!inWater)
+            {
+                inWater = true;
+                watersprite.gameObject.SetActive(true);
+                RenderSettings.fogDensity = 0.04f;
+                RenderSettings.fogColor = new Color(12f / 256f, 0f, 156f / 256f, 1);
+                timeinWater = 0;
+            }
+            else
+            {
+                timeinWater += Time.deltaTime;
+                if (timeinWater >= 10)
+                {
+                    Shake();
+                    healthSistem.UpdateHealth(-0.5f);
+                    timeinWater -= 1.2f;
+                }
+            }
+        }
+        else if (inWater)
+        {
+            inWater = false;
+            watersprite.gameObject.SetActive(false);
+            RenderSettings.fogDensity = 0.01f;
+            RenderSettings.fogColor = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
+        else if (timeinWater > 0)
+        {
+            timeinWater -= Time.deltaTime;
+        }
+
+        return isInWaterAtAnyPosition;
+    }
+
+
+
     public float time = 0,holdtme=0;
     public static int a, b, c;
     public bool breac=false;
+    public float duration = 0.2f; // How long the shake lasts
+    public float magnitude = 0.005f; // How strong the shake is
+
+    public void Shake()
+    {
+        StartCoroutine(ShakeCoroutine());
+    }
+
+    private IEnumerator ShakeCoroutine()
+    {
+        Vector3 originalPosition = cam.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float xOffset = Random.Range(-1f, 1f) * magnitude;
+            float yOffset = Random.Range(-1f, 1f) * magnitude;
+            cam.position = originalPosition + new Vector3(xOffset, yOffset, 0f);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        cam.position = originalPosition;
+    }
     void HandleMouseInput()
     {
 
@@ -792,12 +918,27 @@ public class ControllerImput : MonoBehaviour
                                 box.transform.position = new Vector3(a, b, c);
                                 holdtme = 0;
                             }
-                            if (holdtme >= 1.4f)
+                            if (wmanager.Block(pos.x + 1, pos.y + 1, pos.z)!=7 && wmanager.Block(pos.x + 1, pos.y + 1, pos.z + 1)!=7 && wmanager.Block(pos.x - 1, pos.y + 1, pos.z)!=7 && wmanager.Block(pos.x - 1, pos.y + 1, pos.z - 1)!= 7 && wmanager.Block(pos.x + 1, pos.y + 1, pos.z - 1) != 7 && wmanager.Block(pos.x, pos.y + 1, pos.z - 1) != 7 && wmanager.Block(pos.x, pos.y + 1, pos.z + 1) != 7)
                             {
-                                box.SetActive(false);
-                                ItemsFunctions.CutDownTree(pos,wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)));
-                                breac = false;
-                                holdtme = 0;
+                                if (holdtme >= 1.4f)
+                                {
+                                    box.SetActive(false);
+                                    ItemsFunctions.CutDownTree(pos, wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)));
+                                    breac = false;
+                                    holdtme = 0;
+                                }
+                            }
+                            else
+                            {
+                                if (holdtme >= 1.1f)
+                                {
+                                    box.SetActive(false);
+                                    itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
+                                    wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), new Chunk.VoxelStruct(0, 0));
+
+                                    breac = false;
+                                    holdtme = 0;
+                                }
                             }
                         }
                         break;
@@ -841,6 +982,12 @@ public class ControllerImput : MonoBehaviour
                 ItemsFunctions.RealKnife();
                 brktime = 2;
             }
+            else if (wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.item.coolfunction == 5 && brktime<=0)
+            {
+                healthSistem.Heal(wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.item.secondfunction);
+                toolbar.UpdateAnItem(Toolbar.slothIndex);
+                brktime = 2;
+            }
             else if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.isblock)
             {
                 float step = 0.1f;
@@ -853,7 +1000,7 @@ public class ControllerImput : MonoBehaviour
                         if (CanPlace(lastPos))
                         {
                             time = 0.2f;
-                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z),new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex],(byte)(Random.Range(0,2))));
+                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], (byte)(Random.Range(0, 2))));
                             //toolbar.UpdateAnItem(Toolbar.slothIndex);
                         }
                         break;
@@ -870,18 +1017,18 @@ public class ControllerImput : MonoBehaviour
                     Vector3 pos = cam.position + (cam.forward * step);
                     if (wmanager.IsBlock(pos.x, pos.y, pos.z))
                     {
-                        if (wmanager.blockTypes[wmanager.Block(pos.x,pos.y,pos.z)].Items.blocks.special>=2)
+                        if (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.special >= 2)
                         {
-                            switch(wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.special)
+                            switch (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.special)
                             {
                                 case 2: toolbar.OpenInventory(1);
                                     break;
                                 case 3: toolbar.OpenInventory(2);
                                     break;
-                                case 4: toolbar.OpenInventory(3);
+                                case 4: Chest.Instance.OpenChest(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z));
                                     break;
                             }
-                       }
+                        }
                         time = 0.2f;
                         break;
                     }
@@ -918,5 +1065,6 @@ public class ControllerImput : MonoBehaviour
     {
         mapImg.gameObject.SetActive(false);
     }
+
 
 }

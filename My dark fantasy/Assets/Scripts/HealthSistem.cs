@@ -13,6 +13,8 @@ public class HealthSistem : MonoBehaviour
     public Slider healthslider;
     public Text healthLabel;  
     public SoundsManager soundsManager;
+    public AudioClip heal, dammage;
+    public AudioSource source;
     //love= level of violence
     private float regeneration;
     public void Start()
@@ -45,18 +47,33 @@ public class HealthSistem : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
     }
+    public void Heal(float amount)
+    {
+        UpdateHealth(amount);
+    }
     public void UpdateHealth(float amount)
     {
         health += amount;
+        if (amount > 0)
+        {
+            source.clip = heal;
+            source.Play();
+        }
+        else
+        {
+            source.clip = dammage;
+            source.Play();
+        }
         if (health <= 0)
         {
             health = 0;
             ReMakeHearts();
             Toolbar.escape = true;
+            if(!DeathScreen.active)
             ScreenOfDeath();
         }
         else
-        ReMakeHearts();
+            ReMakeHearts();
     }
     public void ReMakeHearts()
     {

@@ -22,19 +22,59 @@ public class ItemsFunctions : MonoBehaviour
         mapImg1 = mapImg;
 
     }
-    public static void CutDownTree(Vector3 pos,byte type)
+    public static void CutDownTree(Vector3 pos, byte type)
     {
         int x = Mathf.RoundToInt(pos.x), z = Mathf.RoundToInt(pos.z), y = Mathf.RoundToInt(pos.y);
         byte size = 1;
-        //aici trebuie modificat sa poti sa dobori copacul daca ai taiat tot nivelul
-        for(int i = y+1; i<150 && wman.Block(x,i,z)==type; i++)
+
+        for (int a = -2; a <= 2; a++)
         {
-            WorldManager.SetTo(x,i,z,0);
-            size++;
+            for (int b = -2; b <= 2; b++)
+            {
+                for (int i = y + 1; i < y+9 && i<150; i++)
+                {
+                    if (wman.Block(x + a, i, z+b) == 7)
+                    {
+                        WorldManager.SetTo(x + a, i, z + b, 0);
+                        size++;
+                    }
+                }
+            }
         }
-        item.SetItem(wman.Block(x,y,z), size, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
-        wman.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), new Chunk.VoxelStruct(0, 0));
+        item.SetItem(wman.Block(x, y, z), size, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
+        wman.ModifyMesh(x, y, z, new Chunk.VoxelStruct(0, 0));
+
+        img.StartCoroutine(RemoveLeaves(new Vector3(x, y, z)));
     }
+
+    public static IEnumerator RemoveLeaves(Vector3 pos)
+    {
+        int x = Mathf.RoundToInt(pos.x), z = Mathf.RoundToInt(pos.z), y = Mathf.RoundToInt(pos.y);
+
+        List<Vector3> leavesToRemove = new List<Vector3>();
+
+        for (int dx = -2; dx <= 2; dx++)
+        {
+            for (int dz = -2; dz <= 2; dz++)
+            {
+                for (int dy = 0; dy <= 8; dy++) 
+                {
+                    if (wman.Block(x + dx, y + dy, z + dz) == 11) 
+                    {
+                        leavesToRemove.Add(new Vector3(x + dx, y + dy, z + dz));
+                    }
+                }
+            }
+        }
+
+        foreach (Vector3 leafPos in leavesToRemove)
+        {
+            WorldManager.SetTo(Mathf.RoundToInt(leafPos.x), Mathf.RoundToInt(leafPos.y), Mathf.RoundToInt(leafPos.z), 0);
+            wman.ModifyMesh(Mathf.RoundToInt(leafPos.x), Mathf.RoundToInt(leafPos.y), Mathf.RoundToInt(leafPos.z), new Chunk.VoxelStruct(0, 0));
+            yield return new WaitForSeconds(0.1f); 
+        }
+    }
+
     public static void MakeMap()
     {
         mapTexture = new Texture2D(128,128);
@@ -60,23 +100,6 @@ public class ItemsFunctions : MonoBehaviour
         mapTexture.Apply(); 
     }
 
-    //I dont even know how to make this ;(
-    public static void OpenChest(string chestFileName)
-    {
-        string filePath = Path.Combine(Application.streamingAssetsPath, chestFileName);
-
-        if (File.Exists(filePath))
-        {
-            string json = File.ReadAllText(filePath);
-            ChestData chest = JsonUtility.FromJson<ChestData>(json);
-
-            foreach (var item in chest.items)
-            {
-                Debug.Log($"Item: {item.id}, Count: {item.count}");
-            }
-        }
-    }
-
     public static void RealKnife()
     {
         if (HealthSistem.health <= 1)
@@ -96,16 +119,4 @@ public class ItemsFunctions : MonoBehaviour
         }
     }
 }
-[System.Serializable]
-public class ChestData
-{
-    public string chest_id;
-    public ChestItem[] items;
-}
 
-[System.Serializable]
-public class ChestItem
-{
-    public string id;
-    public int count;
-}
