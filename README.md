@@ -15,9 +15,7 @@ And if you have ideas contact me on IG;
   Downloads
   </h2>
   <p>
-    For Windows-> <a href="https://drive.google.com/uc?export=download&id=1lVeDLntvsFm_kExZWigHSCjPh_Kuesu2" download>Download</a> <br>
-    For Android-> <a href="https://drive.google.com/uc?export=download&id=1SlZYByg_bfbFz7v3jqE6kzCIT0zop6hR" download>Download</a> <br>
-    For Mac- just get Windows bro💀
+    <a href="https://tudorbuciuman.github.io/MDF-Demo/" >Website</a> <br>
   </p>
 <h2>
   Facts
