@@ -17,8 +17,11 @@ public class BloodOnTheLeaves : MonoBehaviour
     public Text dialogueTextUI;
     public string[] dialogueLines;
     public static string SceneLoc = "Blood on the leaves";
-    public static byte SceneNum = 0;
+    public static byte SceneNum = 2;
     int currentLine = 0;
+    float fastspeed = 0.0782f;
+    float slowspeed = 0.15f;
+    float waitTime = 1.4f;
     bool slow = false, isWhite = false;
 
     void Start()
@@ -28,15 +31,25 @@ public class BloodOnTheLeaves : MonoBehaviour
         switch (SceneNum)
         {
             case 0:
+                Voxeldata.PlayerData.special = 1;
+                PlayerDataData.SavePlayerFile();
                 SceneLoc = "Blood on the leaves";
                 audioSource.clip = clip[0];
                 audioSource.Play();
                 break;
             case 1:
-                SceneLoc = "Insomnia";
+                Voxeldata.PlayerData.special = 2;
+                PlayerDataData.SavePlayerFile();
+                SceneLoc = "The dreamer";
+                StartCoroutine(TheDreamer());
                 break;
             case 2:
-                SceneLoc = "To fight";
+                SceneLoc = "Mortal Man";
+                slow = false;
+                Voxeldata.PlayerData.special = 3;
+                PlayerDataData.SavePlayerFile();
+                slowspeed = 0.11f;
+                StartCoroutine(MortalMan());
                 break;
             case 3:
                 SceneLoc = "Letting everything go";
@@ -64,8 +77,46 @@ public class BloodOnTheLeaves : MonoBehaviour
                 audioSource.clip = clip[4];
                 audioSource.Play();
                 break;
+            case 8:
+                SceneLoc = "Hell of a life";
+                slow = false;
+                waitTime = 0.5f;
+                fastspeed = 0.053f;
+                Voxeldata.PlayerData.special = 9;
+                StartCoroutine(LoadAndPlayMusic(3));
+                PlayerDataData.SavePlayerFile();
+
+                break;
+            case 9:
+                SceneLoc = "Blame game";
+                slow = true;
+                fastspeed = 0.09f;
+                Voxeldata.PlayerData.special = 10;
+                StartCoroutine(LoadAndPlayMusic(4));
+                PlayerDataData.SavePlayerFile();
+
+                break;
         }
         Read(SceneLoc);
+    }
+    public IEnumerator TheDreamer()
+    {
+        audioSource.clip = clip[6];
+        audioSource.Play();
+        yield return new WaitForSeconds(170);
+        audioSource.clip = clip[7];
+        audioSource.Play();
+    }
+    public IEnumerator MortalMan()
+    {
+        audioSource.clip = clip[8];
+        audioSource.Play();
+        waitTime = 0.4f;
+        yield return new WaitForSeconds(30);
+        audioSource.clip = clip[9];
+        audioSource.loop = true;
+        audioSource.Play();
+
     }
     public void Read(string s)
     {
@@ -80,7 +131,7 @@ public class BloodOnTheLeaves : MonoBehaviour
         StartCoroutine(DisplayNextLine());
 
     }
-
+    float f = 0;
     public IEnumerator Lighting()
     {
         if (!isWhite)
@@ -143,18 +194,36 @@ public class BloodOnTheLeaves : MonoBehaviour
             else if (currentLine < dialogueLines.Length)
             {
                 if (slow)
-                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.15f));
+                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), slowspeed));
                 else
                 {
-                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.0782f));
+                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), fastspeed));
                 }
             }
         }
         else
         {
-            PlayerDataData.SavePlayerFile();
-            yield return new WaitForSeconds(5);
-            SceneManager.LoadScene("Intro");
+            if (SceneNum == 0)
+            {
+                PlayerDataData.SavePlayerFile();
+                yield return new WaitForSeconds(5);
+                SceneManager.LoadScene("Intro");
+            }
+            else if (SceneNum == 2)
+            {
+                Voxeldata.PlayerData.special = 11;
+                PlayerDataData.SavePlayerFile();
+                yield return new WaitForSeconds(5);
+                SceneManager.LoadScene("Fight");
+            }
+            else
+            {
+                yield return new WaitForSeconds(5);
+                Voxeldata.PlayerData.special = 0;
+                PlayerDataData.SavePlayerFile();
+                SceneManager.LoadScene("Intro");
+            }
+
         }
     }
     private IEnumerator TypeLine(string line, float spd)
@@ -166,7 +235,7 @@ public class BloodOnTheLeaves : MonoBehaviour
             yield return new WaitForSeconds(spd); //typing speed, big=slow
         }
         currentLine++;
-        yield return new WaitForSeconds(1.4f);
+        yield return new WaitForSeconds(waitTime);
         StartCoroutine(DisplayNextLine());
 
     }

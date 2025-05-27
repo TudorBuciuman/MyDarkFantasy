@@ -17,6 +17,8 @@ public class SoundsManager : MonoBehaviour
     public AudioClip[] clip=new AudioClip[10];
     public static string Master = "sounds";
     public static string Music = "soundtrack";
+    public static bool canChange = true;
+    public static string lastSong;
     public byte nrsongs=11;
     public void Start()
     {
@@ -50,6 +52,11 @@ public class SoundsManager : MonoBehaviour
             StartCoroutine(LoadAndPlayMusic(path, id));
         }
     }
+    public void ForceSong(byte id)
+    {
+        string path = Path.Combine(Application.streamingAssetsPath, "Songs");
+        StartCoroutine(LoadAndPlayMusic(path, id));
+    }
     public IEnumerator PlaySongByName(string name)
     {
         string musicFilePath;
@@ -63,7 +70,7 @@ public class SoundsManager : MonoBehaviour
             musicFilePath = "jar:file://" + musicFilePath;
         }
 #endif
-
+        lastSong = name;
         using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
         yield return www.SendWebRequest();
 
@@ -111,10 +118,13 @@ public class SoundsManager : MonoBehaviour
     }
     public void PlayRandom()
     {
-        if(songs.isPlaying)
-        songs.Stop();
-        else
-        PlaySong((byte)(Random.Range(1,nrsongs)));
+        if (canChange)
+        {
+            if (songs.isPlaying)
+                songs.Stop();
+            else
+                PlaySong((byte)(Random.Range(1, nrsongs)));
+        }
     }
     public void Placement(byte id)
     {
@@ -138,7 +148,6 @@ public class SoundsManager : MonoBehaviour
     {
         songs.Stop();
     }
-
     private IEnumerator LoadAndPlayMusic(string path, byte id)
     {
         string musicFilePath;
@@ -153,7 +162,7 @@ public class SoundsManager : MonoBehaviour
             musicFilePath = "jar:file://" + musicFilePath;
         }
 #endif
-
+        lastSong = $"song{id}";
         using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
         yield return www.SendWebRequest();
 

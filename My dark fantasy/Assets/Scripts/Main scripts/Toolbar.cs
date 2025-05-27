@@ -110,11 +110,6 @@ public class Toolbar : MonoBehaviour
                 if (World.blockTypes[item[0, slothIndex]].Items.tool.type != 5)
                     holdingItem.sprite = World.blockTypes[item[0, slothIndex]].itemSprite;
             }
-            if (Input.GetKey(KeyCode.K))
-            {
-                Pickp(48, 3);
-            }
-
         }
         else 
         {
@@ -435,13 +430,48 @@ public class Toolbar : MonoBehaviour
             catch (Exception e)
             {
                 Debug.LogError($"Error loading chests: {e.Message}");
+                PlayerDataOpener playerData = new()
+                {
+                    playerName = "The last hope",
+                    health = 20,
+                    slothid = 0,
+                    experienceLevel = 0,
+                    inventory = new ItemSave[3]
+                    {
+                    new(){ itemName = "Wood Sword", itemID = 19, quantity = 1,sloth=0 ,
+                        properties = new ItemProperties { damage = 5, speed =0.7f }},
+                    new() { itemName = "Wood Pickaxe", itemID = 13, quantity = 1,sloth=1 ,
+                        properties = new ItemProperties { special=0, speed =0.7f } },
+                    new() { itemName = "Wood Axe", itemID = 20, quantity = 1,sloth=2 ,
+                        properties = new ItemProperties { special=0,speed =0.7f } }
+                    }
+                };
+                try
+                {
+                    string jsonData = JsonUtility.ToJson(playerData, true);
+                    byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+                    using FileStream fileStream = new(filePath, FileMode.Create);
+                    using GZipStream compressionStream = new(fileStream, CompressionMode.Compress);
+                    compressionStream.Write(dataBytes, 0, dataBytes.Length);
+
+                }
+                catch
+                {
+                    File.Delete(filePath);
+                }
+                foreach (ItemSave data in playerData.inventory)
+                {
+                    item[data.sloth / 9, data.sloth % 9] = data.itemID;
+                    itemsize[data.sloth / 9, data.sloth % 9] = data.quantity;
+                }
+                HealthSistem.health = playerData.health;
             }
         }
         else
         {
             PlayerDataOpener playerData = new ()
             {
-                playerName = "The last human",
+                playerName = "The last hope",
                 health = 20,
                 slothid = 0,
                 experienceLevel = 0,
@@ -455,14 +485,25 @@ public class Toolbar : MonoBehaviour
                    properties = new ItemProperties { special=0,speed =0.7f } }
             }
             };
-            string jsonString = JsonUtility.ToJson(playerData, true);
-            File.WriteAllText(filePath, jsonString);
             foreach(ItemSave data in playerData.inventory)
             {
                 item[data.sloth/9, data.sloth%9]=data.itemID;
                 itemsize[data.sloth/9,data.sloth%9]=data.quantity;
             }
             HealthSistem.health =playerData.health;
+            try
+            {
+                string jsonData = JsonUtility.ToJson(playerData, true);
+                byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+                using FileStream fileStream = new(filePath, FileMode.Create);
+                using GZipStream compressionStream = new(fileStream, CompressionMode.Compress);
+                compressionStream.Write(dataBytes, 0, dataBytes.Length);
+
+            }
+            catch
+            {
+                File.Delete(filePath);
+            }
         }
         healthSistem=HealthSistem.istance;
         healthSistem.ReMakeHearts();
@@ -830,6 +871,19 @@ public class Toolbar : MonoBehaviour
         ChunkSerializer.loadedChunks.Clear();
         escape = false;
         openedInv = false;
+    }
+    public void GoToSleepNSave(Vector3 pos,Quaternion rot)
+    {
+        SaveInventory();
+        ChunkSerializer.SavePlayerData(pos, rot);
+        for (int i = 0; i < WorldManager.chunkstosave.Count; i++)
+        {
+            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.GetChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y).Voxels;
+            ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
+        }
+        //World.ClearData();
+        //inputActions.Android.Disable();
+        //ChunkSerializer.loadedChunks.Clear();
     }
     public void EscapeNSetUp()
     {

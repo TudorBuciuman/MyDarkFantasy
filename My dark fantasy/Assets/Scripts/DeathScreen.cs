@@ -24,17 +24,17 @@ public class DeathScreen : MonoBehaviour
     {
         switch (r)
         {
-            case 0:return "Don't lose your \n determination";
+            case 0:return "Don't lose your \n power";
             case 1:return "Stay safe";
-            case 2:return "The future rests \n in your hands";
-            case 3:return "You're refilled with \n bravery";
-            case 4:return "Don't lose \n your faith";
-            case 5:return "Don't sob, \n there is always tomorrow";
-            case 6:return "Don't lose hope";
-            case 7:return "*you're filled with \n COURAGE";
+            case 2:return "The future rests \r\n in your hands";
+            case 3:return "You're refilled with \r\n vengeance";
+            case 4:return "Don't lose \r\n your faith";
+            case 5:return "Don't sob, \r\n there is always tomorrow";
+            case 6:return "Don't lose hope..";
+            case 7:return "  You are the \r\n   last hope";
             case 9: return "Looser!";
             case 10: return "Imagine losing!";
-            default:return "determination";
+            default:return "here we are";
         }
     } 
     private IEnumerator TheWorldNeedsYou()

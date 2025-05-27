@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.PlayerSettings;
 
 public class Chest : MonoBehaviour
 {
@@ -75,6 +77,7 @@ public class Chest : MonoBehaviour
         }
         else
         {
+            Debug.Log("wtf");
             currentchest = new()
             {
                 position = new Pos(x, y, z),
@@ -94,6 +97,26 @@ public class Chest : MonoBehaviour
 
         ShowItems();
 
+    }
+    public bool IsEmpty(Pos loc)
+    {
+        if(!chestsData.ContainsKey(loc))
+        return true;
+        chestsData.TryGetValue(loc, out ChestData data);
+        for (int i=0; i<27; ++i)
+        {
+            if (data.items[i].itemId != 0)
+                return false;
+        }
+        return true;
+    }
+    public void RemoveChest(Pos loc)
+    {
+        if (chestsData.ContainsKey(loc))
+        {
+            chestsData.Remove(loc);
+            SaveAllChests();
+        }
     }
     public void ShowItems()
     {
@@ -167,8 +190,16 @@ public class Chest : MonoBehaviour
         {
             chestData.items[i] = new ItemSlott();
             chestData.items[i].slotIndex = i;
-            chestData.items[i].itemId = chestitems[i / 9, i % 9].id;
-            chestData.items[i].quantity = chestitems[i / 9, i % 9].size;
+            if (chestitems[i / 9, i % 9] != null)
+            {
+                chestData.items[i].itemId = chestitems[i / 9, i % 9].id;
+                chestData.items[i].quantity = chestitems[i / 9, i % 9].size;
+            }
+            else
+            {
+                chestData.items[i].itemId = 0;
+                chestData.items[i].quantity = 0;
+            }
 
         }
         if (chestsData.ContainsKey(chestData.position))
@@ -203,14 +234,7 @@ public class Chest : MonoBehaviour
 
         return data;
     }
-    public void RemoveChest(Pos pos)
-    {
-        if (chestsData.ContainsKey(pos))
-        {
-            chestsData.Remove(pos);
-            SaveAllChests();
-        }
-    }
+
     private void SaveAllChests()
     {
         //DONT TOUCH THIS
@@ -287,6 +311,40 @@ public class Chest : MonoBehaviour
         {
             Debug.Log("No chest save file found. Starting fresh.");
         }
+    }
+    public void AddFullChest(ChestData cData)
+    {
+        ChestData chestData = new();
+
+        chestData.items = new ItemSlott[27];
+        chestData.position = cData.position;
+
+        for (byte i = 0; i < 27; i++)
+        {
+            chestData.items[i] = new ItemSlott();
+            chestData.items[i].slotIndex = i;
+            if (cData.items[i] != null)
+            {
+                chestData.items[i].itemId = cData.items[i].itemId;
+                chestData.items[i].quantity = cData.items[i].quantity;
+            }
+            else
+            {
+                chestData.items[i].itemId = 0;
+                chestData.items[i].quantity = 0;
+            }
+
+        }
+        if (chestsData.ContainsKey(chestData.position))
+        {
+            chestsData[chestData.position] = chestData;
+        }
+        else
+        {
+            chestsData.Add(chestData.position, chestData);
+        }
+
+        SaveAllChests();
     }
 
     [System.Serializable]

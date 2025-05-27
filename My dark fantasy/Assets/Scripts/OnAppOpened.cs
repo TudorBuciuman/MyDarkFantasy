@@ -15,7 +15,7 @@ public class OnAppOpened : MonoBehaviour
     public Sprite moon;
     public GameObject screenn,but1,but2,but3;
     public static byte itemsnum;
-    public static BlockProprieties[] blockTypes=new BlockProprieties[62];
+    public static BlockProprieties[] blockTypes=new BlockProprieties[66];
     public GameObject MDF;
     public GameObject fallingGObj;
     public AudioClip[] clips = new AudioClip[5];
@@ -34,8 +34,8 @@ public class OnAppOpened : MonoBehaviour
         {
             MDF.SetActive(false);
         }
+        
         dialogueFile = Resources.Load<TextAsset>($"UIMessage");
-        DateTime currentTime = DateTime.Now;
 
         if (Voxeldata.PlayerData.scene == 2)
         {
@@ -124,10 +124,16 @@ public class OnAppOpened : MonoBehaviour
     }
     public void SetFunnyText()
     {
-        int line = UnityEngine.Random.Range(0, 28);
-        string[] dialogueLines = dialogueFile.text.Split('\n');
-        FunnyText.text = dialogueLines[line];
-
+        if (!Voxeldata.PlayerData.enteredWorld)
+        {
+            FunnyText.text = "The last hope";
+        }
+        else
+        {
+            int line = UnityEngine.Random.Range(0, 28);
+            string[] dialogueLines = dialogueFile.text.Split('\n');
+            FunnyText.text = dialogueLines[line];
+        }
     }
     public IEnumerator Waiting()
     {

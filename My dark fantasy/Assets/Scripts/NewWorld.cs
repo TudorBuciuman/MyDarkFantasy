@@ -148,15 +148,31 @@ public class NewWorld : MonoBehaviour
             string a=Wname.text;
             if (Wname.text.Equals("MyWorld"))
             {
-                byte p = 1;
-                Wname.text = ("MyWorld" + p.ToString()).ToString();
-                while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds", Wname.text)))
+                if (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds", Wname.text)))
                 {
-                    p++;
+                    byte p = 1;
                     Wname.text = ("MyWorld" + p.ToString()).ToString();
+                    while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds", Wname.text)))
+                    {
+                        p++;
+                        Wname.text = ("MyWorld"+p).ToString();
+                    }
                 }
             }
-            string h;
+            else
+            {
+                if (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds", Wname.text)))
+                {
+                    byte p = 1;
+                    Wname.text = (Wname.text + p.ToString()).ToString();
+                    while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds", Wname.text)))
+                    {
+                        p++;
+                        Wname.text = ("MyWorld"+p).ToString();
+                    }
+                }
+            }
+                string h;
             if (seed.Equals(""))
                 seed.text = random.ToString();
             string savePath = Path.Combine(Application.persistentDataPath, "worlds", Wname.text);

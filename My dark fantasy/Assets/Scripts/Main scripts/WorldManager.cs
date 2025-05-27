@@ -26,12 +26,14 @@ public class WorldManager : MonoBehaviour
     public Toolbar Toolbar;
     public Chunk chunk;
     public Material material;
+    public Material transparent;
     public Material waterMat;
     public BlockProprieties[] blockTypes;
     public readonly HashSet<ChunkCoord> activechunks = new();
     public static Queue<ChunkCoord> unmeshedchk = new ();
     public static List<ChunkCoord> chunkstosave = new ();
     public static Queue<ChunkCoord> nextChunk = new ();
+    public static HashSet<Vector2Int> castleChunksReady = new();
     public static Dictionary<Vector2Int, Chunk> chunks = new();
     public void Awake()
     {
@@ -48,29 +50,30 @@ public class WorldManager : MonoBehaviour
 
         }
     }
-    public void Start()
-    {
-        StartCoroutine(UpdateChunksCoroutine());
-    }
 
     private void FixedUpdate()
     {
-        if (!Toolbar.openedInv)
+        if (!Toolbar.escape)
         {
-            //CheckViewDistance();
-           CalculateTime();
+            
+            CalculateTime();
+
             //Shader.SetGlobalFloat("globallight", GlobalLight);
         }
+        if (!Toolbar.openedInv)
+        {
+            CheckViewDistance();
+        }
     }
-    
+
     private IEnumerator UpdateChunksCoroutine()
     {
         while (true)
         {
-            if(!Toolbar.openedInv)
-            CheckViewDistance(); 
+            if (!Toolbar.openedInv)
+                CheckViewDistance();
 
-            yield return new WaitForSeconds(0.1f); 
+            yield return new WaitForSeconds(0.1f);
         }
     }
     public void CalculateTime()
@@ -86,9 +89,6 @@ public class WorldManager : MonoBehaviour
     {
         var position = new Vector2Int(x, z);
             chunks[position] = chunk;
-        
-        //Debug.Log("wtf how did I manage to create a OneWay to destroy my pc?");
-        //also if you read this, I play chess very well :)
     }
     public static Chunk GetChunk(int x, int z)
     {
@@ -375,30 +375,7 @@ public class WorldManager : MonoBehaviour
     }
     public void GenerateWorld()
     {
-        ChunkCoord plpos = CImp.GetPosition();
-        plpos = new ChunkCoord(plpos.x / 16, plpos.y / 16);
-        for (int i = plpos.x-(Voxeldata.NumberOfChunks+2); i <= plpos.x + (Voxeldata.NumberOfChunks+2); i++)
-        {
-            for (int j = plpos.y - (Voxeldata.NumberOfChunks+2); j <= plpos.y+ Voxeldata.NumberOfChunks+2; j++)
-            {
-                CreateNewChunk(i, j);
-            }
-        }
-        
-        for (int i = plpos.x - Voxeldata.NumberOfChunks; i <= plpos.x+Voxeldata.NumberOfChunks; i++)
-        {
-            for (int j = plpos.y - Voxeldata.NumberOfChunks; j <= plpos.y + Voxeldata.NumberOfChunks; j++)
-            {
-                GetChunk(i, j).Make3d();
-            }
-        }
-        for (int i = plpos.x - Voxeldata.NumberOfChunks; i <= plpos.x+ Voxeldata.NumberOfChunks; i++)
-        {
-            for (int j = plpos.y - Voxeldata.NumberOfChunks; j <= plpos.y+ Voxeldata.NumberOfChunks; j++)
-            {
-                GetChunk(i, j).CreateMesh();
-            }
-        }
+        CheckViewDistance();
         ready = true;
     }
     public byte Block(float x, float y, float z)
@@ -444,6 +421,55 @@ public class WorldManager : MonoBehaviour
                 return GetChunk(a / 16 - 1, c / 16).Voxels[(16 - (-a % 16)), b, 0].Value1 ;
             }
             return GetChunk(a / 16 - 1, c / 16 - 1).Voxels[(16 - (-a % 16)), b, (16 - (-c % 16))].Value1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    public byte Block2(float x, float y, float z)
+    {
+        int a = Mathf.RoundToInt(x), b = Mathf.RoundToInt(y), c = Mathf.RoundToInt(z);
+        int g = a, h = c;
+        if (a < 0)
+            g = -a;
+        if (c < 0)
+            h = -c;
+        if (a < 0 && c >= 0)
+        {
+            if (a % 16 == 0)
+            {
+                return GetChunk(a / 16, c / 16).Voxels[0, b, c % 16].Value2;
+            }
+            return GetChunk(a / 16 - 1, c / 16).Voxels[16 - (g % 16), b, h % 16].Value2;
+        }
+        else if (a >= 0 && c >= 0)
+        {
+            return GetChunk(a / 16, c / 16).Voxels[g % 16, b, h % 16].Value2;
+        }
+        else if (a >= 0 && c < 0)
+        {
+            if (c % 16 == 0)
+            {
+                return GetChunk(a / 16, c / 16).Voxels[a % 16, b, 0].Value2;
+            }
+            return GetChunk(a / 16, c / 16 - 1).Voxels[a % 16, b, (16 - (-c % 16))].Value2;
+        }
+        else if (a < 0 && c < 0)
+        {
+            if (a % 16 == 0 && c % 16 == 0)
+            {
+                return GetChunk(a / 16, c / 16).Voxels[0, b, 0].Value2;
+            }
+            if (a % 16 == 0)
+            {
+                return GetChunk(a / 16, c / 16 - 1).Voxels[0, b, (16 - (-c % 16))].Value2;
+            }
+            if (c % 16 == 0)
+            {
+                return GetChunk(a / 16 - 1, c / 16).Voxels[(16 - (-a % 16)), b, 0].Value2;
+            }
+            return GetChunk(a / 16 - 1, c / 16 - 1).Voxels[(16 - (-a % 16)), b, (16 - (-c % 16))].Value2;
         }
         else
         {
@@ -546,6 +572,7 @@ public class WorldManager : MonoBehaviour
             }
         }
         DeactivateChunks(chunksToDeactivate);
+        
     }
     private void DeactivateChunks(HashSet<ChunkCoord> chunksToDeactivate)
     {
@@ -592,7 +619,6 @@ public class WorldManager : MonoBehaviour
             }
         }
     }
-
     bool AreNeighborChunksReady(int x, int z)
     {
         return (GetChunk(x - 1, z)!=null &&
@@ -608,11 +634,120 @@ public class WorldManager : MonoBehaviour
     {
         chunks.Clear();
         ChunkSerializer.loadedChunks.Clear();
+        castleChunksReady.Clear();
         chunkstosave.Clear();
         activechunks.Clear();
         unmeshedchk.Clear();
         nextChunk.Clear();
     }
+
+    public void PasteStructure(CastleStructure structure, int startX, int startY, int startZ)
+    {
+        int width = structure.blocks.GetLength(0);
+        int height = structure.blocks.GetLength(1);
+        int depth = structure.blocks.GetLength(2);
+        HashSet<Vector2Int> updatedChunks = new HashSet<Vector2Int>();
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int z = 0; z < depth; z++)
+                {
+                    var voxel = structure.GetBlock(x, y, z);
+
+                    int worldX = startX + x;
+                    int worldY = startY + y;
+                    int worldZ = startZ + z;
+                    if (voxel.Value1 != 0 || structure.GetBlock(x, 0, z).Value1!=0)
+                    {
+                        SetBlock(worldX, worldY, worldZ, voxel);
+                        SetTo(worldX, worldY, worldZ, voxel.Value1);
+
+                        int chunkX = Mathf.FloorToInt(worldX / 16f);
+                        int chunkZ = Mathf.FloorToInt(worldZ / 16f);
+                        updatedChunks.Add(new Vector2Int(chunkX, chunkZ));
+                    }
+                }
+            }
+        }
+        for(int x=0; x<width; x++)
+        {
+            for(int z=0; z<depth; z++)
+            {
+                if (Block(x + startX, startY, z + startZ)!=0) {
+                    for (int y=0; y<startY; y++)
+                    {
+                        if (Block(x + startX, startY - y - 1, z + startZ) == 0 || !blockTypes[Block(x + startX, startY - y - 1, z + startZ)].Items.isblock)
+                        {
+                            SetBlock(x + startX, startY - y - 1, z + startZ, structure.GetBlock(x, 0, z));
+                            SetTo(x + startX, startY - y - 1, z + startZ, structure.GetBlock(x, 0, z).Value1);
+                        }
+                        else
+                            break;
+                    }
+                }
+            }
+        }
+        foreach (var chunkCoord in updatedChunks)
+        {
+            int chunkWorldX = chunkCoord.x * 16;
+            int chunkWorldZ = chunkCoord.y * 16;
+
+            ModifyMesh(chunkWorldX, 140, chunkWorldZ, new Chunk.VoxelStruct(0, 0));
+        }
+        ChestData chest1 = new();
+        ChestData chest2 = new();
+        chest1.position = new Pos(startX + 21, startY + 1, startZ + 24);
+        chest2.position = new Pos(startX + 29, startY + 1, startZ + 24);
+
+        chest1.items = new ItemSlott[27]; 
+
+        chest1.items[0] = new ItemSlott { itemId = 50, quantity = 1, slotIndex = 0 };
+        chest1.items[1] = new ItemSlott { itemId = 63, quantity = 1, slotIndex = 1 };
+
+        chest2.items = new ItemSlott[27]; 
+
+        chest2.items[0] = new ItemSlott { itemId = 55, quantity = 1, slotIndex = 0 };
+
+        Chest.Instance.AddFullChest(chest1);
+        Chest.Instance.AddFullChest(chest2);
+    }
+    public void SetBlock(int x, int y, int z, Chunk.VoxelStruct id)
+    {
+        if (x >= 0 && z >= 0)
+            GetChunk((x / 16), (z / 16)).Voxels[x % 16, y, z % 16].Value2 = id.Value2;
+        else if (x >= 0 && z < 0)
+        {
+            if (z % 16 == 0)
+            {
+                GetChunk((x / 16), (z / 16)).Voxels[x % 16, y, 0].Value2 = id.Value2;
+            }
+            else
+            {
+                GetChunk((x / 16), (z / 16 - 1)).Voxels[x % 16, y, 16 - (-z % 16)].Value2 = id.Value2;
+            }
+        }
+        else if (x < 0 && z < 0)
+        {
+            if (z % 16 == 0 && x % 16 == 0)
+                GetChunk((x / 16), (z / 16)).Voxels[0, y, 0].Value2 = id.Value2;
+            else if (z % 16 == 0)
+                GetChunk((x / 16 - 1), (z / 16)).Voxels[16 - (-x % 16), y, 0].Value2 = id.Value2;
+            else if (x % 16 == 0)
+                GetChunk((x / 16), (z / 16 - 1)).Voxels[0, y, 16 - (-z % 16)].Value2 = id.Value2;
+            else
+                GetChunk((x / 16 - 1), (z / 16 - 1)).Voxels[16 - (-x % 16), y, 16 - (-z % 16)].Value2 = id.Value2;
+        }
+        else if (x < 0 && z >= 0)
+        {
+            if (x % 16 == 0)
+                GetChunk((x / 16), (z / 16)).Voxels[0, y, z % 16].Value2 = id.Value2;
+            else
+                GetChunk((x / 16 - 1), (z / 16)).Voxels[16 - (-x % 16), y, z % 16].Value2 = id.Value2;
+        }
+    }
+
 }
 public class BlockProprieties
 {

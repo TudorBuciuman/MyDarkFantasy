@@ -20,6 +20,7 @@ public class ChunkSerializer
         if (loadedChunks.ContainsKey((cx, cz)))
         {
             WorldManager.GetChunk(cx,cz).Voxels = loadedChunks[(cx, cz)];
+
         }
         else
         {
@@ -36,6 +37,7 @@ public class ChunkSerializer
             lock (loadedChunks) { 
             loadedChunks[(cx, cz)] = chunkData;
             }
+            WorldManager.GetChunk(cx, cz).strmade = true;
             WorldManager.GetChunk(cx,cz).Voxels=chunkData;
         }
     }
@@ -216,9 +218,11 @@ public class ChunkSerializer
         //Deci nu incerca sa-l intelegi
 
         // Open or create the region file
-        using FileStream fs = new(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-        BinaryWriter writer = new(fs);
-        BinaryReader reader = new(fs);
+
+            using FileStream fs = new(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+            BinaryWriter writer = new(fs);
+            BinaryReader reader = new(fs);
+       
 
         // Calculate chunk index within the region (32x32 grid)
         int regionChunkX = ((cx % 32) + 32) % 32;
@@ -270,6 +274,7 @@ public class ChunkSerializer
         // Write the compressed data to the determined chunk offset
         fs.Seek(newChunkOffset * 4096, SeekOrigin.Begin);
         writer.Write(compressedData);
+       
     }
 
     public static void CloseSet()
@@ -283,10 +288,10 @@ public class ChunkSerializer
         string path = Path.Combine(savePath , "playerprefab.dat");
         if (!File.Exists(path))
         {
-            Debug.Log(3);
             pos =Vector3.zero;
             rot =Quaternion.identity;
             WorldManager.currenttime = 300;
+            CastleStructure.madeCastle = false;
         }
         else
         {
@@ -312,6 +317,7 @@ public class ChunkSerializer
                             MouseController.xrot = data.mx;
                             MouseController.yrot = data.my;
                             WorldManager.currenttime = data.currentTime;
+                            CastleStructure.madeCastle = data.madeCastle;
                         }
                     }
                 }
@@ -323,6 +329,7 @@ public class ChunkSerializer
                 pos = Vector3.zero;
                 rot = Quaternion.identity;
                 WorldManager.currenttime = 300;
+                CastleStructure.madeCastle = false;
             }
 
             
@@ -344,7 +351,8 @@ public class ChunkSerializer
                 rotation = Rot,
                 mx = MouseController.xrot,
                 my = MouseController.yrot,
-                currentTime = WorldManager.currenttime
+                currentTime = WorldManager.currenttime,
+                madeCastle = CastleStructure.madeCastle
             };
             string jsonData = JsonUtility.ToJson(data, true);
 
@@ -401,4 +409,5 @@ public class PlayerData
     public Quaternion rotation;
     public float mx, my;
     public float currentTime;
+    public bool madeCastle;
 }

@@ -37,6 +37,7 @@ public class ControllerImput : MonoBehaviour
     public static float speed = 50f;
     public static float jump = 4.8f;
     private bool inWater=false;
+    private bool headinWater = false;
     private float timeinWater = 0;
     public CharacterController controller;
     public GameObject box;
@@ -252,6 +253,7 @@ public class ControllerImput : MonoBehaviour
         Vector3 position = controller.transform.position;
         return new ChunkCoord(Mathf.FloorToInt(position.x) , Mathf.RoundToInt(position.z));
     }
+
     void CalculateVelocity()
     {
         // === Determine if in water ===
@@ -748,15 +750,17 @@ public class ControllerImput : MonoBehaviour
                 break; 
             }
         }
-
+        bool hdw=false;
+        if(wmanager.Block(transform.position.x, transform.position.y+0.25f, transform.position.z) == 21)
+        {
+            hdw = true;
+        }
         if (isInWaterAtAnyPosition)
         {
             if (!inWater)
             {
                 inWater = true;
-                watersprite.gameObject.SetActive(true);
-                RenderSettings.fogDensity = 0.04f;
-                RenderSettings.fogColor = new Color(12f / 256f, 0f, 156f / 256f, 1);
+                
                 timeinWater = 0;
             }
             else
@@ -769,9 +773,17 @@ public class ControllerImput : MonoBehaviour
                     timeinWater -= 1.2f;
                 }
             }
+            if(hdw && !headinWater)
+            {
+                headinWater = true;
+                watersprite.gameObject.SetActive(true);
+                RenderSettings.fogDensity = 0.04f;
+                RenderSettings.fogColor = new Color(12f / 256f, 0f, 156f / 256f, 1);
+            }
         }
         else if (inWater)
         {
+            headinWater = false;
             inWater = false;
             watersprite.gameObject.SetActive(false);
             RenderSettings.fogDensity = 0.01f;
@@ -800,24 +812,24 @@ public class ControllerImput : MonoBehaviour
 
     private IEnumerator ShakeCoroutine()
     {
-        Vector3 originalPosition = cam.position;
+        Vector3 originalPosition = transform.position;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             float xOffset = Random.Range(-1f, 1f) * magnitude;
             float yOffset = Random.Range(-1f, 1f) * magnitude;
-            cam.position = originalPosition + new Vector3(xOffset, yOffset, 0f);
+            transform.position = originalPosition + new Vector3(xOffset, yOffset, 0f);
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        cam.position = originalPosition;
+        transform.position = originalPosition;
     }
     void HandleMouseInput()
     {
-
+        //left/break
         if (Input.GetMouseButton(0)) // Left mouse button/break
         {
             if (toolbar.item[0, Toolbar.slothIndex]>0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.tool.type == 1)
@@ -871,8 +883,28 @@ public class ControllerImput : MonoBehaviour
                             if (holdtme >= wmanager.blockTypes[WorldManager.GetChunk(s/16,k/16).Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16].Value1].Items.blocks.breakTime)
                             {
                                 box.SetActive(false);
-                                itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
-                                wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), new Chunk.VoxelStruct(0,0));
+                                if(wmanager.blockTypes[WorldManager.GetChunk(s / 16, k / 16).Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16].Value1].Items.blocks.special == 5)
+                                {
+                                    if(WorldManager.GetChunk(s / 16, k / 16).Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16].Value2==0)
+                                        wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z) + 1, new Chunk.VoxelStruct(0, 0));
+                                    else
+                                        wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z) - 1, new Chunk.VoxelStruct(0, 0));
+                                }
+                                else if (wmanager.blockTypes[WorldManager.GetChunk(s / 16, k / 16).Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16].Value1].Items.blocks.special == 4)
+                                {
+                                    if(Chest.Instance.IsEmpty(new Pos(a, b, c)))
+                                    {
+                                        itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
+                                        Chest.Instance.RemoveChest(new Pos(a, b, c));
+                                        wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), new Chunk.VoxelStruct(0, 0));
+                                    }
+                                }
+                                else
+                                {
+                                    itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
+                                    wmanager.ModifyMesh(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z), new Chunk.VoxelStruct(0, 0));
+
+                                }
 
                                 breac = false;
                                 holdtme = 0;
@@ -980,6 +1012,7 @@ public class ControllerImput : MonoBehaviour
             else if (toolbar.item[0, Toolbar.slothIndex] == 55 && brktime<=0)
             {
                 ItemsFunctions.RealKnife();
+                SoundsManager.canChange = false;
                 brktime = 2;
             }
             else if (wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.item.coolfunction == 5 && brktime<=0)
@@ -1000,8 +1033,14 @@ public class ControllerImput : MonoBehaviour
                         if (CanPlace(lastPos))
                         {
                             time = 0.2f;
-                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], (byte)(Random.Range(0, 2))));
-                            //toolbar.UpdateAnItem(Toolbar.slothIndex);
+                            if (wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.blocks.type!=3)
+                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], 0));
+                            else if(CanPlace(lastPos +new Vector3(0,0,1)) && !wmanager.IsBlock(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z) + 1))
+                            {
+                                wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], 0));
+                                wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z)+1, new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], 1));
+                            }
+                            toolbar.UpdateAnItem(Toolbar.slothIndex);
                         }
                         break;
                     }
@@ -1027,6 +1066,10 @@ public class ControllerImput : MonoBehaviour
                                     break;
                                 case 4: Chest.Instance.OpenChest(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z));
                                     break;
+                                case 5: 
+                                    if(step<2)
+                                       Sleep(new Vector3Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)));
+                                    break;
                             }
                         }
                         time = 0.2f;
@@ -1046,6 +1089,8 @@ public class ControllerImput : MonoBehaviour
         pos.x= Mathf.RoundToInt(pos.x);
         pos.y= Mathf.RoundToInt(pos.y);
         pos.z= Mathf.RoundToInt(pos.z);
+        if (pos.y >= 159)
+            return false;
         float a = transform.position.x;
         float b = transform.position.y;
         float c = transform.position.z;
@@ -1065,6 +1110,56 @@ public class ControllerImput : MonoBehaviour
     {
         mapImg.gameObject.SetActive(false);
     }
-
+    public void Sleep(Vector3Int v)
+    {
+        Debug.Log("sleeping");
+        
+        if (WorldManager.currenttime > 550)
+        {
+            BookManager.readingBook = true;
+            
+            StartCoroutine(Sleeping(v));
+        }
+        
+    }
+    public IEnumerator Sleeping(Vector3Int v)
+    {
+        BookManager.readingBook = true;
+        Toolbar.escape = true;
+        toolbar.openedInv = true;
+        Vector3[] w = new Vector3[3];
+        w[0] = transform.position;
+        w[1] = transform.eulerAngles;
+        w[2] = cam.eulerAngles;
+        Quaternion q = transform.rotation;
+        if (wmanager.Block2(v.x, v.y, v.z) == 1)
+        {
+            transform.position = new Vector3(v.x, v.y + 0.7f, v.z);
+        }
+        else
+        {
+            transform.position = new Vector3(v.x, v.y + 0.7f, v.z+1);
+        }
+        transform.localRotation = Quaternion.Euler(0, -180, 0);
+        cam.localRotation = Quaternion.Euler(-75, 0, 0);
+        yield return new WaitForSeconds(10);
+        toolbar.GoToSleepNSave(w[0], q);
+        //save
+        Voxeldata.PlayerData.timesSlept++;
+        PlayerDataData.SavePlayerFile();
+        if (Voxeldata.PlayerData.timesSlept == 1)
+            SceneManager.LoadScene("Waterfall");
+        else
+        {   
+            WorldManager.currenttime = 300;
+            transform.position = w[0];
+            transform.eulerAngles = w[1];
+            cam.eulerAngles = w[2];
+            Toolbar.escape = false;
+            BookManager.readingBook = false;
+             toolbar.openedInv = false;
+            
+        }
+    }
 
 }

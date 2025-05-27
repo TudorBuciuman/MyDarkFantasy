@@ -43,6 +43,7 @@ public class FightSistem : MonoBehaviour
 
     public GameObject deathscene;
     public Text dsc1, ds2;
+    public GameObject lv2;
 
     private bool isWhite = false,slow=true;
     public Image lightingImg;
@@ -397,6 +398,10 @@ public class FightSistem : MonoBehaviour
         yield return StartCoroutine(JustType(" I'm sorry.", 0.12f));
         yield return new WaitForSeconds(5f);
         dialogueTextUI.text = null;
+        Voxeldata.PlayerData.pacifist = true;
+        Voxeldata.PlayerData.scene = 1;
+        Voxeldata.PlayerData.sawIntro = false;
+
         yield return null;
     }
     public IEnumerator VengeanceDeath()
@@ -418,7 +423,7 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" For it was I that led \n you down this path.", 0.08f));
         yield return new WaitForSeconds(2.4f);
-        yield return StartCoroutine(JustType(" But to live defeated is to die!", 0.04f));
+        yield return StartCoroutine(JustType(" But this is my only chance.", 0.04f));
         yield return new WaitForSeconds(3);
         dialogueTextUI.text = null;
 
@@ -426,6 +431,14 @@ public class FightSistem : MonoBehaviour
         yield return StartCoroutine(JustType(" I am sorry..", 0.27f));
         yield return new WaitForSeconds(3);
         dialogueTextUI.text = null;
+        yield return new WaitForSeconds(3);
+        yield return StartCoroutine(ShowLV2());
+
+        //Voxeldata.PlayerData.genocide = true;
+        //Voxeldata.PlayerData.pacifist = false;
+        //Voxeldata.PlayerData.scene = 1;
+        //Voxeldata.PlayerData.sawIntro = false;
+        yield return null;
     }
     public IEnumerator DisplayNextLine()
     {
@@ -525,6 +538,13 @@ public class FightSistem : MonoBehaviour
                 dialogueTextUI.text = null;
                 break;
         }
+    }
+    public IEnumerator ShowLV2()
+    {
+        lv2.SetActive(true);
+
+        yield return new WaitForSeconds(3);
+        lv2.SetActive(false);
     }
 
     bool fighting = false,fought=false,oninventory=false;
@@ -645,6 +665,7 @@ public class FightSistem : MonoBehaviour
             }
             yield return new WaitForSeconds(0.01f);
         }
+        yield return null;
     }
     public IEnumerator Lighting()
     {
@@ -730,7 +751,11 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(1.2f);
         swordSlash.SetActive(false);
         bullet.gameObject.SetActive(false);
+        if(fightAct.acts>=5 && fightAct.attacks>=3)
         TheEnd();
+        else
+        StartCoroutine(HasChose());
+        yield return null;
     }
     public IEnumerator TypeLine(string line, float spd)
     {

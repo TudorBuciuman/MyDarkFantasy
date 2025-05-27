@@ -36,7 +36,9 @@ public class HealthSistem : MonoBehaviour
             health=maxHealth;
             Toolbar.instance.SaveProgress();
             Voxeldata.PlayerData.deaths++;
+            BloodOnTheLeaves.SceneNum = 0;
             SceneManager.LoadScene("Blood");
+            soundsManager.StopSong();
         }
         else
         {
@@ -45,7 +47,18 @@ public class HealthSistem : MonoBehaviour
             Toolbar.escape = true;
             SceneManager.LoadScene("DeathScreen", LoadSceneMode.Additive);
             yield return new WaitForSeconds(1);
+            soundsManager.StopSong();
         }
+    }
+    private IEnumerator KnifeDeath()
+    {
+        health = maxHealth;
+        Toolbar.instance.SaveProgress();
+        Voxeldata.PlayerData.deaths++;
+        SceneManager.LoadScene("Fight");
+        yield return new WaitForSeconds(1);
+        soundsManager.StopSong();
+        yield return null;
     }
     public void Heal(float amount)
     {
@@ -84,5 +97,11 @@ public class HealthSistem : MonoBehaviour
         }
         healthslider.value = hlt;
         healthLabel.text=$"{hlt}/{maxHealth}".ToString();
+    }
+    public void Protocol()
+    {
+        health = 0;
+        ReMakeHearts();
+        StartCoroutine(KnifeDeath());
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -105,17 +106,22 @@ public class ItemsFunctions : MonoBehaviour
         if (HealthSistem.health <= 1)
         {
             //activate protocol
+            HealthSistem.istance.Protocol();
             SoundsManager.instance.mouseSource.Stop();
+            ControllerImput.Instance.toolbar.UpdateAnItem(Toolbar.slothIndex);
+            return;
         }
-        HealthSistem.istance.UpdateHealth(-1);
+        else
+            HealthSistem.istance.UpdateHealth(-1);
         SoundsManager.instance.Placement(11);
         if (!SoundsManager.instance.songs.isPlaying)
         {
-            SoundsManager.instance.PlaySong(7);
+            SoundsManager.instance.ForceSong(7);
         }
-        else if (SoundsManager.instance.songs.clip.name != "song7")
+
+        if (SoundsManager.lastSong!="song7")
         {
-            SoundsManager.instance.PlaySong(7);
+            SoundsManager.instance.ForceSong(7);
         }
     }
 }

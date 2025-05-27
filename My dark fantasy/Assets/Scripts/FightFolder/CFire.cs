@@ -5,9 +5,7 @@ using UnityEngine;
 public class CFire : MonoBehaviour
 {
     public int a;
-    float t=0;
     float px, py;
-    float x, y;
     public void Start()
     {
         px = transform.position.x;

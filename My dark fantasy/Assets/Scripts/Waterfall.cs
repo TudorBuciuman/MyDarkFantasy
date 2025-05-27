@@ -106,7 +106,8 @@ public class Waterfall : MonoBehaviour
         else
         {
             dialogueTextUI.text = null;
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(10);
+            Application.Quit();
         }
     }
 
