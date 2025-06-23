@@ -116,6 +116,7 @@ public class FightingHealth : MonoBehaviour
         GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
         yield return new WaitForSeconds(0.3f);
     }
+
     public void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("obstacle"))

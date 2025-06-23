@@ -28,9 +28,16 @@ public class BloodOnTheLeaves : MonoBehaviour
         switch (SceneNum)
         {
             case 0:
+<<<<<<< Updated upstream
+=======
+                Voxeldata.PlayerData.special = 1;
+                PlayerDataData.SavePlayerFile();
+                slowspeed = 0.16f;
+                slow = true;
+                fastspeed = 0.09f;
+>>>>>>> Stashed changes
                 SceneLoc = "Blood on the leaves";
-                audioSource.clip = clip[0];
-                audioSource.Play();
+                StartCoroutine(Blood());
                 break;
             case 1:
                 SceneLoc = "Insomnia";
@@ -67,6 +74,36 @@ public class BloodOnTheLeaves : MonoBehaviour
         }
         Read(SceneLoc);
     }
+<<<<<<< Updated upstream
+=======
+    public IEnumerator TheDreamer()
+    {
+        audioSource.clip = clip[6];
+        audioSource.Play();
+        yield return new WaitForSeconds(170);
+        audioSource.clip = clip[7];
+        audioSource.Play();
+    }
+    public IEnumerator Blood()
+    {
+        audioSource.clip = clip[0];
+        audioSource.loop = false;
+        yield return new WaitForSeconds(4);
+        audioSource.Play();
+        yield return null;
+    }
+    public IEnumerator MortalMan()
+    {
+        audioSource.clip = clip[8];
+        audioSource.Play();
+        waitTime = 0.4f;
+        yield return new WaitForSeconds(30);
+        audioSource.clip = clip[9];
+        audioSource.loop = true;
+        audioSource.Play();
+
+    }
+>>>>>>> Stashed changes
     public void Read(string s)
     {
         dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
@@ -152,9 +189,34 @@ public class BloodOnTheLeaves : MonoBehaviour
         }
         else
         {
+<<<<<<< Updated upstream
             PlayerDataData.SavePlayerFile();
             yield return new WaitForSeconds(5);
             SceneManager.LoadScene("Intro");
+=======
+            if (SceneNum == 0)
+            {
+                Voxeldata.PlayerData.special = 0;
+                PlayerDataData.SavePlayerFile();
+                yield return new WaitForSeconds(5);
+                SceneManager.LoadScene("Intro");
+            }
+            else if (SceneNum == 2)
+            {
+                Voxeldata.PlayerData.special = 11;
+                PlayerDataData.SavePlayerFile();
+                yield return new WaitForSeconds(5);
+                SceneManager.LoadScene("Fight");
+            }
+            else
+            {
+                yield return new WaitForSeconds(5);
+                Voxeldata.PlayerData.special = 0;
+                PlayerDataData.SavePlayerFile();
+                SceneManager.LoadScene("Intro");
+            }
+
+>>>>>>> Stashed changes
         }
     }
     private IEnumerator TypeLine(string line, float spd)
@@ -214,7 +276,13 @@ public class BloodOnTheLeaves : MonoBehaviour
             audioSource.clip = clip[2];
             audioSource.Play();
         }
+        if (SceneNum == 0)
+        {
+            Voxeldata.PlayerData.special = 0;
+            PlayerDataData.SavePlayerFile();
+        }
         yield return new WaitForSeconds(10);
+
         SceneManager.LoadScene("Intro");
     }
     public IEnumerator GetInput()

@@ -19,10 +19,64 @@ public class PlayerDataData : MonoBehaviour
         string settingsPath = Path.Combine(Application.persistentDataPath,location);
         if (File.Exists(settingsPath))
         {
+<<<<<<< Updated upstream
             string json = File.ReadAllText(settingsPath);
             DontForget data = JsonUtility.FromJson<DontForget>(json);
             Voxeldata.PlayerData=data;
             SawIntro = data.sawIntro;
+=======
+            try
+            {
+                byte[] compressedData = File.ReadAllBytes(settingsPath);
+
+                using (MemoryStream memoryStream = new MemoryStream(compressedData))
+                {
+                    using (GZipStream decompressionStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+                    {
+                        using (MemoryStream resultStream = new MemoryStream())
+                        {
+                            decompressionStream.CopyTo(resultStream);
+                            byte[] decompressedData = resultStream.ToArray();
+
+                            string jsonData = System.Text.Encoding.UTF8.GetString(decompressedData);
+
+                            DontForget playerData = JsonUtility.FromJson<DontForget>(jsonData);
+                            Voxeldata.PlayerData = playerData;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                DontForget playerData = new()
+                {
+                    scene = 0,
+                    love=1,
+                    sawIntro = false,
+                    deaths = 0,
+                    typeofrun = 0,
+                    SawEnding = false,
+                };
+                Voxeldata.PlayerData = playerData;
+                string filePath = Path.Combine(Application.persistentDataPath, location);
+
+                try
+                {
+                    string jsonData = JsonUtility.ToJson(playerData, true);
+
+                    byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+                    using FileStream fileStream = new(filePath, FileMode.Create);
+                    using GZipStream compressionStream = new(fileStream, CompressionMode.Compress);
+                    compressionStream.Write(dataBytes, 0, dataBytes.Length);
+                }
+                catch
+                {
+                    File.Delete(filePath);
+                }
+            }
+            SawIntro = Voxeldata.PlayerData.sawIntro;
+>>>>>>> Stashed changes
             if (SawIntro)
             {
                 StartCoroutine(Play());
@@ -43,6 +97,7 @@ public class PlayerDataData : MonoBehaviour
             DontForget playerData = new()
             {
                 scene = 0,
+                love=1,
                 sawIntro = false,
                 deaths = 0,
                 typeofrun = 0,
@@ -65,6 +120,7 @@ public class PlayerDataData : MonoBehaviour
         DontForget playerData = new()
         {
             scene = 0,
+            love=1,
             sawIntro = false,
             deaths = 0,
             typeofrun = 0,
@@ -115,6 +171,7 @@ public class PlayerDataData : MonoBehaviour
 public class DontForget
 {
     public byte scene;
+    public byte love;
     public int deaths;
     public bool sawIntro;
     public byte typeofrun;

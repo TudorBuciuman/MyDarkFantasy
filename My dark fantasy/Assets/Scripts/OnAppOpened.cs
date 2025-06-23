@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine.UI;
 using System;
 using UnityEngine.Networking;
+using Unity.VisualScripting;
 
 public class OnAppOpened : MonoBehaviour
 {
@@ -15,8 +16,13 @@ public class OnAppOpened : MonoBehaviour
     public Sprite moon;
     public GameObject screenn,but1,but2,but3;
     public static byte itemsnum;
+<<<<<<< Updated upstream
     public static BlockProprieties[] blockTypes=new BlockProprieties[62];
     public GameObject MDF;
+=======
+    public static BlockProprieties[] blockTypes=new BlockProprieties[66];
+    public GameObject MDF,yeezy;
+>>>>>>> Stashed changes
     public GameObject fallingGObj;
     public AudioClip[] clips = new AudioClip[5];
     public AudioSource audioSource;
@@ -24,7 +30,8 @@ public class OnAppOpened : MonoBehaviour
     public GameObject flowers;
     public static bool pressed=false;
     public GameObject cameraObj;
-    private readonly float rotationTime = 230;
+    private float rotationTime = 230;
+    public Material Skyboxmat;
     
     public static Sprite[] itemsAtlas;
     void Awake()
@@ -33,11 +40,18 @@ public class OnAppOpened : MonoBehaviour
         if (pressed)
         {
             MDF.SetActive(false);
+            yeezy.SetActive(false);
         }
         dialogueFile = Resources.Load<TextAsset>($"UIMessage");
         DateTime currentTime = DateTime.Now;
 
-        if (Voxeldata.PlayerData.scene == 2)
+        if (Voxeldata.PlayerData.scene == 2 && !Voxeldata.PlayerData.genocide)
+        {
+            audioSource.clip = clips[2];
+            audioSource.loop = false;
+            falling.SetActive(true);
+        }
+        else if (Voxeldata.PlayerData.genocide && Voxeldata.PlayerData.scene == 1)
         {
             audioSource.clip = clips[2];
             audioSource.loop = false;
@@ -46,7 +60,7 @@ public class OnAppOpened : MonoBehaviour
         else
         {
             audioSource.loop = true;
-            audioSource.clip = clips[0];
+            audioSource.clip = clips[Voxeldata.PlayerData.scene];
         }
         audioSource.Play();
         SetFunnyText();
@@ -132,19 +146,26 @@ public class OnAppOpened : MonoBehaviour
     public IEnumerator Waiting()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        if (Voxeldata.PlayerData.scene == 1)
+        {
+            MDF.SetActive(false);
+            yeezy.SetActive(true);
+        }
         while (true)
         {
             //*android
             if (Input.touchCount > 0)
             {
                 MDF.SetActive(false);
+                yeezy.SetActive(false);
                 pressed = true;
                 break;
             }
             
-            if (Input.GetKey(KeyCode.KeypadEnter) || Input.GetKey(KeyCode.Return))
+            if (Input.GetKey(KeyCode.KeypadEnter) || Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Z))
             {
                 MDF.SetActive(false);
+                yeezy.SetActive(false);
                 pressed=true;
                 break;
             }
@@ -155,13 +176,58 @@ public class OnAppOpened : MonoBehaviour
     }
     public IEnumerator Spinning()
     {
-        yield return new WaitForSeconds(0.5f);
-        while (true)
+        if (Voxeldata.PlayerData.genocide && Voxeldata.PlayerData.scene == 1)
+            yield return null;
+        if (!Voxeldata.PlayerData.genocide && Voxeldata.PlayerData.scene == 2)
+            yield return null;
+        if (Voxeldata.PlayerData.scene == 0)
         {
-            float anglePerSecond = 360f / rotationTime;
-            cameraObj.transform.Rotate(0, anglePerSecond * Time.deltaTime, 0, Space.Self);
-            yield return null; 
+            yield return new WaitForSeconds(0.5f);
+            while (true)
+            {
+                float anglePerSecond = 360f / rotationTime;
+                cameraObj.transform.Rotate(0, anglePerSecond * Time.deltaTime, 0, Space.Self);
+                yield return null;
+            }
         }
+        else if(Voxeldata.PlayerData.scene == 1)
+        {
+            RenderSettings.skybox.SetFloat("_Exposure", 0.13f);
+            DynamicGI.UpdateEnvironment();
+            yield return new WaitForSeconds(0.2f);
+            rotationTime = 300;
+            while (true)
+            {
+                float anglePerSecond = 360f / rotationTime;
+                cameraObj.transform.Rotate(0, anglePerSecond * Time.deltaTime, 0, Space.Self);
+                yield return null;
+            }
+        }
+        else if (Voxeldata.PlayerData.scene == 3)
+        {
+            yield return new WaitForSeconds(0.2f);
+            rotationTime = 200;
+            while (true)
+            {
+                float anglePerSecond = 360f / rotationTime;
+                cameraObj.transform.Rotate(0, anglePerSecond * Time.deltaTime, 0, Space.Self);
+                yield return null;
+            }
+        }
+        else if (Voxeldata.PlayerData.scene == 4)
+        {
+            yield return new WaitForSeconds(0.2f);
+            rotationTime = 500;
+            while (true)
+            {
+                float anglePerSecond = 360f / rotationTime;
+                cameraObj.transform.Rotate(0, anglePerSecond * Time.deltaTime, 0, Space.Self);
+                yield return null;
+            }
+        }
+
+
+        yield return null;
     }
 }
 

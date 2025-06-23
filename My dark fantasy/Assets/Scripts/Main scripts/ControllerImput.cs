@@ -76,6 +76,7 @@ public class ControllerImput : MonoBehaviour
     public static float wtime=0,brktime=0;
     private void Awake()
     {
+        Instance = this;
         toolbar.openedInv = true;
         androidActionMap = inputActions.FindActionMap("Android");
         androidActionMap.Enable();
@@ -102,7 +103,6 @@ public class ControllerImput : MonoBehaviour
     }
     void Start()
     {
-        Instance = this;
         bool esc =Toolbar.escape;
         Toolbar.escape = true;
         QualitySettings.vSyncCount = 1;
@@ -180,6 +180,7 @@ public class ControllerImput : MonoBehaviour
             Hud3.GetComponent<Image>().enabled = false;
             CancelInvoke(nameof(PosOut));
             Pos.text = null;
+            framerate.text = null;
             Pos.gameObject.SetActive(false);
         }
         else
@@ -523,7 +524,7 @@ public class ControllerImput : MonoBehaviour
     }
     public void OnEscape(InputAction.CallbackContext context)
     {
-        if (!BookManager.readingBook)
+        if (!BookManager.readingBook && Toolbar.CanEsc)
         {
             if (!Toolbar.escape)
                 toolbar.Escape();

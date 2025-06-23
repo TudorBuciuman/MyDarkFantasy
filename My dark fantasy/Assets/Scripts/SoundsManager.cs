@@ -50,10 +50,23 @@ public class SoundsManager : MonoBehaviour
             StartCoroutine(LoadAndPlayMusic(path, id));
         }
     }
+<<<<<<< Updated upstream
+=======
+    public void MuteTheWholeGame()
+    {
+        musicMixer.SetFloat(Music, -80);
+        soundsMixer.SetFloat(Master, -80);
+    }
+    public void ForceSong(byte id)
+    {
+        string path = Path.Combine(Application.streamingAssetsPath, "Songs");
+        StartCoroutine(LoadAndPlayMusic(path, id));
+    }
+>>>>>>> Stashed changes
     public IEnumerator PlaySongByName(string name)
     {
         string musicFilePath;
-
+        canChange = false;
 #if UNITY_STANDALONE_WIN
         musicFilePath = Path.Combine(Application.streamingAssetsPath, $"Songs/{name}.ogg");
 #elif UNITY_ANDROID
@@ -63,7 +76,12 @@ public class SoundsManager : MonoBehaviour
             musicFilePath = "jar:file://" + musicFilePath;
         }
 #endif
+<<<<<<< Updated upstream
 
+=======
+        lastSong = name;
+        float len=0;
+>>>>>>> Stashed changes
         using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
         yield return www.SendWebRequest();
 
@@ -78,8 +96,16 @@ public class SoundsManager : MonoBehaviour
             {
                 songs.clip = clip;
                 songs.Play();
+                len = clip.length;
             }
         }
+        float f = 0;
+        while (f < len)
+        {
+            f += Time.deltaTime;
+            yield return null;
+        }
+        canChange = true;
 
     }
     public void PlaySceneSong(byte id)

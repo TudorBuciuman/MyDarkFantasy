@@ -45,7 +45,6 @@ public class WorldManager : MonoBehaviour
         for(int i=0; i<OnAppOpened.itemsnum; i++)
         {
             blockTypes[i]=OnAppOpened.blockTypes[i];
-
         }
     }
     public void Start()

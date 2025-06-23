@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using System.IO;
 using System;
 using System.IO.Compression;
+using UnityEditor;
 public class Toolbar : MonoBehaviour
 {
     
@@ -36,7 +37,7 @@ public class Toolbar : MonoBehaviour
     public static byte slothIndex = 0;
     public bool openedInv = false;
     public static bool escape = false;
-
+    public static bool CanEsc = true;
     public static bool mapActive = false;
 
     public PointerEventData faranume;

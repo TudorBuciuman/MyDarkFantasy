@@ -67,7 +67,6 @@ public class OverlyDedicated : MonoBehaviour
         yield return new WaitForSeconds(2);
         image.gameObject.SetActive(false);
         //yield return StartCoroutine(ChangeColor(new Color32(118, 8, 39, 0), 4));
-        LostInTheWorld.Back();
         SceneManager.UnloadSceneAsync("OverlyDedicated");
     }
 }

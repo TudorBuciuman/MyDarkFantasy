@@ -83,6 +83,6 @@ public class HealthSistem : MonoBehaviour
             hlt = 1;
         }
         healthslider.value = hlt;
-        healthLabel.text=$"{hlt}/{maxHealth}".ToString();
+        healthLabel.text=$"{hlt} / {maxHealth}".ToString();
     }
 }

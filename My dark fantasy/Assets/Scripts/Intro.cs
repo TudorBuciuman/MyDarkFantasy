@@ -14,10 +14,11 @@ public class Intro : MonoBehaviour
     public void Awake()
     {
         Application.targetFrameRate = 30;
+        OnAppOpened.pressed = false;
     }
     public void Starting()
     {
-        if(Voxeldata.PlayerData.scene==2)
+        if (Voxeldata.PlayerData.scene==2)
             TTG.sprite = logoBlackndWhite;
         StartCoroutine(PlayOnSight());
     }

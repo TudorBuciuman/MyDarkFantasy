@@ -380,7 +380,7 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" I too, consider \n it an injustice.", 0.09f));
         yield return new WaitForSeconds(0.4f);
-        yield return StartCoroutine(JustType(" It will be another sin \n that I will have to carry \n for the rest of my days.", 0.09f));
+        yield return StartCoroutine(JustType(" It will be another sin \n that I will have to carry \n for the rest of time.", 0.09f));
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" As well as what comes next.", 0.09f));
         yield return new WaitForSeconds(0.4f);
@@ -390,13 +390,27 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(3);
         yield return StartCoroutine(SpeciallAttack());
         //attack animation
-        yield return StartCoroutine(JustType(" Rest well, young one.",0.13f));
+        yield return StartCoroutine(JustType(" Rest well, poor one.",0.13f));
         yield return new WaitForSeconds(2.4f);
         dialogueTextUI.text = null;
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" I'm sorry.", 0.12f));
         yield return new WaitForSeconds(5f);
         dialogueTextUI.text = null;
+<<<<<<< Updated upstream
+=======
+        Voxeldata.PlayerData.pacifist = true;
+        Voxeldata.PlayerData.genocide = false;
+        Voxeldata.PlayerData.scene = 1;
+        Voxeldata.PlayerData.sawIntro = false;
+        PlayerDataData.SavePlayerFile();
+        yield return new WaitForSeconds(8f);
+        yield return StartCoroutine(JustType(" So, I was taking a \n walk the other day", 0.14f));
+        yield return new WaitForSeconds(3);
+        dialogueTextUI.text = null;
+        yield return new WaitForSeconds(10);
+        SceneManager.LoadScene("Intro");
+>>>>>>> Stashed changes
         yield return null;
     }
     public IEnumerator VengeanceDeath()
@@ -418,7 +432,11 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" For it was I that led \n you down this path.", 0.08f));
         yield return new WaitForSeconds(2.4f);
+<<<<<<< Updated upstream
         yield return StartCoroutine(JustType(" But to live defeated is to die!", 0.04f));
+=======
+        yield return StartCoroutine(JustType(" But this is our last chance.", 0.04f));
+>>>>>>> Stashed changes
         yield return new WaitForSeconds(3);
         dialogueTextUI.text = null;
 
@@ -426,6 +444,21 @@ public class FightSistem : MonoBehaviour
         yield return StartCoroutine(JustType(" I am sorry..", 0.27f));
         yield return new WaitForSeconds(3);
         dialogueTextUI.text = null;
+<<<<<<< Updated upstream
+=======
+        yield return new WaitForSeconds(3);
+        yield return StartCoroutine(ShowLV2());
+
+        Voxeldata.PlayerData.genocide = true;
+        Voxeldata.PlayerData.pacifist = false;
+        Voxeldata.PlayerData.scene = 1;
+        Voxeldata.PlayerData.sawIntro = false;
+        Voxeldata.PlayerData.love = 2;
+        PlayerDataData.SavePlayerFile();
+
+        SceneManager.LoadScene("Intro");
+        yield return null;
+>>>>>>> Stashed changes
     }
     public IEnumerator DisplayNextLine()
     {
@@ -498,8 +531,8 @@ public class FightSistem : MonoBehaviour
         {
             case 1:
                 yield return new WaitForSeconds(3);
-                yield return StartCoroutine(JustType(" Why? \n I had only hurt you.", 0.1f));
-                yield return StartCoroutine(JustType(" Just end this madness..", 0.1f));
+                yield return StartCoroutine(JustType(" Why? \n I had hurt everyone. ", 0.1f));
+                yield return StartCoroutine(JustType(" Bring justice..", 0.1f));
                 yield return StartCoroutine(JustType(" ...", 0.43f));
                 yield return new WaitForSeconds(2.4f);
                 dialogueTextUI.text = null;
