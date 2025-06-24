@@ -111,11 +111,6 @@ public class Toolbar : MonoBehaviour
                 if (World.blockTypes[item[0, slothIndex]].Items.tool.type != 5)
                     holdingItem.sprite = World.blockTypes[item[0, slothIndex]].itemSprite;
             }
-            if (Input.GetKey(KeyCode.K))
-            {
-                Pickp(48, 3);
-            }
-
         }
         else 
         {
@@ -859,6 +854,19 @@ public class Toolbar : MonoBehaviour
         {
             itemSlots[id].num.text=num.ToString();
         }
+    }
+    public void GoToSleepNSave(Vector3 pos, Quaternion rot)
+    {
+        SaveInventory();
+        ChunkSerializer.SavePlayerData(pos, rot);
+        for (int i = 0; i < WorldManager.chunkstosave.Count; i++)
+        {
+            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.GetChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y).Voxels;
+            ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
+        }
+        //World.ClearData();
+        //inputActions.Android.Disable();
+        //ChunkSerializer.loadedChunks.Clear();
     }
     public void UpdateItem(byte id,byte less)
     {

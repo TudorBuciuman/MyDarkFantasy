@@ -102,11 +102,9 @@ public class ItemsFunctions : MonoBehaviour
 
     public static void RealKnife()
     {
-        Voxeldata.PlayerData.sleep = 1;
-        if (Voxeldata.PlayerData.deaths != 0 && Voxeldata.PlayerData.sleep != 0 && Voxeldata.PlayerData.scene == 0)
+        Voxeldata.PlayerData.timesSlept = 1;
+        if (Voxeldata.PlayerData.deaths != 0 && Voxeldata.PlayerData.timesSlept != 0 && Voxeldata.PlayerData.scene == 0)
         {
-<<<<<<< Updated upstream
-            //activate protocol
             SoundsManager.instance.mouseSource.Stop();
         }
         HealthSistem.istance.UpdateHealth(-1);
@@ -118,7 +116,6 @@ public class ItemsFunctions : MonoBehaviour
         else if (SoundsManager.instance.songs.clip.name != "song7")
         {
             SoundsManager.instance.PlaySong(7);
-=======
             if (HealthSistem.health <= 1)
             {
                 //activate protocol
@@ -139,7 +136,6 @@ public class ItemsFunctions : MonoBehaviour
             {
                 SoundsManager.instance.ForceSong(7);
             }
->>>>>>> Stashed changes
         }
     }
 }

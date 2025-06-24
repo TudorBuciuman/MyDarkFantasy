@@ -20,7 +20,20 @@ public class Intro : MonoBehaviour
     {
         if (Voxeldata.PlayerData.scene==2)
             TTG.sprite = logoBlackndWhite;
-        StartCoroutine(PlayOnSight());
+
+        switch (Voxeldata.PlayerData.special)
+        {
+            case 1:
+                BloodOnTheLeaves.SceneNum = 0;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 100:
+                SceneManager.LoadScene("Fight");
+                break;
+            default:
+                StartCoroutine(PlayOnSight());
+                break;
+        }
     }
     private IEnumerator PlayOnSight()
     {

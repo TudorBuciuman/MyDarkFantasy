@@ -20,6 +20,9 @@ public class BloodOnTheLeaves : MonoBehaviour
     public static byte SceneNum = 0;
     int currentLine = 0;
     bool slow = false, isWhite = false;
+    private float slowspeed = 0.14f;
+    private float fastspeed = 0.09f;
+    private float waitTime = 1.4f;
 
     void Start()
     {
@@ -28,14 +31,11 @@ public class BloodOnTheLeaves : MonoBehaviour
         switch (SceneNum)
         {
             case 0:
-<<<<<<< Updated upstream
-=======
                 Voxeldata.PlayerData.special = 1;
                 PlayerDataData.SavePlayerFile();
                 slowspeed = 0.16f;
                 slow = true;
                 fastspeed = 0.09f;
->>>>>>> Stashed changes
                 SceneLoc = "Blood on the leaves";
                 StartCoroutine(Blood());
                 break;
@@ -74,8 +74,7 @@ public class BloodOnTheLeaves : MonoBehaviour
         }
         Read(SceneLoc);
     }
-<<<<<<< Updated upstream
-=======
+
     public IEnumerator TheDreamer()
     {
         audioSource.clip = clip[6];
@@ -103,7 +102,6 @@ public class BloodOnTheLeaves : MonoBehaviour
         audioSource.Play();
 
     }
->>>>>>> Stashed changes
     public void Read(string s)
     {
         dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
@@ -180,20 +178,18 @@ public class BloodOnTheLeaves : MonoBehaviour
             else if (currentLine < dialogueLines.Length)
             {
                 if (slow)
-                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.15f));
+                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), slowspeed));
                 else
                 {
-                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), 0.0782f));
+                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), fastspeed));
                 }
             }
         }
         else
         {
-<<<<<<< Updated upstream
             PlayerDataData.SavePlayerFile();
             yield return new WaitForSeconds(5);
             SceneManager.LoadScene("Intro");
-=======
             if (SceneNum == 0)
             {
                 Voxeldata.PlayerData.special = 0;
@@ -216,7 +212,6 @@ public class BloodOnTheLeaves : MonoBehaviour
                 SceneManager.LoadScene("Intro");
             }
 
->>>>>>> Stashed changes
         }
     }
     private IEnumerator TypeLine(string line, float spd)
@@ -228,7 +223,7 @@ public class BloodOnTheLeaves : MonoBehaviour
             yield return new WaitForSeconds(spd); //typing speed, big=slow
         }
         currentLine++;
-        yield return new WaitForSeconds(1.4f);
+        yield return new WaitForSeconds(waitTime);
         StartCoroutine(DisplayNextLine());
 
     }

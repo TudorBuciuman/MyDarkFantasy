@@ -22,7 +22,7 @@ public class LostInTheWorld : MonoBehaviour
         {
             wm.material = m0;
             m1 = m2 = m3 = m4 = null;
-            Play();
+            StartCoroutine(PlayFallenDown());
         }
         else
         {
@@ -58,8 +58,9 @@ public class LostInTheWorld : MonoBehaviour
         loveTxt.text = Voxeldata.PlayerData.love.ToString();
 
     }
-    public void Play()
+    public IEnumerator PlayFallenDown()
     {
+        yield return new WaitForSeconds(2);
         SoundsManager.instance.StartCoroutine(SoundsManager.instance.PlaySongByName("Fallen-Down"));
         instance.StartCoroutine(instance.Waiting());
     }

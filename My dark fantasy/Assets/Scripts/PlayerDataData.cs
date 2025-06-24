@@ -1,30 +1,27 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerDataData : MonoBehaviour
 {
-    public static string location = "PlayerSave.json";
-    public static bool SawIntro=false;
+    public static string location = "PlayerSave.dat";
+    public static bool SawIntro = false;
     public Intro intro;
     public void Start()
     {
+
         ReadFile();
     }
 
     public void ReadFile()
     {
-        string settingsPath = Path.Combine(Application.persistentDataPath,location);
+        string settingsPath = Path.Combine(Application.persistentDataPath, location);
         if (File.Exists(settingsPath))
         {
-<<<<<<< Updated upstream
-            string json = File.ReadAllText(settingsPath);
-            DontForget data = JsonUtility.FromJson<DontForget>(json);
-            Voxeldata.PlayerData=data;
-            SawIntro = data.sawIntro;
-=======
             try
             {
                 byte[] compressedData = File.ReadAllBytes(settingsPath);
@@ -51,7 +48,6 @@ public class PlayerDataData : MonoBehaviour
                 DontForget playerData = new()
                 {
                     scene = 0,
-                    love=1,
                     sawIntro = false,
                     deaths = 0,
                     typeofrun = 0,
@@ -75,16 +71,19 @@ public class PlayerDataData : MonoBehaviour
                     File.Delete(filePath);
                 }
             }
+
+            Voxeldata.PlayerData.sawIntro = true;
+            PlayerDataData.SavePlayerFile();
+
             SawIntro = Voxeldata.PlayerData.sawIntro;
->>>>>>> Stashed changes
             if (SawIntro)
             {
                 StartCoroutine(Play());
             }
             else
             {
-                if(!Voxeldata.PlayerData.NeedsToSeeCredits)
-                StartCoroutine(OtherScenes());
+                if (!Voxeldata.PlayerData.NeedsToSeeCredits)
+                    StartCoroutine(OtherScenes());
                 else
                 {
                     SceneManager.LoadScene("EndCredits");
@@ -97,16 +96,29 @@ public class PlayerDataData : MonoBehaviour
             DontForget playerData = new()
             {
                 scene = 0,
-                love=1,
                 sawIntro = false,
                 deaths = 0,
                 typeofrun = 0,
                 SawEnding = false,
             };
             Voxeldata.PlayerData = playerData;
-            string jsonString = JsonUtility.ToJson(playerData, true);
+            SawIntro = Voxeldata.PlayerData.sawIntro;
             string filePath = Path.Combine(Application.persistentDataPath, location);
-            File.WriteAllText(filePath, jsonString);
+
+            try
+            {
+                string jsonData = JsonUtility.ToJson(playerData, true);
+
+                byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+                using FileStream fileStream = new(filePath, FileMode.Create);
+                using GZipStream compressionStream = new(fileStream, CompressionMode.Compress);
+                compressionStream.Write(dataBytes, 0, dataBytes.Length);
+            }
+            catch
+            {
+                File.Delete(filePath);
+            }
         }
         intro.Starting();
     }
@@ -120,29 +132,52 @@ public class PlayerDataData : MonoBehaviour
         DontForget playerData = new()
         {
             scene = 0,
-            love=1,
             sawIntro = false,
             deaths = 0,
             typeofrun = 0,
             SawEnding = false
         };
 
-        string jsonString = JsonUtility.ToJson(playerData, true);
-        string filePath = Path.Combine(Application.persistentDataPath,location);
-        File.WriteAllText(filePath, jsonString);
+
+        string filePath = Path.Combine(Application.persistentDataPath, location);
+        try
+        {
+            string jsonData = JsonUtility.ToJson(playerData, true);
+
+            byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+            using FileStream fileStream = new(filePath, FileMode.Create);
+            using GZipStream compressionStream = new(fileStream, CompressionMode.Compress);
+            compressionStream.Write(dataBytes, 0, dataBytes.Length);
+        }
+        catch
+        {
+            throw;
+        }
         SceneManager.LoadScene("Fighting");
     }
     public static IEnumerator OtherScenes()
     {
-        //only applies before beating the game(last scene)
-        DontForget playerData=Voxeldata.PlayerData;
+        DontForget playerData = Voxeldata.PlayerData;
         if (playerData.scene < 5)
         {
             playerData.sawIntro = false;
-            //playerData.scene++;
-            string jsonString = JsonUtility.ToJson(playerData, true);
+
             string filePath = Path.Combine(Application.persistentDataPath, location);
-            File.WriteAllText(filePath, jsonString);
+            try
+            {
+                string jsonData = JsonUtility.ToJson(playerData, true);
+
+                byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+                using FileStream fileStream = new(filePath, FileMode.Create);
+                using GZipStream compressionStream = new(fileStream, CompressionMode.Compress);
+                compressionStream.Write(dataBytes, 0, dataBytes.Length);
+            }
+            catch
+            {
+                throw;
+            }
             yield return new WaitForSeconds(6);
             SceneManager.LoadScene("Fighting");
 
@@ -155,17 +190,39 @@ public class PlayerDataData : MonoBehaviour
     {
         Voxeldata.PlayerData.sawIntro = true;
         DontForget playerData = Voxeldata.PlayerData;
-
-        string jsonString = JsonUtility.ToJson(playerData, true);
         string filePath = Path.Combine(Application.persistentDataPath, location);
-        File.WriteAllText(filePath, jsonString);
+        try
+        {
+            string jsonData = JsonUtility.ToJson(Voxeldata.PlayerData, true);
+
+            byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+            using FileStream fileStream = new(filePath, FileMode.Create);
+            using GZipStream compressionStream = new(fileStream, CompressionMode.Compress);
+            compressionStream.Write(dataBytes, 0, dataBytes.Length);
+        }
+        catch
+        {
+            throw;
+        }
         SceneManager.LoadScene("Intro");
     }
     public static void SavePlayerFile()
     {
-        string jsonString = JsonUtility.ToJson(Voxeldata.PlayerData, true);
         string filePath = Path.Combine(Application.persistentDataPath, location);
-        File.WriteAllText(filePath, jsonString);
+        try
+        {
+            string jsonData = JsonUtility.ToJson(Voxeldata.PlayerData, true);
+
+            byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+            using FileStream fileStream = new(filePath, FileMode.Create);
+            using GZipStream compressionStream = new(fileStream, CompressionMode.Compress);
+            compressionStream.Write(dataBytes, 0, dataBytes.Length);
+        }
+        catch
+        {
+            throw;
+        }
     }
 }
 public class DontForget
@@ -184,4 +241,5 @@ public class DontForget
     public bool pacifist;
     public bool Purge;
     public bool NeedsToSeeCredits;
+    public byte special;
 }

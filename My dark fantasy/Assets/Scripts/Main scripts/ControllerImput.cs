@@ -575,7 +575,11 @@ public class ControllerImput : MonoBehaviour
                                     toolbar.OpenInventory(2);
                                     break;
                                 case 4:
-                                    toolbar.OpenInventory(3);
+                                    Chest.Instance.OpenChest(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z));
+                                    break;
+                                case 5:
+                                    if (step < 2)
+                                        Sleep(new Vector3Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)));
                                     break;
                             }
                         }
@@ -1067,5 +1071,55 @@ public class ControllerImput : MonoBehaviour
         mapImg.gameObject.SetActive(false);
     }
 
+    public void Sleep(Vector3Int v)
+    {
+        Debug.Log("sleeping");
 
+        if (WorldManager.currenttime > 550)
+        {
+            BookManager.readingBook = true;
+
+            StartCoroutine(Sleeping(v));
+        }
+
+    }
+    public IEnumerator Sleeping(Vector3Int v)
+    {
+        BookManager.readingBook = true;
+        Toolbar.escape = true;
+        toolbar.openedInv = true;
+        Vector3[] w = new Vector3[3];
+        w[0] = transform.position;
+        w[1] = transform.eulerAngles;
+        w[2] = cam.eulerAngles;
+        Quaternion q = transform.rotation;
+        if (wmanager.Block2(v.x, v.y, v.z) == 1)
+        {
+            transform.position = new Vector3(v.x, v.y + 0.7f, v.z);
+        }
+        else
+        {
+            transform.position = new Vector3(v.x, v.y + 0.7f, v.z + 1);
+        }
+        transform.localRotation = Quaternion.Euler(0, -180, 0);
+        cam.localRotation = Quaternion.Euler(-75, 0, 0);
+        yield return new WaitForSeconds(10);
+        toolbar.GoToSleepNSave(w[0], q);
+        //save
+        Voxeldata.PlayerData.timesSlept++;
+        PlayerDataData.SavePlayerFile();
+        if (Voxeldata.PlayerData.timesSlept == 1)
+            SceneManager.LoadScene("Waterfall");
+        else
+        {
+            WorldManager.currenttime = 300;
+            transform.position = w[0];
+            transform.eulerAngles = w[1];
+            cam.eulerAngles = w[2];
+            Toolbar.escape = false;
+            BookManager.readingBook = false;
+            toolbar.openedInv = false;
+
+        }
+    }
 }

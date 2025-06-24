@@ -85,4 +85,22 @@ public class HealthSistem : MonoBehaviour
         healthslider.value = hlt;
         healthLabel.text=$"{hlt} / {maxHealth}".ToString();
     }
+    public void Protocol()
+    {
+        health = 0;
+        ReMakeHearts();
+        StartCoroutine(KnifeDeath());
+    }
+    private IEnumerator KnifeDeath()
+    {
+        health = maxHealth;
+        Toolbar.instance.SaveProgress();
+        Voxeldata.PlayerData.deaths++;
+        Voxeldata.PlayerData.special = 100;
+        PlayerDataData.SavePlayerFile();
+        yield return new WaitForSeconds(1);
+        soundsManager.StopSong();
+        SceneManager.LoadScene("Fight");
+        yield return null;
+    }
 }

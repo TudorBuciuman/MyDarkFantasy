@@ -16,13 +16,8 @@ public class OnAppOpened : MonoBehaviour
     public Sprite moon;
     public GameObject screenn,but1,but2,but3;
     public static byte itemsnum;
-<<<<<<< Updated upstream
-    public static BlockProprieties[] blockTypes=new BlockProprieties[62];
-    public GameObject MDF;
-=======
     public static BlockProprieties[] blockTypes=new BlockProprieties[66];
     public GameObject MDF,yeezy;
->>>>>>> Stashed changes
     public GameObject fallingGObj;
     public AudioClip[] clips = new AudioClip[5];
     public AudioSource audioSource;
@@ -176,6 +171,8 @@ public class OnAppOpened : MonoBehaviour
     }
     public IEnumerator Spinning()
     {
+        RenderSettings.skybox.SetFloat("_Exposure", 0.66f);
+
         if (Voxeldata.PlayerData.genocide && Voxeldata.PlayerData.scene == 1)
             yield return null;
         if (!Voxeldata.PlayerData.genocide && Voxeldata.PlayerData.scene == 2)

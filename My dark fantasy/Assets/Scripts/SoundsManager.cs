@@ -8,6 +8,8 @@ using UnityEngine.Networking;
 public class SoundsManager : MonoBehaviour
 {
     public static SoundsManager instance;
+    public static bool canChange = true;
+    public static string lastSong;
     public AudioMixer soundsMixer;
     public AudioMixer musicMixer;
     public AudioSource moveSource;
@@ -18,7 +20,7 @@ public class SoundsManager : MonoBehaviour
     public static string Master = "sounds";
     public static string Music = "soundtrack";
     public byte nrsongs=11;
-    public void Start()
+    public void Awake()
     {
         instance = this;
         UpdateSounds();
@@ -50,8 +52,6 @@ public class SoundsManager : MonoBehaviour
             StartCoroutine(LoadAndPlayMusic(path, id));
         }
     }
-<<<<<<< Updated upstream
-=======
     public void MuteTheWholeGame()
     {
         musicMixer.SetFloat(Music, -80);
@@ -62,7 +62,6 @@ public class SoundsManager : MonoBehaviour
         string path = Path.Combine(Application.streamingAssetsPath, "Songs");
         StartCoroutine(LoadAndPlayMusic(path, id));
     }
->>>>>>> Stashed changes
     public IEnumerator PlaySongByName(string name)
     {
         string musicFilePath;
@@ -76,12 +75,9 @@ public class SoundsManager : MonoBehaviour
             musicFilePath = "jar:file://" + musicFilePath;
         }
 #endif
-<<<<<<< Updated upstream
 
-=======
         lastSong = name;
         float len=0;
->>>>>>> Stashed changes
         using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
         yield return www.SendWebRequest();
 
