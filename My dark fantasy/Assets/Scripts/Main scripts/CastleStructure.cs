@@ -238,7 +238,10 @@ public class CastleStructure : MonoBehaviour
     public static IEnumerator WaitForCastleChunks()
     {
         while (WorldManager.castleChunksReady.Count < 25)
+        {
             yield return null;
+
+        }
         CreateCastle();
     }
     public static void StartCounting()

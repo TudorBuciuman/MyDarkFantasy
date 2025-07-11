@@ -57,6 +57,25 @@ public class SoundsManager : MonoBehaviour
         musicMixer.SetFloat(Music, -80);
         soundsMixer.SetFloat(Master, -80);
     }
+
+    public IEnumerator ClosingMusic()
+    {
+        float t = 0;
+        while (t < 3)
+        {
+            songs.volume = Mathf.Lerp(1, 0, t);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        songs.Stop();
+        songs.volume = 1;
+        yield return null;
+    }
+    public IEnumerator FoundCastle()
+    {
+        yield return StartCoroutine(ClosingMusic());
+        ForceSong(2);
+    }
     public void ForceSong(byte id)
     {
         string path = Path.Combine(Application.streamingAssetsPath, "Songs");

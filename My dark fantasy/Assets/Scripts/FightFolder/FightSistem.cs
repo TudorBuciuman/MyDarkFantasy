@@ -70,6 +70,7 @@ public class FightSistem : MonoBehaviour
     void Start()
     {
         instance= this;
+        FightingHealth.damageAmount = 5;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
         Read();
@@ -374,7 +375,7 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" Not as long as you \n are the last human.", 0.07f));
         yield return new WaitForSeconds(0.5f);
-        yield return StartCoroutine(JustType(" I'm sorry, young warrior..", 0.1f));
+        yield return StartCoroutine(JustType(" I'm sorry, poor warrior..", 0.1f));
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" I know you also seek \n justice for the humans that \n came before you.", 0.077f));
         yield return new WaitForSeconds(0.4f);
@@ -385,12 +386,12 @@ public class FightSistem : MonoBehaviour
         yield return StartCoroutine(JustType(" As well as what comes next.", 0.09f));
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" Please, forgive me..", 0.12f));
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.4f);        
         dialogueTextUI.text = null;
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(4);
         yield return StartCoroutine(SpeciallAttack());
         //attack animation
-        yield return StartCoroutine(JustType(" Rest well, poor one.",0.13f));
+        yield return StartCoroutine(JustType(" Rest well, young one.",0.13f));
         yield return new WaitForSeconds(2.4f);
         dialogueTextUI.text = null;
         yield return new WaitForSeconds(0.4f);
@@ -535,6 +536,12 @@ public class FightSistem : MonoBehaviour
                 yield return StartCoroutine(JustType(" Why? \n I had hurt everyone. ", 0.1f));
                 yield return StartCoroutine(JustType(" Bring justice..", 0.1f));
                 yield return StartCoroutine(JustType(" ...", 0.43f));
+                yield return new WaitForSeconds(3);
+                yield return StartCoroutine(JustType(" * He raised his weapon, not to \n win... But to give you a reason \n to end what He couldn't.", 0.08f));
+                yield return new WaitForSeconds(2);
+                dialogueTextUI.text = null;
+                yield return new WaitForSeconds(0.3f);
+                yield return StartCoroutine(JustType(" * The king is now standing in \n your way.", 0.08f));
                 yield return new WaitForSeconds(2.4f);
                 dialogueTextUI.text = null;
                 break;
@@ -1281,6 +1288,7 @@ public class FightSistem : MonoBehaviour
                         yield return StartCoroutine(Write("* ..."));
                         yield return new WaitForSeconds(0.5f);
                         yield return StartCoroutine(Write("* Your ATTACK increased!"));
+                        FightingHealth.damageAmount = 4;
                         break;
                     default:
                         yield return StartCoroutine(Write("* YEEZUS - In blood and flesh \n* The king is dead, \nyet the crown still awaits."));

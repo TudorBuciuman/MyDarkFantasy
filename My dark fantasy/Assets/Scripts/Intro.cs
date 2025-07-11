@@ -20,13 +20,55 @@ public class Intro : MonoBehaviour
     {
         if (Voxeldata.PlayerData.scene==2)
             TTG.sprite = logoBlackndWhite;
-
+        Voxeldata.PlayerData.deaths=1;
+        Voxeldata.PlayerData.special=0;
         switch (Voxeldata.PlayerData.special)
         {
             case 1:
                 BloodOnTheLeaves.SceneNum = 0;
                 SceneManager.LoadScene("Blood");
                 break;
+            case 2:
+                BloodOnTheLeaves.SceneNum = 1;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 3:
+                BloodOnTheLeaves.SceneNum = 2;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 4:
+                BloodOnTheLeaves.SceneNum = 3;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 5:
+                BloodOnTheLeaves.SceneNum = 4;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 6:
+                BloodOnTheLeaves.SceneNum = 5;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 7:
+                BloodOnTheLeaves.SceneNum = 6;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 8:
+                BloodOnTheLeaves.SceneNum = 7;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 9:
+                BloodOnTheLeaves.SceneNum = 8;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 10:
+                BloodOnTheLeaves.SceneNum = 9;
+                SceneManager.LoadScene("Blood");
+                break;
+            case 11:
+                SceneManager.LoadScene("Waterfall");
+                break;
+
+            //case 12 is runaway
             case 100:
                 SceneManager.LoadScene("Fight");
                 break;

@@ -13,16 +13,17 @@ public class BloodOnTheLeaves : MonoBehaviour
     public Image FightingImg;
     public Sprite[] sprites = new Sprite[5];
     public AudioSource audioSource;
+    public GameObject barrier;
     public TextAsset dialogueFile;
     public Text dialogueTextUI;
     public string[] dialogueLines;
     public static string SceneLoc = "Blood on the leaves";
     public static byte SceneNum = 0;
     int currentLine = 0;
+    float fastspeed = 0.0782f;
+    float slowspeed = 0.15f;
+    float waitTime = 1.4f;
     bool slow = false, isWhite = false;
-    private float slowspeed = 0.14f;
-    private float fastspeed = 0.09f;
-    private float waitTime = 1.4f;
 
     void Start()
     {
@@ -33,17 +34,26 @@ public class BloodOnTheLeaves : MonoBehaviour
             case 0:
                 Voxeldata.PlayerData.special = 1;
                 PlayerDataData.SavePlayerFile();
-                slowspeed = 0.16f;
-                slow = true;
-                fastspeed = 0.09f;
                 SceneLoc = "Blood on the leaves";
                 StartCoroutine(Blood());
+                waitTime = 1.27f;
+                fastspeed = 0.1f;
+                slowspeed = 0.15f;
+                slow = true;
                 break;
             case 1:
-                SceneLoc = "Insomnia";
+                Voxeldata.PlayerData.special = 2;
+                PlayerDataData.SavePlayerFile();
+                SceneLoc = "The dreamer";
+                StartCoroutine(TheDreamer());
                 break;
             case 2:
-                SceneLoc = "To fight";
+                SceneLoc = "Mortal Man";
+                slow = false;
+                Voxeldata.PlayerData.special = 3;
+                PlayerDataData.SavePlayerFile();
+                slowspeed = 0.11f;
+                StartCoroutine(MortalMan());
                 break;
             case 3:
                 SceneLoc = "Letting everything go";
@@ -71,10 +81,28 @@ public class BloodOnTheLeaves : MonoBehaviour
                 audioSource.clip = clip[4];
                 audioSource.Play();
                 break;
+            case 8:
+                SceneLoc = "Hell of a life";
+                slow = false;
+                waitTime = 0.5f;
+                fastspeed = 0.053f;
+                Voxeldata.PlayerData.special = 9;
+                StartCoroutine(LoadAndPlayMusic(3));
+                PlayerDataData.SavePlayerFile();
+
+                break;
+            case 9:
+                SceneLoc = "Blame game";
+                slow = true;
+                fastspeed = 0.09f;
+                Voxeldata.PlayerData.special = 10;
+                StartCoroutine(LoadAndPlayMusic(4));
+                PlayerDataData.SavePlayerFile();
+
+                break;
         }
         Read(SceneLoc);
     }
-
     public IEnumerator TheDreamer()
     {
         audioSource.clip = clip[6];
@@ -83,24 +111,25 @@ public class BloodOnTheLeaves : MonoBehaviour
         audioSource.clip = clip[7];
         audioSource.Play();
     }
-    public IEnumerator Blood()
-    {
-        audioSource.clip = clip[0];
-        audioSource.loop = false;
-        yield return new WaitForSeconds(4);
-        audioSource.Play();
-        yield return null;
-    }
     public IEnumerator MortalMan()
     {
         audioSource.clip = clip[8];
         audioSource.Play();
         waitTime = 0.4f;
+        barrier.SetActive(true);
         yield return new WaitForSeconds(30);
+        barrier.SetActive(false);
         audioSource.clip = clip[9];
         audioSource.loop = true;
         audioSource.Play();
 
+    }
+    public IEnumerator Blood()
+    {
+        audioSource.clip = clip[0];
+        yield return new WaitForSeconds(3);
+        audioSource.Play();
+        yield return null;
     }
     public void Read(string s)
     {
@@ -115,7 +144,7 @@ public class BloodOnTheLeaves : MonoBehaviour
         StartCoroutine(DisplayNextLine());
 
     }
-
+    float f = 0;
     public IEnumerator Lighting()
     {
         if (!isWhite)
@@ -187,9 +216,6 @@ public class BloodOnTheLeaves : MonoBehaviour
         }
         else
         {
-            PlayerDataData.SavePlayerFile();
-            yield return new WaitForSeconds(5);
-            SceneManager.LoadScene("Intro");
             if (SceneNum == 0)
             {
                 Voxeldata.PlayerData.special = 0;
@@ -204,6 +230,14 @@ public class BloodOnTheLeaves : MonoBehaviour
                 yield return new WaitForSeconds(5);
                 SceneManager.LoadScene("Fight");
             }
+            else if (SceneNum == 9)
+            {
+                yield return StartCoroutine(WaitTillTheEnd());
+                yield return new WaitForSeconds(3);
+                Voxeldata.PlayerData.special = 0;
+                PlayerDataData.SavePlayerFile();
+                SceneManager.LoadScene("Intro");
+            }
             else
             {
                 yield return new WaitForSeconds(5);
@@ -214,13 +248,21 @@ public class BloodOnTheLeaves : MonoBehaviour
 
         }
     }
+    private IEnumerator WaitTillTheEnd()
+    {
+        while (!audioSource.isPlaying)
+        {
+            yield return null;
+        }
+        yield return new WaitForSeconds(2);
+    }
     private IEnumerator TypeLine(string line, float spd)
     {
         dialogueTextUI.text = "";
         foreach (char c in line)
         {
             dialogueTextUI.text += c;
-            yield return new WaitForSeconds(spd); //typing speed, big=slow
+            yield return new WaitForSeconds(spd); 
         }
         currentLine++;
         yield return new WaitForSeconds(waitTime);
@@ -271,13 +313,9 @@ public class BloodOnTheLeaves : MonoBehaviour
             audioSource.clip = clip[2];
             audioSource.Play();
         }
-        if (SceneNum == 0)
-        {
-            Voxeldata.PlayerData.special = 0;
-            PlayerDataData.SavePlayerFile();
-        }
+        Voxeldata.PlayerData.special = 0;
+        PlayerDataData.SavePlayerFile();
         yield return new WaitForSeconds(10);
-
         SceneManager.LoadScene("Intro");
     }
     public IEnumerator GetInput()

@@ -121,9 +121,11 @@ public class Chunk
         float frequency = 1f;
         float amplitude = 1;
         float maxValue = 0;
+        float idk = 0.005f;
+        idk = 0.004f;
         for (int i = 0; i < octaves; i++)
         {
-            float noiseValue = Mathf.PerlinNoise(0.005f * (x + Offset.x) * frequency, 0.005f * (z + Offset.y) * frequency);
+            float noiseValue = Mathf.PerlinNoise(idk * (x + Offset.x) * frequency, idk * (z + Offset.y) * frequency);
             total += noiseValue * amplitude;
 
             maxValue += amplitude;
@@ -261,6 +263,106 @@ public class Chunk
         }
         return heightMap;
     }
+    public float[,] lgenerateHeightMap()
+    {
+        float[,] heightMap = new float[16, 16];
+
+        for (int i = 0; i < 16; i++)
+        {
+            for (int j = 0; j < 16; j++)
+            {
+                byte index = 0;
+                float worldX = Coord.x * 16 + i;
+                float worldZ = Coord.y * 16 + j;
+
+                float step = 4f; // lower-res noise sample spacing
+
+                float continentalness = CombinedNoise(worldX, worldZ, 4, 0.1f, 2f);
+                float valley = CombinedNoise(worldX, worldZ, 4, 0.1f, 2.6f) - 0.5f;
+                float erosion = CombinedNoise(worldX, worldZ, 4, 0.01f, 2f) - 0.5f;
+
+                float height = GetContinentalnessHeight(continentalness)
+                             + GetValleyModifier(valley);
+                             //+ GetErosionModifier(erosion);
+
+
+
+
+                heightMap[i, j] = height;
+
+                // Biome selection logic
+                if (continentalness < 0.3f && valley < 0.3f)
+                    index = 1;
+                else if (continentalness < 0.4f && erosion > 0.5f)
+                    index = 0;
+                else if (continentalness < 0.5f && valley < 0.3f)
+                    index = 2;
+                else if (continentalness < 0.5f && valley < 0.5f)
+                    index = 3;
+                else if (continentalness < 0.6f && erosion > 0.5f)
+                    index = 4;
+                else if (continentalness < 0.6f && valley < 0.3f && erosion > 0.6f)
+                    index = 5;
+                else if (continentalness < 0.7f && erosion > 0.7f)
+                    index = 6;
+                else
+                    index = 7;
+
+                biome[i, j] = world.Biome[index];
+                biom[i, j] = index;
+            }
+        }
+
+        return heightMap;
+    }
+
+    float Remap(float value, float inMin, float inMax, float outMin, float outMax)
+    {
+        return Mathf.Lerp(outMin, outMax, Mathf.InverseLerp(inMin, inMax, value));
+    }
+
+    float GetContinentalnessHeight(float c)
+    {
+        if (c < 0.3f) return Mathf.Lerp(60f, 60f + 40f * 0.3f, c / 0.3f);
+        if (c < 0.6f) return Mathf.Lerp(60f + 40f * 0.3f, 60f + 50f * 0.6f, (c - 0.3f) / 0.3f);
+        if (c < 0.9f) return Mathf.Lerp(60f + 50f * 0.6f, 60f + 112f * 0.9f, (c - 0.6f) / 0.3f);
+        return Mathf.Lerp(60f + 112f * 0.9f, 60f + 150f, (c - 0.9f) / 0.1f);
+    }
+
+    float GetValleyModifier(float v)
+    {
+        if (v < -0.4f) return Remap(v, -0.5f, -0.4f, 60f, 78f); // deep valleys
+        if (v < -0.3f) return v * 30f;
+        if (v < -0.2f) return v * 20f;
+        if (v < -0.1f) return v * 12f;
+        if (v < 0.1f) return v * 3f;
+        if (v < 0.2f) return v * 14f;
+        if (v < 0.25f) return v * 17f;
+        if (v < 0.3f) return v * 20f;
+        if (v < 0.35f) return v * 25f;
+        if (v < 0.4f) return v * 30f;
+        if (v < 0.45f) return v * 35f;
+        if (v < 0.5f) return v * 40f;
+        return v * 45f;
+    }
+    float GetErosionModifier(float e)
+    {
+        if (e < -0.4f) return -e * 60f;
+        if (e < -0.35f) return -e * 50f;
+        if (e < -0.3f) return -e * 40f;
+        if (e < -0.25f) return -e * 30f;
+        if (e < -0.2f) return -e * 25f;
+        if (e < -0.1f) return -e * 30f;
+        if (e < 0.1f) return e * 10f;
+        if (e < 0.3f) return e * 10f;
+        if (e < 0.5f) return e * 5f;
+        if (e < 0.6f) return e * 3f;
+        if (e < 0.8f) return e * 2f;
+        return e * 1f;
+    }
+
+
+
     private float BilinearInterpolate(float topLeft, float topRight, float bottomLeft, float bottomRight, float tx, float ty)
     {
         float top = Mathf.Lerp(topLeft, topRight, tx);
@@ -423,17 +525,20 @@ public class Chunk
         else if (!CastleStructure.madeCastle)
         {
             WorldManager.castleChunksReady.Add(new Vector2Int(Coord.x, Coord.y));
-            MainThreadDispatcher.Enqueue(() =>
+            if (!CastleStructure.started)
             {
-                CastleStructure.StartCounting();
-            });
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    CastleStructure.StartCounting();
+                });
+            }
         }
         strmade = true;
     }
     public void CreateMesh()
     {
         mademesh = true;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 5; i++)
         {
             mesh = new Mesh();
             triangles.Clear();

@@ -289,7 +289,7 @@ public class NewWorld : MonoBehaviour
     {
         Directory.Delete(worldLocation, true);
         backup.gameObject.SetActive(false);
-        deleteornot.gameObject.SetActive(false);
+        deleteornot.SetActive(false);
         deleteqm.gameObject.SetActive(false);
         save.gameObject.SetActive(false);
         changewname.gameObject.SetActive(false);
@@ -298,6 +298,9 @@ public class NewWorld : MonoBehaviour
         foreach (GameObject a in GameObject.FindGameObjectsWithTag("open"))
             Destroy(a);
         ReadFiles();
+        Voxeldata.PlayerData.timesSlept = 0;
+        Voxeldata.PlayerData.deaths = 0;
+        PlayerDataData.SavePlayerFile();
     }
     public void BackUpWorld()
     {

@@ -1,11 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using System;
 using UnityEngine.Networking;
-using Unity.VisualScripting;
 
 public class OnAppOpened : MonoBehaviour
 {
@@ -72,11 +70,7 @@ public class OnAppOpened : MonoBehaviour
     {
         if (!readytogo)
         {
-    #if UNITY_ANDROID
-            StartCoroutine(AndroidRead());
-    #else
             ReadWhatNeedsTo();
-    #endif
         }
     }
     IEnumerator AndroidRead()
@@ -111,21 +105,31 @@ public class OnAppOpened : MonoBehaviour
     public void ReadWhatNeedsTo()
     {
 
-        string settingsPath=Path.Combine(Application.streamingAssetsPath, "everyitem.json");
-        string json = File.ReadAllText(settingsPath);
-        AllItems data = JsonUtility.FromJson<AllItems>(json);
-        itemsnum=(byte)data.items.Length;
-        readytogo = true;
-        byte w = 0;
-        itemsAtlas = InitializeAtlas();
-        foreach(var item in data.items)
+        TextAsset jsonFile = Resources.Load<TextAsset>("everyitem");
+        if (jsonFile != null)
         {
-            blockTypes[w]=new();
-            blockTypes[w].Items = item;
-            if(itemsAtlas.Length>w)
-            blockTypes[w].itemSprite = itemsAtlas[w];
-            w++;
+            AllItems data = JsonUtility.FromJson<AllItems>(jsonFile.text);
+            itemsnum = (byte)data.items.Length;
+            Array.Resize(ref blockTypes, itemsnum);
+            readytogo = true;
+            byte w = 0;
+            itemsAtlas = InitializeAtlas();
+            foreach (var item in data.items)
+            {
+                blockTypes[w] = new();
+                blockTypes[w].Items = item;
+                if (itemsAtlas.Length > w)
+                    blockTypes[w].itemSprite = itemsAtlas[w];
+                w++;
+            }
         }
+        else
+        {
+            Debug.LogError("JSON file not found!");
+            Debug.LogError("You piece of shit");
+            
+        }
+        
     }
     private static Sprite[] InitializeAtlas()
     {

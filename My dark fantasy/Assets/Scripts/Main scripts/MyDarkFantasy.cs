@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MyDarkFantasy : MonoBehaviour
@@ -14,12 +16,22 @@ public class MyDarkFantasy : MonoBehaviour
     public GameObject aa;
     public GameObject[] d=new GameObject[8];
     public Text[] t=new Text[8];
+    public Text hoal;
     public Image top;
     public AudioClip music,sound;
     public AudioSource source,soundsource;
+    public string[] dialogueLines;
+    public TextAsset dialogueFile;
+    int currentLine = 0;
+    float fastspeed = 0.08f;
+    float slowspeed = 0.15f;
+    float waitTime = 1.4f;
+    bool slow = false;
     void Start()
     {
-        //if (Voxeldata.PlayerData.special == 100)
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        StartCoroutine(HellOfALife());
+        if (Voxeldata.PlayerData.special == 12)
         {
             ShowStory();
         }
@@ -181,8 +193,8 @@ public class MyDarkFantasy : MonoBehaviour
         yield return new WaitForSeconds(4);
 
         yield return StartCoroutine(OpenScene());
-        yield return Writer(0, story[33]);
-        yield return Writer(1, story[34]);
+        StartCoroutine(Writer(0, story[33]));
+        StartCoroutine(Writer(1, story[34]));
         yield return Writer(2, story[35]);
         StartCoroutine(CloseDialogues(new List<int> { 0, 1, 2 }));
         yield return CloseScene();
@@ -204,6 +216,9 @@ public class MyDarkFantasy : MonoBehaviour
 
         BookManager.readingBook = false;
         Toolbar.CanEsc = true;
+        yield return new WaitForSeconds(4);
+        StartCoroutine(HellOfALife());
+        yield return null;
 
     }
     public IEnumerator OpenScene()
@@ -357,5 +372,86 @@ public class MyDarkFantasy : MonoBehaviour
 "Aren't \nyou \nhappy?",
 
 "You're going \nto be free."};
+    public IEnumerator HellOfALife()
+    {
+        yield return new WaitForSeconds(3);
+        StartCoroutine(PlaySongByName("song3"));
+        LostInTheWorld.instance.HellOfALife();
+        Voxeldata.PlayerData.special = 9;
+        PlayerDataData.SavePlayerFile();
+        slow = false;
+        waitTime = 0.5f;
+        fastspeed = 0.053f;
+        Read("Hell of a life");
+    }
+    public void Read(string s)
+    {
+        dialogueFile = Resources.Load<TextAsset>($"Dialogues/{s}");
+        dialogueLines = dialogueFile.text.Split('\n');
+        for (int i = 0; i < dialogueLines.Length; i++)
+        {
+            dialogueLines[i] = dialogueLines[i].Replace("\\n ", "\n");
+        }
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        StartCoroutine(DisplayNextLine());
+
+    }
+    public IEnumerator DisplayNextLine()
+    {
+        if (currentLine < dialogueLines.Length - 1)
+        {
+            if (dialogueLines[currentLine][0] == '%')
+            {
+                currentLine++;
+                slow = !slow;
+            }
+            if (dialogueLines[currentLine][0] == '>')
+            {
+                float f = (float)(dialogueLines[currentLine][1] - '0') + (float)((dialogueLines[currentLine][2] - '0') / 10.0f);
+                yield return new WaitForSeconds(f);
+                currentLine++;
+                StartCoroutine(DisplayNextLine());
+                yield break;
+            }
+
+            else if (currentLine < dialogueLines.Length)
+            {
+                if (slow)
+                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), slowspeed));
+                else
+                {
+                    yield return StartCoroutine(TypeLine(dialogueLines[currentLine].Trim(), fastspeed));
+                }
+            }
+        }
+        else
+        {
+            yield return StartCoroutine(Waiting());
+            yield return new WaitForSeconds(10);
+            BloodOnTheLeaves.SceneNum = 9;
+            SceneManager.LoadScene("Blood");
+        }
+    }
+    public IEnumerator TypeLine(string line,float spd)
+    {
+        hoal.text = null;
+        foreach (char c in line)
+        {
+            hoal.text += c;
+            yield return new WaitForSeconds(spd);
+        }
+        currentLine++;
+        yield return new WaitForSeconds(waitTime);
+        StartCoroutine(DisplayNextLine());
+    }
+    public IEnumerator Waiting()
+    {
+        while (soundsource.isPlaying)
+        {
+            yield return null;
+        }
+        yield return null;
+    }
 
 }

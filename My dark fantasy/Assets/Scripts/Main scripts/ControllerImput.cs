@@ -104,6 +104,7 @@ public class ControllerImput : MonoBehaviour
     void Start()
     {
         bool esc =Toolbar.escape;
+        wmanager.ClearData();
         Toolbar.escape = true;
         QualitySettings.vSyncCount = 1;
         UiManager.ReadSet();
@@ -255,13 +256,10 @@ public class ControllerImput : MonoBehaviour
     }
     void CalculateVelocity()
     {
-        // === Determine if in water ===
         bool inWater = IsInWater();
 
-        // === Movement input direction ===
         moveDirection = transform.right * pozX + transform.forward * pozZ;
 
-        // === Collision blocking ===
         if ((moveDirection.z > 0 && Front) || (moveDirection.z < 0 && Back))
         {
             moveDirection.z = 0;
@@ -273,12 +271,11 @@ public class ControllerImput : MonoBehaviour
             currentVelocity.x = 0;
         }
 
-        // === Movement values ===
         float baseSpeed = inWater ? waterSpeed : (sprint ? sprintspeed : movementSpeed);
         float baseAccel = inWater ? waterAcceleration : (sprint ? sprintAcceleration : movementAcceleration);
         float baseDecel = inWater ? waterDeceleration : (sprint ? 25 : 13);
 
-        // === Horizontal movement ===
+
         Vector3 targetVelocity = moveDirection * baseSpeed;
 
         if (moveDirection.magnitude > 0)
@@ -292,8 +289,8 @@ public class ControllerImput : MonoBehaviour
             currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, 0, baseDecel * Time.fixedDeltaTime);
         }
 
-        // === Vertical ===
         //DO NOT TOUCH!!!
+        //A DURAT 3 ORE!!
         if (!grounded && !inWater)
         {
             verticalMomentum += gravity * Time.fixedDeltaTime;
@@ -341,11 +338,8 @@ public class ControllerImput : MonoBehaviour
         }
 
         currentVelocity.y *= speed;
-
-        // === Apply movement ===
         controller.Move(currentVelocity * Time.fixedDeltaTime);
 
-        // === Footstep sounds ===
         if (moveDirection.magnitude > 0 && grounded)
         {
             if (wtime <= 0)
@@ -759,7 +753,7 @@ public class ControllerImput : MonoBehaviour
             if (!inWater)
             {
                 inWater = true;
-                watersprite.gameObject.SetActive(true);
+                //watersprite.gameObject.SetActive(true);
                 RenderSettings.fogDensity = 0.04f;
                 RenderSettings.fogColor = new Color(12f / 256f, 0f, 156f / 256f, 1);
                 timeinWater = 0;
@@ -778,7 +772,7 @@ public class ControllerImput : MonoBehaviour
         else if (inWater)
         {
             inWater = false;
-            watersprite.gameObject.SetActive(false);
+           // watersprite.gameObject.SetActive(false);
             RenderSettings.fogDensity = 0.01f;
             RenderSettings.fogColor = new Color(0.5f, 0.5f, 0.5f, 1);
         }
@@ -795,8 +789,8 @@ public class ControllerImput : MonoBehaviour
     public float time = 0,holdtme=0;
     public static int a, b, c;
     public bool breac=false;
-    public float duration = 0.2f; // How long the shake lasts
-    public float magnitude = 0.005f; // How strong the shake is
+    public float duration = 0.2f; 
+    public float magnitude = 0.005f; 
 
     public void Shake()
     {
@@ -835,10 +829,9 @@ public class ControllerImput : MonoBehaviour
                 float step = 0.1f;
                 while (step <= 5)
                 {
-
                     time = 0.1f;
                     Vector3 pos = cam.position + (cam.forward * step);
-                    if (wmanager.IsBlock(pos.x, pos.y, pos.z))
+                    if (IsTrullyBlock(pos.x,pos.y,pos.z))
                     {
                         if ((wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.durability == 0))
                         {
@@ -873,7 +866,7 @@ public class ControllerImput : MonoBehaviour
                                 box.transform.position = new Vector3(a, b, c);
                                 holdtme = 0;
                             }
-                            if (holdtme >= wmanager.blockTypes[WorldManager.GetChunk(s/16,k/16).Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16].Value1].Items.blocks.breakTime)
+                            if (holdtme*(wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.tool.multiplier) >= wmanager.blockTypes[WorldManager.GetChunk(s/16,k/16).Voxels[g % 16, Mathf.RoundToInt(pos.y), h % 16].Value1].Items.blocks.breakTime)
                             {
                                 box.SetActive(false);
                                 itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
@@ -901,7 +894,7 @@ public class ControllerImput : MonoBehaviour
 
                     time = 0.1f;
                     Vector3 pos = cam.position + (cam.forward * step);
-                    if (wmanager.IsBlock(pos.x, pos.y, pos.z))
+                    if (wmanager.IsBlock(pos.x, pos.y, pos.z) )
                     {
                         if (wmanager.blockTypes[wmanager.Block(pos.x, pos.y, pos.z)].Items.blocks.durability == 1)
                         {
@@ -925,7 +918,7 @@ public class ControllerImput : MonoBehaviour
                             }
                             if (wmanager.Block(pos.x + 1, pos.y + 1, pos.z)!=7 && wmanager.Block(pos.x + 1, pos.y + 1, pos.z + 1)!=7 && wmanager.Block(pos.x - 1, pos.y + 1, pos.z)!=7 && wmanager.Block(pos.x - 1, pos.y + 1, pos.z - 1)!= 7 && wmanager.Block(pos.x + 1, pos.y + 1, pos.z - 1) != 7 && wmanager.Block(pos.x, pos.y + 1, pos.z - 1) != 7 && wmanager.Block(pos.x, pos.y + 1, pos.z + 1) != 7)
                             {
-                                if (holdtme >= 1.4f)
+                                if (holdtme* wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.tool.multiplier >= 3f)
                                 {
                                     box.SetActive(false);
                                     ItemsFunctions.CutDownTree(pos, wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)));
@@ -935,7 +928,7 @@ public class ControllerImput : MonoBehaviour
                             }
                             else
                             {
-                                if (holdtme >= 1.1f)
+                                if (holdtme* wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.tool.multiplier >= 1.1f)
                                 {
                                     box.SetActive(false);
                                     itemsManager.SetItem(wmanager.Block(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)), 1, new Vector3(pos.x, Mathf.RoundToInt(pos.y) - 0.3f, pos.z));
@@ -1006,7 +999,7 @@ public class ControllerImput : MonoBehaviour
                         {
                             time = 0.2f;
                             wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], (byte)(Random.Range(0, 2))));
-                            //toolbar.UpdateAnItem(Toolbar.slothIndex);
+                            toolbar.UpdateAnItem(Toolbar.slothIndex);
                         }
                         break;
                     }
@@ -1070,7 +1063,12 @@ public class ControllerImput : MonoBehaviour
     {
         mapImg.gameObject.SetActive(false);
     }
-
+    public bool IsTrullyBlock(float x,float y,float z)
+    {
+        if(!wmanager.IsBlock(x, y, z))
+            return false;
+        return wmanager.blockTypes[wmanager.Block(x, y, z)].Items.isblock;
+    }
     public void Sleep(Vector3Int v)
     {
         Debug.Log("sleeping");
@@ -1107,11 +1105,15 @@ public class ControllerImput : MonoBehaviour
         toolbar.GoToSleepNSave(w[0], q);
         //save
         Voxeldata.PlayerData.timesSlept++;
-        PlayerDataData.SavePlayerFile();
         if (Voxeldata.PlayerData.timesSlept == 1)
+        {
+            Voxeldata.PlayerData.special = 11;
+            PlayerDataData.SavePlayerFile();
             SceneManager.LoadScene("Waterfall");
+        }
         else
         {
+            PlayerDataData.SavePlayerFile();
             WorldManager.currenttime = 300;
             transform.position = w[0];
             transform.eulerAngles = w[1];

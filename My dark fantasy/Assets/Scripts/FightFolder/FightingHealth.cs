@@ -10,7 +10,7 @@ public class FightingHealth : MonoBehaviour
     public float health=20;
     public static FightingHealth instance;
     public GameObject ts; 
-    public float damageAmount=3;
+    public static float damageAmount=5;
     public GameObject heart;
     public static float speed = 3f;
     public float timepassed = 0;

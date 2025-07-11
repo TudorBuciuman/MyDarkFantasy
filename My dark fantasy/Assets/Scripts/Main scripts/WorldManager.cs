@@ -7,7 +7,6 @@ using System.Collections;
 public class WorldManager : MonoBehaviour
 {
     public ControllerImput CImp;
-    public SceneReader SceneReader;
     public static bool ready = false;
     public static float currenttime;
     public BiomeAttributes[] Biome;
@@ -648,9 +647,11 @@ public class WorldManager : MonoBehaviour
                     int worldZ = startZ + z;
                     if (voxel.Value1 != 0 || structure.GetBlock(x, 0, z).Value1 != 0)
                     {
-                        SetBlock(worldX, worldY, worldZ, voxel);
-                        SetTo(worldX, worldY, worldZ, voxel.Value1);
-
+                        if (worldY < 160)
+                        {
+                            SetBlock(worldX, worldY, worldZ, voxel);
+                            SetTo(worldX, worldY, worldZ, voxel.Value1);
+                        }
                         int chunkX = Mathf.FloorToInt(worldX / 16f);
                         int chunkZ = Mathf.FloorToInt(worldZ / 16f);
                         updatedChunks.Add(new Vector2Int(chunkX, chunkZ));
@@ -700,6 +701,7 @@ public class WorldManager : MonoBehaviour
 
         Chest.Instance.AddFullChest(chest1);
         Chest.Instance.AddFullChest(chest2);
+        StartCoroutine(SoundsManager.instance.FoundCastle());
     }
     public void SetBlock(int x, int y, int z, Chunk.VoxelStruct id)
     {
@@ -794,7 +796,8 @@ public class Tool
 {
     public byte type;
     public byte id;
-    public byte damage;
+    public byte num;
+    public float multiplier;
 }
 [System.Serializable]
 public class Normalitem

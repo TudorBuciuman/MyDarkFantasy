@@ -29,20 +29,21 @@ public class BookManager : MonoBehaviour
     public void OpenBook(Book book)
     {
         currentBook = book;
-        currentPageIndex = 0;
+        currentPageIndex = -1;
         readingBook = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        Toolbar.instance.openedInv = false;
+        Toolbar.instance.openedInv = true;
+
         Title.text = book.title;
         authorText.text =book.author;
-        BookObj.gameObject.SetActive(true);
+        BookObj.SetActive(true);
         StartCoroutine(GetInput());
         UpdatePage();
     }
     public void OpenABook()
     {
-        string name = "Book1";
+        string name = "Book"+(1+Voxeldata.PlayerData.scene).ToString();
         currentBook=LoadBook(name);
         OpenBook(currentBook);
     }
@@ -50,26 +51,26 @@ public class BookManager : MonoBehaviour
     {
         while (currentBook != null)
         {
-            if(Input.GetKeyUp(KeyCode.LeftArrow))
+            if(Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.A))
             {
                 PreviousPage();
             }
-            if (Input.GetKeyUp(KeyCode.RightArrow))
+            else if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.D))
             {
                 NextPage();
             }
-            if (Input.GetKeyUp(KeyCode.Escape))
+            if (Input.GetKeyUp(KeyCode.Escape) || Input.GetKeyUp(KeyCode.X))
             {
                 CloseBook();
             }
-            yield return new WaitForSeconds(0.01f);
+            yield return null;
         }
     }
     public void CloseBook()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        BookObj.gameObject.SetActive(false);
+        BookObj.SetActive(false);
         currentBook = null;
         readingBook = false;
         Toolbar.instance.openedInv = false;
@@ -77,10 +78,12 @@ public class BookManager : MonoBehaviour
     public Book LoadBook(string fileName)
     {
         EditableBook bookSO = Resources.Load<EditableBook>("Books/"+fileName);
-        Book book=new();
-        book.author =bookSO.author;
-        book.title = bookSO.title;
-        book.pages = bookSO.pages;
+        Book book = new()
+        {
+            author = bookSO.author,
+            title = bookSO.title,
+            pages = bookSO.pages
+        };
         return book;
     }
     public EditableBook CreateNewBook(string title, string author)
@@ -112,26 +115,26 @@ public class BookManager : MonoBehaviour
 
     private void UpdatePage()
     {
-        if (currentPageIndex > 0)
+        if (currentPageIndex >= 0)
         {
             Page1.text = currentBook.pages[currentPageIndex-1];
-            if (currentPageIndex < currentBook.pages.Count - 1)
+            if (currentPageIndex < currentBook.pages.Count)
             {
                 Page2.text = currentBook.pages[currentPageIndex];
-                pagenr2.text = (currentPageIndex).ToString();
+                pagenr2.text = (currentPageIndex+1).ToString();
             }
             else
             {
                 Page2.text = null;
                 pagenr2.text= null;
             }
-            pagenr1.text = (currentPageIndex - 1).ToString();
-            Cover.gameObject.SetActive(false);
+            pagenr1.text = (currentPageIndex).ToString();
+            Cover.SetActive(false);
             pages.SetActive(true);
         }
         else
         {
-            Cover.gameObject.SetActive(true);
+            Cover.SetActive(true);
             pages.SetActive(false);
         }
     }

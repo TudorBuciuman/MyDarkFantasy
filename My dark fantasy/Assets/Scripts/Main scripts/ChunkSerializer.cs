@@ -6,11 +6,11 @@ using System;
 public class ChunkSerializer
 {
     public static string savePath;
-    public static int seed=-1;
+    public static int seed = -1;
     public static bool pret = false;
-    public static Vector3 pos; 
+    public static Vector3 pos;
     public static Quaternion rot;
-    public static float mx=0,my=0;
+    public static float mx = 0, my = 0;
     public static string[] loadpath;
     public static Dictionary<(int, int), Chunk.VoxelStruct[,,]> loadedChunks = new();
 
@@ -19,7 +19,8 @@ public class ChunkSerializer
 
         if (loadedChunks.ContainsKey((cx, cz)))
         {
-            WorldManager.GetChunk(cx,cz).Voxels = loadedChunks[(cx, cz)];
+            WorldManager.GetChunk(cx, cz).Voxels = loadedChunks[(cx, cz)];
+
         }
         else
         {
@@ -33,10 +34,12 @@ public class ChunkSerializer
             string fileName = savePath + $"/chunks/r.{rx}.{rz}.zlib";
             // Bazat pe pozitia chunkului pot citi din fisierul mare
             Chunk.VoxelStruct[,,] chunkData = ChunkReader(fileName, cx, cz);
-            lock (loadedChunks) { 
-            loadedChunks[(cx, cz)] = chunkData;
+            lock (loadedChunks)
+            {
+                loadedChunks[(cx, cz)] = chunkData;
             }
-            WorldManager.GetChunk(cx,cz).Voxels=chunkData;
+            WorldManager.GetChunk(cx, cz).strmade = true;
+            WorldManager.GetChunk(cx, cz).Voxels = chunkData;
         }
     }
     public static Chunk.VoxelStruct[,,] FindChunkInRegion(string fileName, int cx, int cz)
@@ -58,7 +61,7 @@ public class ChunkSerializer
         fs.Seek(chunkIndex * 4, SeekOrigin.Begin);
         byte[] entry = reader.ReadBytes(4);
 
-       // Extract chunkOffset (3 bytes) and chunkSectorCount (1 byte)
+        // Extract chunkOffset (3 bytes) and chunkSectorCount (1 byte)
         int chunkOffset = (entry[0] << 8) | (entry[1]);
         int chunkSectorCount = entry[3];
 
@@ -106,7 +109,7 @@ public class ChunkSerializer
                 {
                     for (int z = 0; z < 16; z++)
                     {
-                        voxels[x,y,z].Value1 = decompressedData[index++];
+                        voxels[x, y, z].Value1 = decompressedData[index++];
                     }
                 }
             }
@@ -136,15 +139,15 @@ public class ChunkSerializer
         if (cx < 0 && cx % 32 != 0)
             rx--;
         if (cz < 0 && cz % 32 != 0)
-            rz--; 
-        string fileName =savePath+ $"/chunks/r.{rx}.{rz}.zlib";
-        Chunk.VoxelStruct[,,] data =  FindChunkInRegion(fileName,cx,cz);
+            rz--;
+        string fileName = savePath + $"/chunks/r.{rx}.{rz}.zlib";
+        Chunk.VoxelStruct[,,] data = FindChunkInRegion(fileName, cx, cz);
         if (data == null)
         {
             return false;
         }
         return true;
-        
+
     }
     public static void SaveChunk(int cx, int cz)
     {
@@ -155,7 +158,7 @@ public class ChunkSerializer
         int rz = cz / 32;
         if (cx < 0 && cx % 32 != 0)
             rx--;
-        if(cz < 0 && cz % 32 != 0)
+        if (cz < 0 && cz % 32 != 0)
             rz--;
         string fileName = savePath + $"/chunks/r.{rx}.{rz}.zlib";
         if (!loadedChunks.TryGetValue((cx, cz), out Chunk.VoxelStruct[,,] chunkData))
@@ -163,7 +166,7 @@ public class ChunkSerializer
             return;
         }
         else
-        SerializeChunkToRegion(fileName, cx, cz, chunkData);
+            SerializeChunkToRegion(fileName, cx, cz, chunkData);
     }
     public static void SerializeChunkToRegion(string fileName, int cx, int cz, Chunk.VoxelStruct[,,] data)
     {
@@ -216,9 +219,11 @@ public class ChunkSerializer
         //Deci nu incerca sa-l intelegi
 
         // Open or create the region file
-        using FileStream fs = new(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+
+        using FileStream fs = new(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
         BinaryWriter writer = new(fs);
         BinaryReader reader = new(fs);
+
 
         // Calculate chunk index within the region (32x32 grid)
         int regionChunkX = ((cx % 32) + 32) % 32;
@@ -270,29 +275,30 @@ public class ChunkSerializer
         // Write the compressed data to the determined chunk offset
         fs.Seek(newChunkOffset * 4096, SeekOrigin.Begin);
         writer.Write(compressedData);
+
     }
 
     public static void CloseSet()
     {
         ControllerImput.Instance.ReRead();
     }
-    public void Sync(string sv,int Seed)
+    public void Sync(string sv, int Seed)
     {
         seed = Seed;
         savePath = sv;
-        string path = Path.Combine(savePath , "playerprefab.dat");
+        string path = Path.Combine(savePath, "playerprefab.dat");
         if (!File.Exists(path))
         {
-            Debug.Log(3);
-            pos =Vector3.zero;
-            rot =Quaternion.identity;
+            pos = Vector3.zero;
+            rot = Quaternion.identity;
             WorldManager.currenttime = 300;
+            CastleStructure.madeCastle = false;
         }
         else
         {
             try
             {
-                byte[] compressedData = File.ReadAllBytes(path); 
+                byte[] compressedData = File.ReadAllBytes(path);
 
                 using (MemoryStream memoryStream = new MemoryStream(compressedData))
                 {
@@ -312,30 +318,32 @@ public class ChunkSerializer
                             MouseController.xrot = data.mx;
                             MouseController.yrot = data.my;
                             WorldManager.currenttime = data.currentTime;
+                            CastleStructure.madeCastle = data.madeCastle;
                         }
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.Log(e);
                 File.Delete(path);
                 pos = Vector3.zero;
                 rot = Quaternion.identity;
                 WorldManager.currenttime = 300;
+                CastleStructure.madeCastle = false;
             }
 
-            
+
         }
         pret = true;
     }
-    public static void SavePlayerData(Vector3 Pos,Quaternion Rot)
+    public static void SavePlayerData(Vector3 Pos, Quaternion Rot)
     {
         if (!File.Exists(savePath + "/playerprefab.dat"))
         {
             Directory.CreateDirectory(Path.GetDirectoryName(savePath + "/playerprefab.dat"));
         }
-        
+
         try
         {
             PlayerData data = new()
@@ -344,7 +352,8 @@ public class ChunkSerializer
                 rotation = Rot,
                 mx = MouseController.xrot,
                 my = MouseController.yrot,
-                currentTime = WorldManager.currenttime
+                currentTime = WorldManager.currenttime,
+                madeCastle = CastleStructure.madeCastle
             };
             string jsonData = JsonUtility.ToJson(data, true);
 
@@ -366,7 +375,7 @@ public class ChunkSerializer
             throw (e);
         }
 
-        }
+    }
     public static Chunk.VoxelStruct[,,] ChunkReader(string savePath, int cx, int cz)
     {
         Chunk.VoxelStruct[,,] chunkData = FindChunkInRegion(savePath, cx, cz);
@@ -385,7 +394,7 @@ public class ChunkSerializer
             {
                 for (int z = 0; z < 16; z++)
                 {
-                    voxelData[x, y, z] = chunkData[x,y,z];
+                    voxelData[x, y, z] = chunkData[x, y, z];
                 }
             }
         }
@@ -401,4 +410,5 @@ public class PlayerData
     public Quaternion rotation;
     public float mx, my;
     public float currentTime;
+    public bool madeCastle;
 }

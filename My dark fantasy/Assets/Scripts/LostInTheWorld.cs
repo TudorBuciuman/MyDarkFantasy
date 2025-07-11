@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class LostInTheWorld : MonoBehaviour
 {
-    public Material water,m0,m1,m2,m3,m4;
+    public Material water,m0,m1,m2,m3,m4,Skybox;
     public WorldManager wm;
     public Text loveTxt;
     public static LostInTheWorld instance;
@@ -26,6 +26,10 @@ public class LostInTheWorld : MonoBehaviour
         }
         else
         {
+            if (Voxeldata.PlayerData.deaths == 0)
+            {
+                StartCoroutine(SlowDeath());
+            }
             switch (Voxeldata.PlayerData.scene)
             {
                 case 0:
@@ -56,7 +60,7 @@ public class LostInTheWorld : MonoBehaviour
             PlayerDataData.SavePlayerFile();
         }
         loveTxt.text = Voxeldata.PlayerData.love.ToString();
-
+       
     }
     public IEnumerator PlayFallenDown()
     {
@@ -69,5 +73,18 @@ public class LostInTheWorld : MonoBehaviour
         yield return new WaitForSeconds(15);
         Voxeldata.PlayerData.enteredWorld = true;
         PlayerDataData.SavePlayerFile();
+    }
+    public IEnumerator SlowDeath()
+    {
+        yield return new WaitForSeconds(66.6f);
+        StartCoroutine(HealthSistem.istance.SlowlyDeath());
+    }
+    public void HellOfALife()
+    {
+        RenderSettings.fog = false;
+        RenderSettings.reflectionIntensity = 0.65f;
+        RenderSettings.ambientLight = Color.black;
+        RenderSettings.skybox = Skybox;
+        water.SetColor("_AmbientLight", new Color(0f / 255f, 15f / 255f, 16f / 255f, 1f));
     }
 }
