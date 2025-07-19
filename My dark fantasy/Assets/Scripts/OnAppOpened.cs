@@ -14,7 +14,8 @@ public class OnAppOpened : MonoBehaviour
     public Sprite moon;
     public GameObject screenn,but1,but2,but3;
     public static byte itemsnum;
-    public static BlockProprieties[] blockTypes=new BlockProprieties[66];
+    public static BlockProprieties[] blockTypes=new BlockProprieties[100];
+    public static Recipes[] craftRec=new Recipes[100];
     public GameObject MDF,yeezy;
     public GameObject fallingGObj;
     public AudioClip[] clips = new AudioClip[5];
@@ -99,7 +100,7 @@ public class OnAppOpened : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Failed to load JSON file: " + request.error);
+            Debug.LogError("Failed to load JSON: " + request.error);
         }
     }
     public void ReadWhatNeedsTo()
@@ -118,8 +119,7 @@ public class OnAppOpened : MonoBehaviour
             {
                 blockTypes[w] = new();
                 blockTypes[w].Items = item;
-                if (itemsAtlas.Length > w)
-                    blockTypes[w].itemSprite = itemsAtlas[w];
+                blockTypes[w].itemSprite = itemsAtlas[w];
                 w++;
             }
         }
@@ -129,7 +129,30 @@ public class OnAppOpened : MonoBehaviour
             Debug.LogError("You piece of shit");
             
         }
-        
+        TextAsset craftingFile = Resources.Load<TextAsset>("everyrecipe");
+        if (jsonFile != null)
+        {
+            RecipesClass data = JsonUtility.FromJson<RecipesClass>(craftingFile.text);
+            itemsnum = (byte)data.recipes.Length;
+            Array.Resize(ref craftRec, itemsnum);
+            readytogo = true;
+            byte w = 0;
+            itemsAtlas = InitializeAtlas();
+            foreach (Recipes item in data.recipes)
+            {
+                craftRec[w] = new();
+                craftRec[w] = item;
+                w++;
+            }
+        }
+        else
+        {
+            Debug.LogError("recipes file not found!");
+            Debug.LogError("You piece of shit");
+
+        }
+
+
     }
     private static Sprite[] InitializeAtlas()
     {
@@ -140,7 +163,14 @@ public class OnAppOpened : MonoBehaviour
         int line = UnityEngine.Random.Range(0, 28);
         string[] dialogueLines = dialogueFile.text.Split('\n');
         FunnyText.text = dialogueLines[line];
-
+        if (Voxeldata.PlayerData.special == 12)
+        {
+            FunnyText.text = "Kill the king";
+        }
+        else if (Voxeldata.PlayerData.special == 13)
+        {
+            FunnyText.text = " X = 2300 \n Z = 5600";
+        }
     }
     public IEnumerator Waiting()
     {

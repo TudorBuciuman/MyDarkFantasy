@@ -14,7 +14,8 @@ public class ControllerImput : MonoBehaviour
     public itemsManager itemsManager;
     public SoundsManager soundTrack;
     public Toolbar toolbar;
-    public GameObject Hud1,Hud2,Hud3;
+    public GameObject Hud1, Hud2, Hud3;
+    public Image Hud4;
     public Transform cam;
     public static ControllerImput Instance;
 
@@ -178,7 +179,8 @@ public class ControllerImput : MonoBehaviour
         {
             Hud1.SetActive(false);
             Hud2.GetComponent<CanvasGroup>().alpha = 0;
-            Hud3.GetComponent<Image>().enabled = false;
+            Hud3.GetComponent<CanvasGroup>().alpha = 0;
+            Hud4.GetComponent<Image>().enabled = false;
             CancelInvoke(nameof(PosOut));
             Pos.text = null;
             framerate.text = null;
@@ -190,9 +192,10 @@ public class ControllerImput : MonoBehaviour
             Hud1.SetActive(true);
             Hud2.GetComponent<CanvasGroup>().alpha = 1;
             Pos.gameObject.SetActive(true);
-            Hud3.GetComponent<Image>().enabled = true;
+            Hud3.GetComponent<CanvasGroup>().alpha = 1;
+            Hud4.GetComponent<Image>().enabled = true;
         }
-        if(UiManager.fps && UiManager.hud)
+        if (UiManager.fps && UiManager.hud)
         InvokeRepeating(nameof(GetFps), 0, 0.3f);
         else
         {
@@ -998,7 +1001,13 @@ public class ControllerImput : MonoBehaviour
                         if (CanPlace(lastPos))
                         {
                             time = 0.2f;
-                            wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], (byte)(Random.Range(0, 2))));
+                            if (wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.blocks.type != 3)
+                                wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], 0));
+                            else if (CanPlace(lastPos + new Vector3(0, 0, 1)) && !wmanager.IsBlock(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z) + 1))
+                            {
+                                wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z), new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], 0));
+                                wmanager.ModifyMesh(Mathf.RoundToInt(lastPos.x), Mathf.RoundToInt(lastPos.y), Mathf.RoundToInt(lastPos.z) + 1, new Chunk.VoxelStruct(toolbar.item[0, Toolbar.slothIndex], 1));
+                            }
                             toolbar.UpdateAnItem(Toolbar.slothIndex);
                         }
                         break;
@@ -1024,6 +1033,10 @@ public class ControllerImput : MonoBehaviour
                                 case 3: toolbar.OpenInventory(2);
                                     break;
                                 case 4: Chest.Instance.OpenChest(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z));
+                                    break;
+                                case 5:
+                                    if (step < 2)
+                                        Sleep(new Vector3Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z)));
                                     break;
                             }
                         }
@@ -1067,13 +1080,13 @@ public class ControllerImput : MonoBehaviour
     {
         if(!wmanager.IsBlock(x, y, z))
             return false;
-        return wmanager.blockTypes[wmanager.Block(x, y, z)].Items.isblock;
+        return wmanager.blockTypes[wmanager.Block(x, y, z)].Items.isblock || wmanager.blockTypes[wmanager.Block(x, y, z)].Items.blocks.type==2;
     }
     public void Sleep(Vector3Int v)
     {
         Debug.Log("sleeping");
 
-        if (WorldManager.currenttime > 550)
+        if (WorldManager.currenttime >= 700f || WorldManager.currenttime < 100f)
         {
             BookManager.readingBook = true;
 
@@ -1101,15 +1114,33 @@ public class ControllerImput : MonoBehaviour
         }
         transform.localRotation = Quaternion.Euler(0, -180, 0);
         cam.localRotation = Quaternion.Euler(-75, 0, 0);
+
         yield return new WaitForSeconds(10);
         toolbar.GoToSleepNSave(w[0], q);
         //save
         Voxeldata.PlayerData.timesSlept++;
         if (Voxeldata.PlayerData.timesSlept == 1)
         {
+            Toolbar.escape = true;
             Voxeldata.PlayerData.special = 11;
             PlayerDataData.SavePlayerFile();
             SceneManager.LoadScene("Waterfall");
+        }
+        else if(Voxeldata.PlayerData.timesSlept == 4)
+        {
+            Toolbar.escape = true;
+            Voxeldata.PlayerData.special = 6;
+            BloodOnTheLeaves.SceneNum = 5;
+            PlayerDataData.SavePlayerFile();
+            SceneManager.LoadScene("Blood");
+        }
+        else if(Voxeldata.PlayerData.timesSlept == 6)
+        {
+            Toolbar.escape = true;
+            Voxeldata.PlayerData.special = 2;
+            BloodOnTheLeaves.SceneNum = 1;
+            PlayerDataData.SavePlayerFile();
+            SceneManager.LoadScene("Blood");
         }
         else
         {
@@ -1121,7 +1152,6 @@ public class ControllerImput : MonoBehaviour
             Toolbar.escape = false;
             BookManager.readingBook = false;
             toolbar.openedInv = false;
-
         }
     }
 }

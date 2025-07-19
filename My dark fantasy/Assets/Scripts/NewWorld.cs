@@ -36,11 +36,13 @@ public class NewWorld : MonoBehaviour
     public InputField changewname;
     public Button copywseed;
     public Button save;
+    public static bool fine = true;
     public void Start()
     {
         if (instance == null)
         {
             instance = this;
+            fine = true;
             if (Voxeldata.PlayerData.scene == 2)
             {
                 background.color= Color.black;
@@ -56,6 +58,13 @@ public class NewWorld : MonoBehaviour
         }
         Application.targetFrameRate = 20;
         ReadFiles();
+    }
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && fine)
+        {
+            SceneManager.LoadScene("UIScene");
+        }
     }
     public void ReadFiles()
     {
@@ -139,21 +148,26 @@ public class NewWorld : MonoBehaviour
         create.gameObject.SetActive(false);
         later.gameObject.SetActive(false);
         seed.gameObject.SetActive(false);
+        fine = true;
     }
     public void Create()
     {
+        fine = false;
         if (!Wname.text.Equals(""))
         {
             random = UnityEngine.Random.Range(0, 1000000000);
             string a=Wname.text;
             if (Wname.text.Equals("MyWorld"))
             {
-                byte p = 1;
-                Wname.text = ("MyWorld" + p.ToString()).ToString();
-                while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds", Wname.text)))
+                if (File.Exists(a))
                 {
-                    p++;
+                    byte p = 1;
                     Wname.text = ("MyWorld" + p.ToString()).ToString();
+                    while (Directory.Exists(Path.Combine(Application.persistentDataPath, "worlds", Wname.text)))
+                    {
+                        p++;
+                        Wname.text = ("MyWorld" + p.ToString()).ToString();
+                    }
                 }
             }
             string h;
@@ -167,15 +181,23 @@ public class NewWorld : MonoBehaviour
             }
             else
             {
-                byte p = 1;
-                savePath = Path.Combine(savePath, p.ToString()).ToString();
-                while (File.Exists(savePath))
+                if (File.Exists(savePath))
                 {
-                    p++;
+                    byte p = 1;
                     savePath = Path.Combine(savePath, p.ToString()).ToString();
+                    while (File.Exists(savePath))
+                    {
+                        p++;
+                        savePath = Path.Combine(savePath, p.ToString()).ToString();
+                    }
+                    h = Wname.text + p;
                 }
-                h=Wname.text+p;
-                Directory.CreateDirectory(savePath);
+                else
+                {
+                    Directory.CreateDirectory(savePath);
+                    h = Wname.text;
+                }
+
             }
             BinaryFormatter formatter = new BinaryFormatter();
             using (StreamWriter writer = new StreamWriter(savePath + "/world.info"))
@@ -213,6 +235,7 @@ public class NewWorld : MonoBehaviour
     }
     public void EnterWorld()
     {
+        fine = false;
         instance.lightingImg.color = Color.black;
         instance.EnterFaster(false);
         serializer = new();
@@ -244,6 +267,7 @@ public class NewWorld : MonoBehaviour
     public int SEED;
     public void EditWorld(GameObject c)
     {
+        fine = false;
         wset.gameObject.SetActive(true);
         //backup.gameObject.SetActive(true);
         deleteqm.gameObject.SetActive(true);
@@ -275,7 +299,7 @@ public class NewWorld : MonoBehaviour
         foreach(GameObject a in GameObject.FindGameObjectsWithTag("open"))
             Destroy(a);
         ReadFiles();
-
+        fine = true;
     }
     public void TryDelete()
     {

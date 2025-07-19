@@ -760,6 +760,7 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         if (fought)
         {
+            fights++;
             SoundsSource.clip = swordsound;
             SoundsSource.Play();
             swordSlash.SetActive(true);
@@ -771,7 +772,11 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(1.2f);
         swordSlash.SetActive(false);
         bullet.gameObject.SetActive(false);
+        if(spares>5 && fights>7)
         TheEnd();
+        else
+            StartCoroutine(HasChose());
+        yield return null;
     }
     public IEnumerator TypeLine(string line, float spd)
     {
@@ -1093,7 +1098,7 @@ public class FightSistem : MonoBehaviour
         yield break;
     }
     string message;
-    byte actnum=0;
+    byte actnum=0,fights=0;
     bool acted = false;
     static bool diedTxt=false;
     public IEnumerator Write(string s)
@@ -1111,7 +1116,7 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Spare()
     {
-        textBox.text = "  *Spare";
+        textBox.text = "  * Spare";
         heartImgInv.SetActive(false);
         selectheart.SetActive(true);
         while (true)
@@ -1144,7 +1149,7 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Item()
     {
-        textBox.text = "  *Pie";
+        textBox.text = "  * Pie";
         heartImgInv.SetActive(false);
         selectheart.SetActive(true);
         while (true)
@@ -1175,14 +1180,14 @@ public class FightSistem : MonoBehaviour
             life += l;
             healthslider.value = life;
             hlt.text = life.ToString();
-            yield return StartCoroutine(Write("* You recovered "+l+"hp"));
+            yield return StartCoroutine(Write("  * You recovered "+l+"hp"));
         }
         else
         {
             life = 20;
             healthslider.value = life;
             hlt.text = 20.ToString();
-            yield return StartCoroutine(Write("* You're healed"));
+            yield return StartCoroutine(Write("  * You're healed"));
 
         }
         oninventory = false;

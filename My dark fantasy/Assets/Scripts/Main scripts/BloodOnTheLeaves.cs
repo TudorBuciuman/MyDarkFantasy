@@ -230,11 +230,19 @@ public class BloodOnTheLeaves : MonoBehaviour
                 yield return new WaitForSeconds(5);
                 SceneManager.LoadScene("Fight");
             }
+            else if(SceneNum == 8)
+            {
+                SceneNum = 9;
+                Voxeldata.PlayerData.special = 10;
+                PlayerDataData.SavePlayerFile();
+                yield return new WaitForSeconds(5);
+                SceneManager.LoadScene("Blood");
+            }
             else if (SceneNum == 9)
             {
                 yield return StartCoroutine(WaitTillTheEnd());
                 yield return new WaitForSeconds(3);
-                Voxeldata.PlayerData.special = 0;
+                Voxeldata.PlayerData.special = 13;
                 PlayerDataData.SavePlayerFile();
                 SceneManager.LoadScene("Intro");
             }

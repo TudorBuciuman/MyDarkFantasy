@@ -101,21 +101,25 @@ public class HealthSistem : MonoBehaviour
     }
     public IEnumerator SlowlyDeath()
     {
-        while (health > 0)
+        while (health > 1)
         {
             UpdateHealth(-1);
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(health+5);
         }
+        yield return new WaitForSeconds(6.66f);
+        Toolbar.instance.GiveBed();
+        UpdateHealth(-1);
     }
     private IEnumerator KnifeDeath()
     {
         health = maxHealth;
         Toolbar.instance.SaveProgress();
-        Voxeldata.PlayerData.special = 100;
+        Voxeldata.PlayerData.special = 3;
+        BloodOnTheLeaves.SceneNum = 2;
         PlayerDataData.SavePlayerFile();
         yield return new WaitForSeconds(1);
         soundsManager.StopSong();
-        SceneManager.LoadScene("Fight");
+        SceneManager.LoadScene("Blood");
         yield return null;
     }
 }

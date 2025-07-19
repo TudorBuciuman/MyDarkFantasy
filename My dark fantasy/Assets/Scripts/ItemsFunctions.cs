@@ -107,15 +107,17 @@ public class ItemsFunctions : MonoBehaviour
         {
             SoundsManager.instance.mouseSource.Stop();
         }
-        HealthSistem.istance.UpdateHealth(-1);
         SoundsManager.instance.Placement(11);
         if (!SoundsManager.instance.songs.isPlaying)
         {
             SoundsManager.instance.PlaySong(7);
+            SoundsManager.lastSong = "song7";
         }
         else if (SoundsManager.instance.songs.clip.name != "song7")
         {
             SoundsManager.instance.PlaySong(7);
+
+        }
             if (HealthSistem.health <= 1)
             {
                 //activate protocol
@@ -136,7 +138,7 @@ public class ItemsFunctions : MonoBehaviour
             {
                 SoundsManager.instance.ForceSong(7);
             }
-        }
+            SoundsManager.lastSong = "song7";
     }
 }
 

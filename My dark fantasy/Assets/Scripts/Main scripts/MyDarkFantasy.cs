@@ -30,7 +30,6 @@ public class MyDarkFantasy : MonoBehaviour
     void Start()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        StartCoroutine(HellOfALife());
         if (Voxeldata.PlayerData.special == 12)
         {
             ShowStory();
@@ -39,8 +38,6 @@ public class MyDarkFantasy : MonoBehaviour
 
     void ShowStory()
     {
-        Toolbar.CanEsc = false;
-        SoundsManager.canChange = false;
         StartCoroutine(TheWholeStory());
     }
     public IEnumerator PlaySongByName(string name)
@@ -75,6 +72,9 @@ public class MyDarkFantasy : MonoBehaviour
     }
     public IEnumerator TheWholeStory()
     {
+        yield return new WaitForSeconds(60 + Random.Range(0, 200));
+        Toolbar.CanEsc = false;
+        SoundsManager.canChange = false;
         yield return new WaitForSeconds(2);
         SoundsManager.instance.MuteTheWholeGame();
         StartCoroutine(PlaySongByName("Runaway"));
@@ -429,6 +429,7 @@ public class MyDarkFantasy : MonoBehaviour
         {
             yield return StartCoroutine(Waiting());
             yield return new WaitForSeconds(10);
+            Toolbar.instance.SaveProgress();
             BloodOnTheLeaves.SceneNum = 9;
             SceneManager.LoadScene("Blood");
         }

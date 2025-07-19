@@ -75,7 +75,6 @@ public class Chest : MonoBehaviour
         }
         else
         {
-            Debug.Log("wtf");
             currentchest = new()
             {
                 position = new Pos(x, y, z),

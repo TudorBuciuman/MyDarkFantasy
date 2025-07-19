@@ -91,7 +91,11 @@ public class Toolbar : MonoBehaviour
             }
         int n = 16 + Voxeldata.PlayerData.love*4;
         int exp = (Voxeldata.PlayerData.love - 1) * 10;
-        if (!Voxeldata.PlayerData.genocide)
+        if (Voxeldata.PlayerData.special == 12 || Voxeldata.PlayerData.special == 13)
+        {
+            Name.text = " X = 2300 \n Z = 5600";
+        }
+        else if (!Voxeldata.PlayerData.genocide)
         {
             switch (Voxeldata.PlayerData.love)
             {
@@ -195,6 +199,21 @@ public class Toolbar : MonoBehaviour
             }
         }
     }
+    public void UpdataeDef()
+    {
+        int def = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            if (invimg[38 + i].id != 0)
+            {
+                def += World.blockTypes[invimg[38 + i].id].Items.tool.num;
+            }
+        }
+        int n = 16 + Voxeldata.PlayerData.love * 4;
+        int exp = (Voxeldata.PlayerData.love - 1) * 10;
+        Stats.text = $"LV {Voxeldata.PlayerData.love}\r\nHP {(int)HealthSistem.health}/{n}\r\n\r\nAT 6\r\nDF {def}\r\n\r\nEXP: {exp}\r\nNEXT: 10";
+
+    }
     public void SearchForImput()
     {
         faranume = new PointerEventData(eventSystem)
@@ -254,6 +273,7 @@ public class Toolbar : MonoBehaviour
                                         (item[f / 9, f % 9], invimg[selectedsloth].id) = (invimg[selectedsloth].id, item[f / 9, f % 9]);
                                         (invimg[f].image.sprite, invimg[selectedsloth].image.sprite) = (invimg[selectedsloth].image.sprite, invimg[f].image.sprite);
                                     }
+                                    UpdataeDef();
                                     selectedsloth = 50;
                                     select.gameObject.SetActive(false);
                                 }
@@ -269,6 +289,7 @@ public class Toolbar : MonoBehaviour
                                 {
                                     if (invimg[selectedsloth].id == 0 && craft.sizeofitem>0)
                                     {
+                                        UpdataeDef();
                                         (item[f / 9, f % 9], invimg[selectedsloth].id) = (invimg[selectedsloth].id, item[f / 9, f % 9]);
                                         (invimg[f].image, invimg[selectedsloth].image) = (invimg[selectedsloth].image, invimg[f].image);
                                         craft.sizeofitem--;
@@ -424,8 +445,7 @@ public class Toolbar : MonoBehaviour
                             craft.itemcreated = 0;
                             craft.sizeofitem = 0;
                         }
-
-
+                        craft.Calc();
                         select.gameObject.SetActive(false);
                         selectedsloth = 50;
                     }
@@ -446,7 +466,7 @@ public class Toolbar : MonoBehaviour
                             invimg[selectedsloth].num.text = 96.ToString();
                             invimg[36].num.text = craft.sizeofitem.ToString();
                         }
-
+                        craft.Calc();
                         select.gameObject.SetActive(false);
                         selectedsloth = 50;
                     }
@@ -465,7 +485,7 @@ public class Toolbar : MonoBehaviour
                 Image img = slot.gameObject.GetComponent<Image>();
                 for (byte i = 0; i < craft.options; i++)
                 {
-                    if (World.blockTypes[craft.recipes[craft.ind[i]].id].itemSprite.name == img.sprite.name)
+                    if (World.blockTypes[craft.recipes[craft.ind[i]].id].itemSprite == img.sprite)
                     {
                         if (i != lastitem)
                         {
@@ -495,6 +515,11 @@ public class Toolbar : MonoBehaviour
                             if (craft.sizeofitem == 0)
                             {
                                 invimg[36].image.sprite = World.blockTypes[0].itemSprite;
+                                GameObject[] gO = GameObject.FindGameObjectsWithTag("fin");
+                                foreach (GameObject go2 in gO)
+                                {
+                                    Destroy(go2);
+                                }
                                 if (selectedsloth == 36)
                                     selectedsloth = 50;
                             }
@@ -750,6 +775,7 @@ public class Toolbar : MonoBehaviour
         invimg[38].image.sprite = World.blockTypes[invimg[38].id].itemSprite;
         invimg[39].image.sprite = World.blockTypes[invimg[39].id].itemSprite;
         invimg[40].image.sprite = World.blockTypes[invimg[40].id].itemSprite;
+        UpdataeDef();
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 9; j++)
@@ -901,7 +927,7 @@ public class Toolbar : MonoBehaviour
         GameObject[] go = GameObject.FindGameObjectsWithTag("crf");
         foreach (GameObject go2 in go)
         {
-            Destroy(go2);
+            Destroy(go2.transform.parent.gameObject);
         }
         GameObject[] gO = GameObject.FindGameObjectsWithTag("fin");
         foreach (GameObject go2 in gO)
@@ -1036,6 +1062,16 @@ public class Toolbar : MonoBehaviour
         escape = false;
         openedInv = false;
     }
+    public void SaveAll()
+    {
+        SaveInventory();
+        ChunkSerializer.SavePlayerData(control.PlayerPos(), control.PlayerRot());
+        for (int i = 0; i < WorldManager.chunkstosave.Count; i++)
+        {
+            ChunkSerializer.loadedChunks[(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y)] = WorldManager.GetChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y).Voxels;
+            ChunkSerializer.SaveChunk(WorldManager.chunkstosave[i].x, WorldManager.chunkstosave[i].y);
+        }
+    }
     public void GoToSleepNSave(Vector3 pos, Quaternion rot)
     {
         SaveInventory();
@@ -1091,6 +1127,20 @@ public class Toolbar : MonoBehaviour
         else
         {
             invimg[id].num.text = num.ToString();
+        }
+    }
+    public void GiveBed()
+    {
+        //62
+        for(int i=9; i<36; i++)
+        {
+            if (item[i / 9, i % 9] == 0)
+            {
+                item[i / 9, i % 9] = 62;
+                itemsize[i / 9, i % 9] = 1;
+                i = 38;
+                break;
+            }
         }
     }
     public void SearchInInventory(byte id)

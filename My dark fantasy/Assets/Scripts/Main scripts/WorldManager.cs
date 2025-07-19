@@ -32,12 +32,8 @@ public class WorldManager : MonoBehaviour
             OnAppOpened appOpened = new();
             appOpened.ReadWhatNeedsTo();
         }
-        blockTypes = new BlockProprieties[OnAppOpened.itemsnum];
-        for (int i = 0; i < OnAppOpened.itemsnum; i++)
-        {
-            blockTypes[i] = OnAppOpened.blockTypes[i];
-
-        }
+        blockTypes = new BlockProprieties[OnAppOpened.blockTypes.Length];
+        blockTypes = OnAppOpened.blockTypes;
     }
 
     private void FixedUpdate()

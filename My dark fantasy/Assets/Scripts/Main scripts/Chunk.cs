@@ -275,8 +275,6 @@ public class Chunk
                 float worldX = Coord.x * 16 + i;
                 float worldZ = Coord.y * 16 + j;
 
-                float step = 4f; // lower-res noise sample spacing
-
                 float continentalness = CombinedNoise(worldX, worldZ, 4, 0.1f, 2f);
                 float valley = CombinedNoise(worldX, worldZ, 4, 0.1f, 2.6f) - 0.5f;
                 float erosion = CombinedNoise(worldX, worldZ, 4, 0.01f, 2f) - 0.5f;
@@ -286,11 +284,8 @@ public class Chunk
                              //+ GetErosionModifier(erosion);
 
 
-
-
                 heightMap[i, j] = height;
 
-                // Biome selection logic
                 if (continentalness < 0.3f && valley < 0.3f)
                     index = 1;
                 else if (continentalness < 0.4f && erosion > 0.5f)
@@ -492,10 +487,6 @@ public class Chunk
                         {
                             SetBlock(x, height[x, z] + 1, z, 37);
                         }
-                        else if (height[x, z] > 64 && Noise.GetThe2DPerlin(new Vector2(e, r), Offset / 5, biome[x, z].treesize / 10, biome[x, z].treethreshold + 0.5f))
-                        {
-                            SetBlock(x, height[x, z] + 1, z, 42);
-                        }
                     }
                 }
             }
@@ -512,10 +503,6 @@ public class Chunk
                             if (Noise.GetThe2DPerlin(new Vector2(e, r), Offset * 2, biome[x, z].treesize * 5, biome[x, z].treethreshold))
                             {
                                 SetBlock(x, height[x, z] + 1, z, 37);
-                            }
-                            else if (Noise.GetThe2DPerlin(new Vector2(e, r), Offset / 5, biome[x, z].treesize / 10, biome[x, z].treethreshold + 0.6f))
-                            {
-                                SetBlock(x, height[x, z] + 1, z, 42);
                             }
                         }
                     }
@@ -751,7 +738,7 @@ public class Chunk
             world.blockTypes[voxel].Items.blocks.frontfacetexture,
             world.blockTypes[voxel].Items.blocks.topfacetexture,
             world.blockTypes[voxel].Items.blocks.rightfacetexture,
-            world.blockTypes[voxel].Items.blocks.rightfacetexture // duplicate for opposite side
+            world.blockTypes[voxel].Items.blocks.rightfacetexture 
         };
         }
         else
@@ -762,7 +749,7 @@ public class Chunk
             world.blockTypes[voxel].Items.blocks.backfacetexture,
             world.blockTypes[voxel].Items.blocks.bottomfacetexture,
             world.blockTypes[voxel].Items.blocks.leftfacetexture,
-            world.blockTypes[voxel].Items.blocks.leftfacetexture // duplicate for opposite side
+            world.blockTypes[voxel].Items.blocks.leftfacetexture 
         };
         }
 

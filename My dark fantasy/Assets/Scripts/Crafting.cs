@@ -7,15 +7,23 @@ public class Crafting : MonoBehaviour
     public craftinginv craftinginv;
     public WorldManager world;
     public GameObject Prefa;
-    public Recipes[] recipes=new Recipes[10];
-    public byte[] ind=new byte[10];
-    public int[] sz=new int[10];
-    public int[] e=new int[10];
+    public Recipes[] recipes;
+    public byte[] ind;
+    public int[] sz;
+    public int[] e;
     public byte options = 0;
     public byte itemcreated=0;
     public byte itemcraft = 0;
     public byte itempos = 0;
     public byte sizeofitem=0;
+    public byte type=0;
+    public void Awake()
+    {
+        recipes = OnAppOpened.craftRec;
+        ind = new byte[recipes.Length];
+        sz = new int[recipes.Length];
+        e = new int[recipes.Length];
+    }
     public void OpenCraft(byte id)
     {
         Inventory(id);
@@ -25,6 +33,7 @@ public class Crafting : MonoBehaviour
     {
         byte p = 0;
         options = 0;
+        type = tpe;
         while (p < recipes.Length)
         {
             if (recipes[p].type < 1)
@@ -188,12 +197,35 @@ public class Crafting : MonoBehaviour
          Destroy(i);
         craftinginv.Screening(id);
     }
+    public void Recalc()
+    {
+        GameObject[] go = GameObject.FindGameObjectsWithTag("crf");
+        foreach (GameObject go2 in go)
+        {
+            Destroy(go2.transform.parent.gameObject);
+        }
+        GameObject[] gO = GameObject.FindGameObjectsWithTag("fin");
+        foreach (GameObject go2 in gO)
+        {
+            Destroy(go2);
+        }
+        Inventory(type);
+    }
+    public void Calc()
+    {
+        GameObject[] go = GameObject.FindGameObjectsWithTag("crf");
+        foreach (GameObject go2 in go)
+        {
+            Destroy(go2.transform.parent.gameObject);
+        }
+        Inventory(type);
+    }
     public void Craft()
     {
         byte id = itemcreated;
         byte w =itempos ;
-        
-        if (sizeofitem<255 &&  id != 255 && e[id]>0)
+
+        if (sizeofitem < 255 && id != 255 && e[id] > 0)
         {
             byte[] szz = new byte[9];
             byte r = 0;
@@ -207,7 +239,7 @@ public class Crafting : MonoBehaviour
                         if (tool.item[i, j] == d.id && tool.itemsize[i, j] >= szz[r])
                         {
                             tool.UpdateItem((byte)(i * 9 + j), szz[r]);
-                            szz[r] =0;                            
+                            szz[r] = 0;
                         }
                         else if (tool.item[i, j] == d.id && tool.itemsize[i, j] < szz[r])
                         {
@@ -224,18 +256,27 @@ public class Crafting : MonoBehaviour
                 r++;
             }
             itemcreated = id;
-            e[id]-=recipes[id].size;
+            e[id] -= recipes[id].size;
             sizeofitem += recipes[id].size;
             tool.invimg[36].num.text = sizeofitem.ToString();
-            GameObject[] a = GameObject.FindGameObjectsWithTag("crf");
-            a[w*2].GetComponentInChildren<Text>().text = e[id].ToString();
-            if (e[w] < 255)
+            if (e[id] == 0)
             {
-                a[( w*2)].GetComponentInChildren<Text>().text = e[id].ToString();
+                Recalc();
             }
             else
             {
-                a[(w * 2)].GetComponentInChildren<Text>().text = ("255+").ToString();
+
+                GameObject[] a = GameObject.FindGameObjectsWithTag("crf");
+                a[w].transform.parent.GetComponentInChildren<Text>().text = e[id].ToString();
+                if (e[w] < 255)
+                {
+                    a[w].transform.parent.GetComponentInChildren<Text>().text = e[id].ToString();
+                }
+                else
+                {
+                    a[w].transform.parent.GetComponentInChildren<Text>().text = ("255+").ToString();
+                }
+                Calc();
             }
         }
     }
@@ -256,4 +297,8 @@ public class itemsneeded
 {
     public byte id;
     public byte size;
+}
+public class RecipesClass
+{
+    public Recipes[] recipes;
 }

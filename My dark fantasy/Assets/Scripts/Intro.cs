@@ -22,6 +22,7 @@ public class Intro : MonoBehaviour
             TTG.sprite = logoBlackndWhite;
         Voxeldata.PlayerData.deaths=1;
         Voxeldata.PlayerData.special=0;
+        PlayerDataData.SavePlayerFile();
         switch (Voxeldata.PlayerData.special)
         {
             case 1:
@@ -59,16 +60,19 @@ public class Intro : MonoBehaviour
             case 9:
                 BloodOnTheLeaves.SceneNum = 8;
                 SceneManager.LoadScene("Blood");
+                //Hell of a life
                 break;
             case 10:
                 BloodOnTheLeaves.SceneNum = 9;
                 SceneManager.LoadScene("Blood");
+                //Blame Game
                 break;
             case 11:
                 SceneManager.LoadScene("Waterfall");
                 break;
 
             //case 12 is runaway
+            //case 13 is used for displaying the castle coords
             case 100:
                 SceneManager.LoadScene("Fight");
                 break;

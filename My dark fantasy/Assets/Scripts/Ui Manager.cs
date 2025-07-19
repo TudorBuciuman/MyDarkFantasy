@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class UiManager : MonoBehaviour
 {
     public static string scene=null;
+    public GameObject Quitting;
     public GameObject a,b,d,e;
     public GameObject D, E;
     public static UiManager c;
@@ -102,11 +103,12 @@ public class UiManager : MonoBehaviour
     }
     public IEnumerator Close()
     {
+
         while (true)
         {
             if (Input.GetKey(KeyCode.Escape))
             {
-                if (SceneManager.loadedSceneCount == 1)
+                if (SceneManager.loadedSceneCount == 1 && Quitting)
                 {
                     yield return StartCoroutine(StartCountNClose());
                 }
@@ -118,7 +120,7 @@ public class UiManager : MonoBehaviour
     {
         float tme = 0;
         bool cnt = true;
-        while(tme<2.2f && SceneManager.loadedSceneCount == 1)
+        while (tme < 0.6f && SceneManager.loadedSceneCount == 1)
         {
             if (!Input.GetKey(KeyCode.Escape))
             {
@@ -130,8 +132,24 @@ public class UiManager : MonoBehaviour
         }
         if (cnt)
         {
-            Debug.Log("quit");
-            Application.Quit();
+            Quitting.SetActive(true);
+            while (tme < 2.2f && SceneManager.loadedSceneCount == 1)
+            {
+                if (!Input.GetKey(KeyCode.Escape))
+                {
+                    Quitting.SetActive(false);
+                    cnt = false;
+                    break;
+                }
+                yield return new WaitForSeconds(0.1f);
+                tme += 0.1f;
+            }
+            if (cnt)
+            {
+                Quitting.SetActive(false);
+                Debug.Log("quit");
+                Application.Quit();
+            }
         }
     }
     public void LeaveSettings()
