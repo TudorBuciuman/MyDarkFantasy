@@ -16,7 +16,7 @@ And if you have ideas contact me on IG;
   Facts
 </h2>
 <p>
-  <li>Unity>Godot</li>
+  <li>Godot > Unity</li>
   <li>Minecraft needs more lore</li>
 </p>
 <h2>
