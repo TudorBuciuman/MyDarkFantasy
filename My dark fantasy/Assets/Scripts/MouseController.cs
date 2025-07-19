@@ -41,7 +41,8 @@ public class MouseController : MonoBehaviour
 
         }
         */
-        //AndroidMovement();
+        //if (!toolbar.openedInv)
+        //    AndroidMovement();
         //pentru android trebuie folosita prima si pentru pc a doua
     }
     void AndroidMovement()

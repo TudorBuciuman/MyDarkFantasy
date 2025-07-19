@@ -31,8 +31,8 @@ public class Chest : MonoBehaviour
         {
             Instance = this;
         }
-            saveFilePath = Path.Combine(ChunkSerializer.savePath, "chests.dat");
-            LoadAllChests();
+        saveFilePath = Path.Combine(ChunkSerializer.savePath, "chests.dat");
+        LoadAllChests();
     }
     public void OpenChest(int x, int y, int z)
     {
@@ -95,6 +95,26 @@ public class Chest : MonoBehaviour
         ShowItems();
 
     }
+    public bool IsEmpty(Pos loc)
+    {
+        if (!chestsData.ContainsKey(loc))
+            return true;
+        chestsData.TryGetValue(loc, out ChestData data);
+        for (int i = 0; i < 27; ++i)
+        {
+            if (data.items[i].itemId != 0)
+                return false;
+        }
+        return true;
+    }
+    public void RemoveChest(Pos loc)
+    {
+        if (chestsData.ContainsKey(loc))
+        {
+            chestsData.Remove(loc);
+            SaveAllChests();
+        }
+    }
     public void ShowItems()
     {
         for (int i = 0; i < 4; i++)
@@ -125,7 +145,7 @@ public class Chest : MonoBehaviour
             {
                 Toolbar t = Toolbar.instance;
 
-                if (chestitems[i,j].size!=0)
+                if (chestitems[i, j].size != 0)
                 {
                     chestItem[i * 9 + j].image.sprite = t.World.blockTypes[chestitems[i, j].id].itemSprite;
                     if (t.World.blockTypes[chestitems[i, j].id].Items.isblock)
@@ -149,7 +169,7 @@ public class Chest : MonoBehaviour
     }
     public IEnumerator WaitforChange()
     {
-        while(Input.GetKey(KeyCode.E))
+        while (Input.GetKey(KeyCode.E))
         {
             yield return null;
         }
@@ -163,12 +183,20 @@ public class Chest : MonoBehaviour
     public void SaveChest(ChestData chestData)
     {
         chestData.items = new ItemSlott[27];
-        for(byte i=0; i<27; i++)
+        for (byte i = 0; i < 27; i++)
         {
             chestData.items[i] = new ItemSlott();
             chestData.items[i].slotIndex = i;
-            chestData.items[i].itemId = chestitems[i / 9, i % 9].id;
-            chestData.items[i].quantity = chestitems[i / 9, i % 9].size;
+            if (chestitems[i / 9, i % 9] != null)
+            {
+                chestData.items[i].itemId = chestitems[i / 9, i % 9].id;
+                chestData.items[i].quantity = chestitems[i / 9, i % 9].size;
+            }
+            else
+            {
+                chestData.items[i].itemId = 0;
+                chestData.items[i].quantity = 0;
+            }
 
         }
         if (chestsData.ContainsKey(chestData.position))
@@ -203,14 +231,7 @@ public class Chest : MonoBehaviour
 
         return data;
     }
-    public void RemoveChest(Pos pos)
-    {
-        if (chestsData.ContainsKey(pos))
-        {
-            chestsData.Remove(pos);
-            SaveAllChests();
-        }
-    }
+
     private void SaveAllChests()
     {
         //DONT TOUCH THIS
@@ -270,7 +291,7 @@ public class Chest : MonoBehaviour
                             chestsData.Clear();
                             foreach (var chest in wrapper.chests)
                             {
-                                chestsData.Add(chest.position,chest);
+                                chestsData.Add(chest.position, chest);
                             }
 
                         }
@@ -287,6 +308,40 @@ public class Chest : MonoBehaviour
         {
             Debug.Log("No chest save file found. Starting fresh.");
         }
+    }
+    public void AddFullChest(ChestData cData)
+    {
+        ChestData chestData = new();
+
+        chestData.items = new ItemSlott[27];
+        chestData.position = cData.position;
+
+        for (byte i = 0; i < 27; i++)
+        {
+            chestData.items[i] = new ItemSlott();
+            chestData.items[i].slotIndex = i;
+            if (cData.items[i] != null)
+            {
+                chestData.items[i].itemId = cData.items[i].itemId;
+                chestData.items[i].quantity = cData.items[i].quantity;
+            }
+            else
+            {
+                chestData.items[i].itemId = 0;
+                chestData.items[i].quantity = 0;
+            }
+
+        }
+        if (chestsData.ContainsKey(chestData.position))
+        {
+            chestsData[chestData.position] = chestData;
+        }
+        else
+        {
+            chestsData.Add(chestData.position, chestData);
+        }
+
+        SaveAllChests();
     }
 
     [System.Serializable]
@@ -336,7 +391,7 @@ public class Pos
 
     public override int GetHashCode()
     {
-        unchecked 
+        unchecked
         {
             int hash = 17;
             hash = hash * 31 + x;

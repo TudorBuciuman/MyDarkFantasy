@@ -9,9 +9,8 @@ public class HealthSistem : MonoBehaviour
     public static float health;
     public static HealthSistem istance;
     private float maxHealth=20;
-    private float love;
     public Slider healthslider;
-    public Text healthLabel;  
+    public Text healthLabel,love;  
     public SoundsManager soundsManager;
     public AudioClip heal, dammage;
     public AudioSource source;
@@ -20,6 +19,14 @@ public class HealthSistem : MonoBehaviour
     public void Start()
     {
         istance = this;
+        if (Voxeldata.PlayerData.scene == 0)
+        {
+            love.text = (1).ToString();
+            Voxeldata.PlayerData.love = 1;
+        }
+        else
+            love.text = Voxeldata.PlayerData.love.ToString();
+        maxHealth = 16 + Voxeldata.PlayerData.love * 4;
     }
     public void ScreenOfDeath()
     {
@@ -36,6 +43,7 @@ public class HealthSistem : MonoBehaviour
             health=maxHealth;
             Toolbar.instance.SaveProgress();
             Voxeldata.PlayerData.deaths++;
+            BloodOnTheLeaves.SceneNum = 0;
             SceneManager.LoadScene("Blood");
         }
         else
@@ -83,6 +91,35 @@ public class HealthSistem : MonoBehaviour
             hlt = 1;
         }
         healthslider.value = hlt;
-        healthLabel.text=$"{hlt}/{maxHealth}".ToString();
+        healthLabel.text=$"{hlt} / {maxHealth}".ToString();
+    }
+    public void Protocol()
+    {
+        health = 0;
+        ReMakeHearts();
+        StartCoroutine(KnifeDeath());
+    }
+    public IEnumerator SlowlyDeath()
+    {
+        while (health > 1)
+        {
+            UpdateHealth(-1);
+            yield return new WaitForSeconds(health+5);
+        }
+        yield return new WaitForSeconds(6.66f);
+        Toolbar.instance.GiveBed();
+        UpdateHealth(-1);
+    }
+    private IEnumerator KnifeDeath()
+    {
+        health = maxHealth;
+        Toolbar.instance.SaveProgress();
+        Voxeldata.PlayerData.special = 3;
+        BloodOnTheLeaves.SceneNum = 2;
+        PlayerDataData.SavePlayerFile();
+        yield return new WaitForSeconds(1);
+        soundsManager.StopSong();
+        SceneManager.LoadScene("Blood");
+        yield return null;
     }
 }

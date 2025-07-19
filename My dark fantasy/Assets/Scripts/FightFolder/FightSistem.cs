@@ -56,7 +56,7 @@ public class FightSistem : MonoBehaviour
     public Sprite[] eyes = new Sprite[8];
     private readonly string s = "Yeezus";
 
-    public GameObject FightOrSpare;
+    public GameObject FightOrSpare,LV2;
     public SpriteRenderer fight, spare,eye;
     public struct FightAct
     {
@@ -70,6 +70,7 @@ public class FightSistem : MonoBehaviour
     void Start()
     {
         instance= this;
+        FightingHealth.damageAmount = 5;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
         Read();
@@ -305,8 +306,8 @@ public class FightSistem : MonoBehaviour
         switch (spares)
         {
             case 1:
-                yield return StartCoroutine(JustType(" Why? \n I had only hurt you.", 0.14f));
-                yield return StartCoroutine(JustType(" Just end this madness..", 0.13f));
+                yield return StartCoroutine(JustType(" Why? \n I had hurt everyone.", 0.14f));
+                yield return StartCoroutine(JustType(" Do what you must..", 0.13f));
                 yield return StartCoroutine(JustType(" ...", 0.43f));
                 yield return new WaitForSeconds(2.4f);
                 dialogueTextUI.text = null;
@@ -333,7 +334,7 @@ public class FightSistem : MonoBehaviour
                 break;
             case 4:
                 yield return StartCoroutine(JustType(" Don't give up already.", 0.07f));
-                yield return StartCoroutine(JustType(" Your destiny is to \n bring justice \n bring an end to my rulling!", 0.05f));
+                yield return StartCoroutine(JustType(" Your destiny is to \n bring justice \n bring an end to this fantasy!", 0.05f));
                 yield return StartCoroutine(JustType(" Don't be a coward!", 0.07f));
                 yield return StartCoroutine(JustType(" All of this, just to die?!", 0.07f));
                 yield return StartCoroutine(JustType(" KILL me already!", 0.06f));
@@ -374,20 +375,20 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" Not as long as you \n are the last human.", 0.07f));
         yield return new WaitForSeconds(0.5f);
-        yield return StartCoroutine(JustType(" I'm sorry, young warrior..", 0.1f));
+        yield return StartCoroutine(JustType(" I'm sorry, poor warrior..", 0.1f));
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" I know you also seek \n justice for the humans that \n came before you.", 0.077f));
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" I too, consider \n it an injustice.", 0.09f));
         yield return new WaitForSeconds(0.4f);
-        yield return StartCoroutine(JustType(" It will be another sin \n that I will have to carry \n for the rest of my days.", 0.09f));
+        yield return StartCoroutine(JustType(" It will be another sin \n that I will have to carry \n for the rest of time.", 0.09f));
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" As well as what comes next.", 0.09f));
         yield return new WaitForSeconds(0.4f);
         yield return StartCoroutine(JustType(" Please, forgive me..", 0.12f));
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.4f);        
         dialogueTextUI.text = null;
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(4);
         yield return StartCoroutine(SpeciallAttack());
         //attack animation
         yield return StartCoroutine(JustType(" Rest well, young one.",0.13f));
@@ -397,6 +398,17 @@ public class FightSistem : MonoBehaviour
         yield return StartCoroutine(JustType(" I'm sorry.", 0.12f));
         yield return new WaitForSeconds(5f);
         dialogueTextUI.text = null;
+        Voxeldata.PlayerData.pacifist = true;
+        Voxeldata.PlayerData.genocide = false;
+        Voxeldata.PlayerData.scene = 1;
+        Voxeldata.PlayerData.sawIntro = false;
+        PlayerDataData.SavePlayerFile();
+        yield return new WaitForSeconds(8f);
+        yield return StartCoroutine(JustType(" So, I was taking a \n walk the other day", 0.14f));
+        yield return new WaitForSeconds(3);
+        dialogueTextUI.text = null;
+        yield return new WaitForSeconds(10);
+        SceneManager.LoadScene("Intro");
         yield return null;
     }
     public IEnumerator VengeanceDeath()
@@ -419,6 +431,7 @@ public class FightSistem : MonoBehaviour
         yield return StartCoroutine(JustType(" For it was I that led \n you down this path.", 0.08f));
         yield return new WaitForSeconds(2.4f);
         yield return StartCoroutine(JustType(" But to live defeated is to die!", 0.04f));
+        yield return StartCoroutine(JustType(" But this is our last chance.", 0.04f));
         yield return new WaitForSeconds(3);
         dialogueTextUI.text = null;
 
@@ -426,6 +439,28 @@ public class FightSistem : MonoBehaviour
         yield return StartCoroutine(JustType(" I am sorry..", 0.27f));
         yield return new WaitForSeconds(3);
         dialogueTextUI.text = null;
+        yield return new WaitForSeconds(3);
+        yield return StartCoroutine(ShowLV2());
+
+        Voxeldata.PlayerData.genocide = true;
+        Voxeldata.PlayerData.pacifist = false;
+        Voxeldata.PlayerData.scene = 1;
+        Voxeldata.PlayerData.sawIntro = false;
+        Voxeldata.PlayerData.love = 2;
+        PlayerDataData.SavePlayerFile();
+
+
+        //SceneManager.LoadScene("Intro");
+        Application.Quit();
+        yield return null;
+    }
+    public IEnumerator ShowLV2()
+    {
+        LV2.SetActive(true);
+        yield return new WaitForSeconds(5);
+        LV2.SetActive(false);
+        yield return new WaitForSeconds(3);
+
     }
     public IEnumerator DisplayNextLine()
     {
@@ -498,9 +533,15 @@ public class FightSistem : MonoBehaviour
         {
             case 1:
                 yield return new WaitForSeconds(3);
-                yield return StartCoroutine(JustType(" Why? \n I had only hurt you.", 0.1f));
-                yield return StartCoroutine(JustType(" Just end this madness..", 0.1f));
+                yield return StartCoroutine(JustType(" Why? \n I had hurt everyone. ", 0.1f));
+                yield return StartCoroutine(JustType(" Bring justice..", 0.1f));
                 yield return StartCoroutine(JustType(" ...", 0.43f));
+                yield return new WaitForSeconds(3);
+                yield return StartCoroutine(JustType(" * He raised his weapon, not to \n win... But to give you a reason \n to end what He couldn't.", 0.08f));
+                yield return new WaitForSeconds(2);
+                dialogueTextUI.text = null;
+                yield return new WaitForSeconds(0.3f);
+                yield return StartCoroutine(JustType(" * The king is now standing in \n your way.", 0.08f));
                 yield return new WaitForSeconds(2.4f);
                 dialogueTextUI.text = null;
                 break;
@@ -719,6 +760,7 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         if (fought)
         {
+            fights++;
             SoundsSource.clip = swordsound;
             SoundsSource.Play();
             swordSlash.SetActive(true);
@@ -730,7 +772,11 @@ public class FightSistem : MonoBehaviour
         yield return new WaitForSeconds(1.2f);
         swordSlash.SetActive(false);
         bullet.gameObject.SetActive(false);
+        if(spares>5 && fights>7)
         TheEnd();
+        else
+            StartCoroutine(HasChose());
+        yield return null;
     }
     public IEnumerator TypeLine(string line, float spd)
     {
@@ -1052,7 +1098,7 @@ public class FightSistem : MonoBehaviour
         yield break;
     }
     string message;
-    byte actnum=0;
+    byte actnum=0,fights=0;
     bool acted = false;
     static bool diedTxt=false;
     public IEnumerator Write(string s)
@@ -1070,7 +1116,7 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Spare()
     {
-        textBox.text = "  *Spare";
+        textBox.text = "  * Spare";
         heartImgInv.SetActive(false);
         selectheart.SetActive(true);
         while (true)
@@ -1103,7 +1149,7 @@ public class FightSistem : MonoBehaviour
     }
     public IEnumerator Item()
     {
-        textBox.text = "  *Pie";
+        textBox.text = "  * Pie";
         heartImgInv.SetActive(false);
         selectheart.SetActive(true);
         while (true)
@@ -1134,14 +1180,14 @@ public class FightSistem : MonoBehaviour
             life += l;
             healthslider.value = life;
             hlt.text = life.ToString();
-            yield return StartCoroutine(Write("* You recovered "+l+"hp"));
+            yield return StartCoroutine(Write("  * You recovered "+l+"hp"));
         }
         else
         {
             life = 20;
             healthslider.value = life;
             hlt.text = 20.ToString();
-            yield return StartCoroutine(Write("* You're healed"));
+            yield return StartCoroutine(Write("  * You're healed"));
 
         }
         oninventory = false;
@@ -1247,6 +1293,7 @@ public class FightSistem : MonoBehaviour
                         yield return StartCoroutine(Write("* ..."));
                         yield return new WaitForSeconds(0.5f);
                         yield return StartCoroutine(Write("* Your ATTACK increased!"));
+                        FightingHealth.damageAmount = 4;
                         break;
                     default:
                         yield return StartCoroutine(Write("* YEEZUS - In blood and flesh \n* The king is dead, \nyet the crown still awaits."));

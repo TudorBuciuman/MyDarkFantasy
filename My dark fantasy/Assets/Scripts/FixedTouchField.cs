@@ -1,57 +1,66 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class FixedTouchField : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [HideInInspector]
-    public Vector2 TouchDist;
-    [HideInInspector]
-    public Vector2 PointerOld;
-    [HideInInspector]
-    protected int PointerId;
-    [HideInInspector]
-    public bool Pressed;
+    [HideInInspector] public Vector2 TouchDist;
+    [HideInInspector] public Vector2 PointerOld;
+    [HideInInspector] protected int FingerId = -1; 
+    [HideInInspector] public bool Pressed;
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if (Pressed)
         {
-            if (PointerId >= 0 && PointerId < Input.touches.Length)
+            bool found = false;
+            for (int i = 0; i < Input.touchCount; i++)
             {
-                TouchDist = Input.touches[PointerId].position - PointerOld;
-                PointerOld = Input.touches[PointerId].position;
+                Touch t = Input.GetTouch(i);
+                if (t.fingerId == FingerId)
+                {
+                    TouchDist = t.position - PointerOld;
+                    PointerOld = t.position;
+                    found = true;
+                    break;
+                }
             }
-            else
+
+            if (!found)
             {
-                TouchDist = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - PointerOld;
-                PointerOld = Input.mousePosition;
+                TouchDist = Vector2.zero;
             }
         }
         else
         {
-            TouchDist = new Vector2();
+            TouchDist = Vector2.zero;
         }
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
         Pressed = true;
-        PointerId = eventData.pointerId;
+
+        float closestDistance = float.MaxValue;
+        int bestFingerId = -1;
+
+        for (int i = 0; i < Input.touchCount; i++)
+        {
+            var touch = Input.GetTouch(i);
+            float dist = Vector2.Distance(touch.position, eventData.position);
+            if (dist < closestDistance)
+            {
+                closestDistance = dist;
+                bestFingerId = touch.fingerId;
+            }
+        }
+
+        FingerId = bestFingerId;
         PointerOld = eventData.position;
     }
-
 
     public void OnPointerUp(PointerEventData eventData)
     {
         Pressed = false;
+        FingerId = -1;
     }
 }

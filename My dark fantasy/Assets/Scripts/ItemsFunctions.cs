@@ -102,21 +102,43 @@ public class ItemsFunctions : MonoBehaviour
 
     public static void RealKnife()
     {
-        if (HealthSistem.health <= 1)
+        Voxeldata.PlayerData.timesSlept = 1;
+        if (Voxeldata.PlayerData.deaths != 0 && Voxeldata.PlayerData.timesSlept != 0 && Voxeldata.PlayerData.scene == 0)
         {
-            //activate protocol
             SoundsManager.instance.mouseSource.Stop();
         }
-        HealthSistem.istance.UpdateHealth(-1);
         SoundsManager.instance.Placement(11);
         if (!SoundsManager.instance.songs.isPlaying)
         {
             SoundsManager.instance.PlaySong(7);
+            SoundsManager.lastSong = "song7";
         }
         else if (SoundsManager.instance.songs.clip.name != "song7")
         {
             SoundsManager.instance.PlaySong(7);
+
         }
+            if (HealthSistem.health <= 1)
+            {
+                //activate protocol
+                HealthSistem.istance.Protocol();
+                SoundsManager.instance.mouseSource.Stop();
+                ControllerImput.Instance.toolbar.UpdateAnItem(Toolbar.slothIndex);
+                return;
+            }
+            else
+                HealthSistem.istance.UpdateHealth(-1);
+            SoundsManager.instance.Placement(11);
+            if (!SoundsManager.instance.songs.isPlaying)
+            {
+                SoundsManager.instance.ForceSong(7);
+            }
+
+            if (SoundsManager.lastSong != "song7")
+            {
+                SoundsManager.instance.ForceSong(7);
+            }
+            SoundsManager.lastSong = "song7";
     }
 }
 

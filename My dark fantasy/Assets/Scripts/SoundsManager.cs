@@ -8,6 +8,8 @@ using UnityEngine.Networking;
 public class SoundsManager : MonoBehaviour
 {
     public static SoundsManager instance;
+    public static bool canChange = true;
+    public static string lastSong;
     public AudioMixer soundsMixer;
     public AudioMixer musicMixer;
     public AudioSource moveSource;
@@ -18,7 +20,7 @@ public class SoundsManager : MonoBehaviour
     public static string Master = "sounds";
     public static string Music = "soundtrack";
     public byte nrsongs=11;
-    public void Start()
+    public void Awake()
     {
         instance = this;
         UpdateSounds();
@@ -50,10 +52,39 @@ public class SoundsManager : MonoBehaviour
             StartCoroutine(LoadAndPlayMusic(path, id));
         }
     }
+    public void MuteTheWholeGame()
+    {
+        musicMixer.SetFloat(Music, -80);
+        soundsMixer.SetFloat(Master, -80);
+    }
+
+    public IEnumerator ClosingMusic()
+    {
+        float t = 0;
+        while (t < 3)
+        {
+            songs.volume = Mathf.Lerp(1, 0, t);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        songs.Stop();
+        songs.volume = 1;
+        yield return null;
+    }
+    public IEnumerator FoundCastle()
+    {
+        yield return StartCoroutine(ClosingMusic());
+        ForceSong(2);
+    }
+    public void ForceSong(byte id)
+    {
+        string path = Path.Combine(Application.streamingAssetsPath, "Songs");
+        StartCoroutine(LoadAndPlayMusic(path, id));
+    }
     public IEnumerator PlaySongByName(string name)
     {
         string musicFilePath;
-
+        canChange = false;
 #if UNITY_STANDALONE_WIN
         musicFilePath = Path.Combine(Application.streamingAssetsPath, $"Songs/{name}.ogg");
 #elif UNITY_ANDROID
@@ -64,6 +95,8 @@ public class SoundsManager : MonoBehaviour
         }
 #endif
 
+        lastSong = name;
+        float len=0;
         using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(musicFilePath, AudioType.OGGVORBIS);
         yield return www.SendWebRequest();
 
@@ -78,8 +111,16 @@ public class SoundsManager : MonoBehaviour
             {
                 songs.clip = clip;
                 songs.Play();
+                len = clip.length;
             }
         }
+        float f = 0;
+        while (f < len)
+        {
+            f += Time.deltaTime;
+            yield return null;
+        }
+        canChange = true;
 
     }
     public void PlaySceneSong(byte id)

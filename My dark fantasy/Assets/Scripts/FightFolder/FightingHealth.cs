@@ -10,7 +10,7 @@ public class FightingHealth : MonoBehaviour
     public float health=20;
     public static FightingHealth instance;
     public GameObject ts; 
-    public float damageAmount=3;
+    public static float damageAmount=5;
     public GameObject heart;
     public static float speed = 3f;
     public float timepassed = 0;
@@ -116,6 +116,7 @@ public class FightingHealth : MonoBehaviour
         GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
         yield return new WaitForSeconds(0.3f);
     }
+
     public void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("obstacle"))

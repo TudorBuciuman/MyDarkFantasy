@@ -4,47 +4,87 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LostInTheWorld : MonoBehaviour
 {
-    public Material Skybox,water;
-    public Canvas canvas;
+    public Material water,m0,m1,m2,m3,m4,Skybox;
+    public WorldManager wm;
+    public Text loveTxt;
     public static LostInTheWorld instance;
     public static bool intro=true;
     void Awake()
     {
         intro=!Voxeldata.PlayerData.enteredWorld;
+        water.SetColor("_AmbientLight", Color.white);
+        instance = this;
         if (intro)
         {
-            instance = this;
-            GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>().enabled = false;
-            canvas.enabled = false;
-            RenderSettings.fog = false;
-            RenderSettings.reflectionIntensity = 0.65f;
-            RenderSettings.ambientLight = Color.black;
-            RenderSettings.skybox = Skybox;
-            BookManager.readingBook = true;
-            water.SetColor("_AmbientLight", new Color(0f / 255f, 15f / 255f, 16f / 255f, 1f));
-            SceneManager.LoadScene("OverlyDedicated", LoadSceneMode.Additive);
+            wm.material = m0;
+            m1 = m2 = m3 = m4 = null;
+            StartCoroutine(PlayFallenDown());
         }
         else
-        water.SetColor("_AmbientLight", Color.white);
-
+        {
+            if (Voxeldata.PlayerData.deaths == 0)
+            {
+                StartCoroutine(SlowDeath());
+            }
+            switch (Voxeldata.PlayerData.scene)
+            {
+                case 0:
+                    wm.material = m0;
+                    m1 = m2 = m3 = m4 = null;
+                    break;
+                case 1:
+                    wm.material = m1;
+                    m0 = m2 = m3 = m4 = null;
+                    break;
+                case 2:
+                    wm.material = m2;
+                    m0 = m1 = m3 = m4 = null;
+                    break;
+                case 3:
+                    wm.material = m3;
+                    m0 = m1 = m2 = m4 = null;
+                    break;
+                case 4:
+                    wm.material = m4;
+                    m0 = m1 = m2 = m3 = null;
+                    break;
+            }
+        }
+        if (Voxeldata.PlayerData.love == 0)
+        {
+            Voxeldata.PlayerData.love = 1;
+            PlayerDataData.SavePlayerFile();
+        }
+        loveTxt.text = Voxeldata.PlayerData.love.ToString();
+       
     }
-    public static void Back()
+    public IEnumerator PlayFallenDown()
     {
-        SoundsManager.instance.StartCoroutine(SoundsManager.instance.PlaySongByName("A dark fantasy"));
+        yield return new WaitForSeconds(2);
+        SoundsManager.instance.StartCoroutine(SoundsManager.instance.PlaySongByName("Fallen-Down"));
         instance.StartCoroutine(instance.Waiting());
     }
     public IEnumerator Waiting()
     {
-        yield return new WaitForSeconds(2);
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>().enabled = true;
-
-        yield return new WaitForSeconds(60);
+        yield return new WaitForSeconds(15);
         Voxeldata.PlayerData.enteredWorld = true;
         PlayerDataData.SavePlayerFile();
-        yield return new WaitForSeconds(200);
-        SceneManager.LoadScene("Intro");
+    }
+    public IEnumerator SlowDeath()
+    {
+        yield return new WaitForSeconds(66.6f);
+        StartCoroutine(HealthSistem.istance.SlowlyDeath());
+    }
+    public void HellOfALife()
+    {
+        RenderSettings.fog = false;
+        RenderSettings.reflectionIntensity = 0.65f;
+        RenderSettings.ambientLight = Color.black;
+        RenderSettings.skybox = Skybox;
+        water.SetColor("_AmbientLight", new Color(0f / 255f, 15f / 255f, 16f / 255f, 1f));
     }
 }
