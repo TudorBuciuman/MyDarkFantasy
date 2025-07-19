@@ -1,5 +1,5 @@
 <h1 align="center">
-  My dark fantasy
+  My dark fantasy-Infoeducație
 </h1>
 Welcome to the 'actual' first c# Minecraft like Voxel game written entirely in c# by myself (also I didn't found actual tutorials). <br>
 It has many features, chunk generation, biomes, item system, an actual story, multithreading (so no performance issues), a LOT of small features/quality of life, but at the same time (after playing Undertale) 
@@ -9,14 +9,9 @@ Did I say it's free? It's free :) <br>
 Also it's open source :) <br>
 And if you have ideas contact me on IG;
 <div align="left">
+   <a href="https://tudorbuciuman.github.io/MDF-Demo/" >
   <img height="255" src="https://i.imgur.com/DZxPSH2.png"/>
 </div>
-<h2>
-  Downloads
-  </h2>
-  <p>
-    <a href="https://tudorbuciuman.github.io/MDF-Demo/" >Website</a> <br>
-  </p>
 <h2>
   Facts
 </h2>
@@ -49,11 +44,4 @@ And if you have ideas contact me on IG;
     Highlevel-efficient-perfected algorithms: Youtube <br>
     The rest of the logic: Me
     Textures, Assets, Sprites: all handmade by me
-  <br>
-    Soundtrack:
-    <li>Kanye West (if you read this please don't sue)</li>
-    <li>Kendrick Lamar (I used some of your lyrics, please don't sue, or diss)</li>
-    <li>Toby Fox</li>
-    <li>Aphex Twin</li> 
-   Now before I get sued, the soundtrack consists of instrumentals, modified by me, remade, remixed, also the game is free, and I get paid nothing.
 </p>
