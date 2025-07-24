@@ -89,7 +89,7 @@ public class UiManager : MonoBehaviour
         audiosource.Play();
         yield return new WaitForSeconds(5);
         string location1 = Application.persistentDataPath;
-        File.Delete(Path.Combine(location1+"/PlayerSave.json"));
+        File.Delete(Path.Combine(location1+"/PlayerSave.dat"));
         foreach (string f in Directory.GetDirectories(Path.Combine(location1, "worlds")))
         {
             foreach (string subFile in Directory.GetFiles(f, "*", SearchOption.AllDirectories))

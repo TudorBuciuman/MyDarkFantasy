@@ -947,7 +947,15 @@ public class ControllerImput : MonoBehaviour
                     step += 0.1f;
                 }
             }
+            else if (toolbar.item[0, Toolbar.slothIndex] > 0 && wmanager.blockTypes[toolbar.item[0, Toolbar.slothIndex]].Items.tool.type == 3)
+            {
+                if (brktime <= 0)
+                {
+                    StartCoroutine(Attack());
+                }
+            }
         }
+        
         else if (breac)
         {
             breac = false;
@@ -1071,7 +1079,14 @@ public class ControllerImput : MonoBehaviour
         }
         return true;
     }
-
+    public IEnumerator Attack()
+    {
+        soundTrack.Placement(12);
+        brktime = 2.5f;
+        yield return new WaitForSeconds(2.5f);
+        soundTrack.Stopbreak();
+        yield return null;
+    }
     public void CloseMap()
     {
         mapImg.gameObject.SetActive(false);

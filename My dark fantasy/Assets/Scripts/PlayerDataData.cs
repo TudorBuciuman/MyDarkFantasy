@@ -13,7 +13,6 @@ public class PlayerDataData : MonoBehaviour
     public Intro intro;
     public void Start()
     {
-
         ReadFile();
     }
 
@@ -71,10 +70,6 @@ public class PlayerDataData : MonoBehaviour
                     File.Delete(filePath);
                 }
             }
-
-            Voxeldata.PlayerData.sawIntro = true;
-            PlayerDataData.SavePlayerFile();
-
             SawIntro = Voxeldata.PlayerData.sawIntro;
             if (SawIntro)
             {

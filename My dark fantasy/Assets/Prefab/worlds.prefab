@@ -38,8 +38,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -16, y: 40.098206}
-  m_SizeDelta: {x: 300, y: 141.1024}
+  m_AnchoredPosition: {x: -16, y: 40}
+  m_SizeDelta: {x: 300, y: 141}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5727797317569993530
 CanvasRenderer:
@@ -62,10 +62,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   random: 0
+  easteregg: {fileID: 0}
+  background: {fileID: 0}
   NewWorldButton: {fileID: 0}
   lightingImg: {fileID: 0}
   clip: {fileID: 0}
   normalclip: {fileID: 0}
+  creatingclip: {fileID: 0}
   AudioSource: {fileID: 0}
   worldlocation: 
   Wname: {fileID: 0}
@@ -265,8 +268,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 34, y: 0}
-  m_SizeDelta: {x: -6.9762, y: 0}
+  m_AnchoredPosition: {x: 201.97034, y: 0}
+  m_SizeDelta: {x: 314.0017, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7905013342380045457
 CanvasRenderer:
@@ -298,7 +301,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: f935b8d08526c6f44a83685a9cadf77d, type: 3}
-    m_FontSize: 64
+    m_FontSize: 60
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -309,7 +312,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: MyWorld  -  0 ZB
+  m_Text: MyWorld -  0 ZB
 --- !u!1 &7271465664526937915
 GameObject:
   m_ObjectHideFlags: 0

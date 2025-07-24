@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class LostInTheWorld : MonoBehaviour
 {
-    public Material water,m0,m1,m2,m3,m4,Skybox;
+    public Material water,m0,m1,m2,m3,m4,Skybox,tr1,tr2,tr;
     public WorldManager wm;
     public Text loveTxt;
     public static LostInTheWorld instance;
@@ -18,6 +18,7 @@ public class LostInTheWorld : MonoBehaviour
         intro=!Voxeldata.PlayerData.enteredWorld;
         water.SetColor("_AmbientLight", Color.white);
         instance = this;
+        wm.transparent = tr1;
         if (intro)
         {
             wm.material = m0;
@@ -30,30 +31,66 @@ public class LostInTheWorld : MonoBehaviour
             {
                 StartCoroutine(SlowDeath());
             }
-            switch (Voxeldata.PlayerData.scene)
+            if (!Voxeldata.PlayerData.genocide)
             {
-                case 0:
-                    wm.material = m0;
-                    m1 = m2 = m3 = m4 = null;
-                    break;
-                case 1:
-                    wm.material = m1;
-                    m0 = m2 = m3 = m4 = null;
-                    break;
-                case 2:
-                    wm.material = m2;
-                    m0 = m1 = m3 = m4 = null;
-                    break;
-                case 3:
-                    wm.material = m3;
-                    m0 = m1 = m2 = m4 = null;
-                    break;
-                case 4:
-                    wm.material = m4;
-                    m0 = m1 = m2 = m3 = null;
-                    break;
+                switch (Voxeldata.PlayerData.scene)
+                {
+                    case 1:
+                        wm.material = m0;
+                        m1 = m2 = m3 = m4 = null;
+                        break;
+                    case 2:
+                        //rising
+                        wm.material = m1;
+                        m0 = m2 = m3 = m4 = null;
+                        break;
+                    case 3:
+                        //falling
+                        wm.transparent = tr2;
+                        wm.material = m2;
+                        m0 = m1 = m3 = m4 = null;
+                        break;
+                    case 4:
+                        wm.material = m3;
+                        m0 = m1 = m2 = m4 = null;
+                        break;
+                    case 5:
+                        wm.material = m4;
+                        m0 = m1 = m2 = m3 = null;
+                        break;
+                }
+            }
+            else
+            {
+                switch (Voxeldata.PlayerData.scene)
+                {
+                    case 1:
+                        wm.material = m0;
+                        m1 = m2 = m3 = m4 = null;
+                        break;
+                    case 2:
+                        //falling
+                        wm.transparent = tr2;
+                        wm.material = m2;
+                        m0 = m1 = m3 = m4 = null;
+                        break;
+                    case 3:
+                        //rising
+                        wm.material = m1;
+                        m0 = m2 = m3 = m4 = null;
+                        break;
+                    case 4:
+                        wm.material = m3;
+                        m0 = m1 = m2 = m4 = null;
+                        break;
+                    case 5:
+                        wm.material = m4;
+                        m0 = m1 = m2 = m3 = null;
+                        break;
+                }
             }
         }
+
         if (Voxeldata.PlayerData.love == 0)
         {
             Voxeldata.PlayerData.love = 1;
