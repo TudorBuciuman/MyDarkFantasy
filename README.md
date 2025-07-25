@@ -13,6 +13,12 @@ And if you have ideas contact me on IG;
   <img height="255" src="https://i.imgur.com/DZxPSH2.png"/>
 </div>
 <h2>
+  Downloads
+</h2>
+    <a href="https://tudorbuciuman.github.io/MDF-Demo/"> Website </a>
+    <br>
+    <a href="https://drive.google.com/uc?export=download&id=1NWfSsi4MqmlrZ140HdqoIfsj_TTG3q_3"> 7 Documents </a>
+<h2>
   Facts
 </h2>
 <p>
