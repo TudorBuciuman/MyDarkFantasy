@@ -17,7 +17,7 @@ And if you have ideas contact me on IG;
 </h2>
     <a href="https://tudorbuciuman.github.io/MDF-Demo/"> Website </a>
     <br>
-    <a href="https://drive.google.com/uc?export=download&id=1NWfSsi4MqmlrZ140HdqoIfsj_TTG3q_3"> 7 Documents </a>
+    <a href="https://www.mediafire.com/file/bmdfybrdnxu79gc/Documenta%25C8%259Bie.zip/file"> 7 Documents </a>
 <h2>
   Facts
 </h2>
